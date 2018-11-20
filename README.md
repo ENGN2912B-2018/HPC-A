@@ -16,6 +16,9 @@ Graphical User Interface is like a conductor of the project. It control the prog
 
 ## Installation
 For now Qt has be installed in a Windows operating system. In order to run the whole program on CCV, GUI will be developed in a Linux environment. The version of Qt installed in Windows now is 5.11.2. We will install Qt 5.10.1 in Ubuntu.
+
+**NOTE: The following steps just the installation instruction from the official website. Please check the version you want to install before the next steps.**
+
 - **Download:**
 You can visit Qt officcial website to download Qt in all kinds of operating system, or the Ubuntu installation file can be also downloaded through the command line using wget.
 ```
@@ -79,27 +82,79 @@ sudo update-mime-database /usr/share/mime
 ```
 now Qt has been added to the list of file associations.
 
-##Troubleshooting
+## Troubleshooting
 - **Qt Creator needs a compiler set up to build**
 Follow the instruction from the previous section to configure compiler for Qt Creator.
 1. error: g++: Command not found
+
 **Solution:**
 ```
 sudo apt-get install build-essential
 ```
 2. error: GL/gl.h: No such file or directory
+
 **Solution:**
 ```
 sudo apt-get install mesa-common-dev
 ```
 
 ## Build instructions
-GUI: Getting familiar with Qt
+
+I use a simple "hello world" example to show the basic build instruction.
+
+- **Create a directory for a Qt program and change into the directory:**
+```
+mkdir QtHelloWorld
+cd QtHelloWorld
+```
+
+- **Create a source code file:**
+
+```
+gedit main.cpp
+```
+- **Add your code, save the file and exit.**
+```
+#include <QApplication>
+#include <QLabel>
+#include <QWidget>
+int main(int argc, char *argv[ ])
+{
+QApplication app(argc, argv);
+QLabel hello("<center>Welcome to my first WikiHow Qt program</center>");
+hello.setWindowTitle("My First WikiHow Qt Program");
+hello.resize(400, 400);
+hello.show();
+return app.exec();
+}
+```
+
+
+- **Build and conpile the file:**
+**NOTE: you should in the QtHelloWorld directory to build and conpile the file.**
+
+```
+qmake -project
+qmake
+make
+```
+The first line will create the Qt project file.
+The second line will create the Qt make file.
+The last line will compile the Qt make file on your system into an executable program. At this point, providing that there are no errors the file should compile into an executable program.
+
+- **Run executable file:**
+ ./QtHelloWorld
+
 
 
 ## Usage documentation
 Coming Soon!
 
 ## Reference
-Install Qt 5 on Ubuntu
+1. Install Qt 5 on Ubuntu
+
 https://wiki.qt.io/Install_Qt_5_on_Ubuntu
+
+2. How to create your first qt program on Ubuntu Linux.
+
+https://www.wikihow.com/Create-Your-First-Qt-Program-on-Ubuntu-Linux
