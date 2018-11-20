@@ -15,7 +15,7 @@ but we will soon move to a Linux development environment.
 - **Libraries and packages**: This project depends on OpenFOAM 4.1 VTK 8.2.1 and Qt 5.10.1. You need
 to install these modules to build the software.
 ### Build instructions
-**NOTE**: The instructions here are just a template and will not succeed to compile!  
+**NOTE**: The instructions here are just a template and will not compile!  
 
 In your terminal/command prompt:
 1. Clone this repository into your directory: ``git clone https://github.com/ENGN2912B-2018/HPC-A.git``
