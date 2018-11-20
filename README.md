@@ -47,7 +47,7 @@ Coming Soon!
 ## References
 https://openfoamwiki.net/index.php/FAQ/Installation_and_Running
 
-file:///G:/My%20Drive/Fall%202018/ENGN2912B/Final/4-OpenFOAM%20Structure.pdf
+https://canvas.vt.edu/files/4773672/download?download_frd=1
 
 https://www.openfoam.com/documentation/tutorial-guide/tutorialse2.php#x6-60002.1
 
