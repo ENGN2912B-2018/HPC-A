@@ -21,7 +21,7 @@ This section provides instructions for running openFOAM simulations on the Brown
 `module load mpi/openmpi_2.0.3_intel`
 `module load openfoam/4.1`
 
-Then, the following commands should be run:
+Then, the following command should be run:
 
 `source $FOAM_INST_DIR/OpenFOAM-4.1/etc/bashrc`
 
@@ -46,7 +46,10 @@ Coming Soon!
 
 ## References
 https://openfoamwiki.net/index.php/FAQ/Installation_and_Running
+
 file:///G:/My%20Drive/Fall%202018/ENGN2912B/Final/4-OpenFOAM%20Structure.pdf
+
 https://www.openfoam.com/documentation/tutorial-guide/tutorialse2.php#x6-60002.1
+
 https://cfd.direct/openfoam/user-guide/v6-tutorials/
 
