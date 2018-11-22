@@ -22,7 +22,7 @@ For now Qt has be installed in a Windows operating system. In order to run the w
 - **Download:**
 You can visit Qt officcial website to download Qt in all kinds of operating system, or the Ubuntu installation file can be also downloaded through the command line using wget.
 ```
-wget http://download.qt.io/official_releases/qt/5.7/5.10.1/qt-opensource-linux-x64-5.10.1.run
+wget http://download.qt.io/official_releases/qt/5.10/5.10.1/qt-opensource-linux-x64-5.10.1.run
 ```
 - **Install:**
 Adjust permission, run the installer and follow the instruction to complete the installation.
