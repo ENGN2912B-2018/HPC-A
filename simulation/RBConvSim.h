@@ -2,42 +2,66 @@
 #include <string>
 #include <ios>
 #include <stdlib.h> 
+#include <boost/filesystem.hpp>
+#include <exception>
+#include <string>
+#include <iostream>
+#include <fstream>
+#include <vector>
+#include <regex>
 
-typedef std::tuple<vectorField, scalarField, scalarField> resultsContainer;
-// stores
-// vectorField -> velocity Field
-// scalarField -> pressure field
-// scalarField -> temperature field
-
-
+namespace fs = boost::filesystem;
 using namespace std;
 
 class RBConvSim {
   public:
     //Constructors
-    RBConvSim() {}
-    void setBeta(double beta)
+    RBConvSim()
+    {
+    	system("source $FOAM_INST_DIR/OpenFOAM-4.1/etc/bashrc")
+    	//set parameters in simulation based on defaults
+        setNu();
+	setBeta();
+	setTFloor();
+	setTCeil();
+	setPr();
+    }
+    //Destructor
+    ~RBConv() {};
+	
+    //Setters
+    void setBeta(double beta = beta_)
 	{
 		beta_ = beta;
-		simulationResults_.clear();
-    		setRaPr();
+	    //modify file
+		update();
 	}
-    //Setters
-    void setNu(double nu)
+    
+    void setNu(double nu = nu_)
 	{
 		nu_ = nu;
+	    // modify file
 		update();
 	}
-    void setTFloor(double TFloor)
+    void setTFloor(double TFloor = TFloor_)
 	{
 		TFloor_ = TFloor;
+	    //modify file
     		update();
 	}
-    void setTCeil(double TCeil)
+    void setTCeil(double TCeil = TCeil_)
 	{
 		TCeil_ = TCeil;
+	    //modify file
 		update();
 	}
+    void setPr(double Pr = Pr_)
+	{
+		Pr_ = Pr;
+	    //modify file
+		update();
+	}
+	
     //Getters
      double getBeta()
 	{
@@ -55,16 +79,19 @@ class RBConvSim {
 	{
 		return TCeil_'
 	}
-    double getRayleigh()
-        {
-	       return Ra_;
-        }
-	
-    double getPrandtl()
+    double getPr()
         {
 	       return Pr_;
         }
-	
+    double getdeltaT()
+	{
+	       return deltaT_'
+	}
+    double getRa()
+        {
+	       return Ra_;
+        }
+
     void runSimulation()
         {
 	    system("cd "+ casedir_);
@@ -73,7 +100,50 @@ class RBConvSim {
 	    simRun_ = true;
         }
 	
-    vector<vector<double> > getTfield()
+    vector<vector<double> > getTfield();
+    vector<vector<vector<double> > > getUfield();
+
+  private:
+    //DO NOT CHANGE
+    double L_ = 1; //simulation box width
+    double h_ = 1; //simulation box height
+    double horzmesh_ = 20;
+    double vertmesh_ = 20;
+    double meshsize_ = 400;
+    double tend_ = 2000; //simulation end time
+    double deltat_ = 20; // simulation time step
+    double g = 9.81; // acceleration of gravity
+    string casedir_ = "$FOAM_RUN/tutorials/heatTransfer/bouyantBoussinesqPimpleFoam/RBConvection";
+
+    //CHANGED BY PROGRAM
+    double Ra_; //Rayleigh Number
+    double deltaT_; //temperature difference
+    vector<vector<double> > Tfield_; //scalar x space x time
+    vector<vector<vector<double> > > Ufield_; //3D vector x space x time
+    bool simRun_ = false;
+
+    //CHANGED DIRECTLY BY USER
+    //default values
+    double nu_ = 1e-5; //kinematic viscosity
+    double TCeil_ = 280; //temperature at z = h
+    double TFloor_ = 340; //temperature at z = 0
+    double beta_ = 1; //thermal expansion coefficient
+    double Pr_ = .85; //Prandtl Number
+
+    void update()
+	{
+	    Ra_ = Pr_*alpha_*g*deltaT_*exp(h_,3)/exp(nu_,2);
+	    deltaT_ = TFloor_ - TCeil_;
+	    system("cd " + casedir_);
+	    system("foamListTimes -rm");
+	    system("cd -");
+	    Tfield_.clear();
+	    Ufield_.clear();
+	    simRun_ = false;
+	}
+};
+
+    vector<vector<double> > RBConvSim::getTfield()
         {
 	if (!simRun_)
 	    {
@@ -86,7 +156,7 @@ class RBConvSim {
 	return Tfield;
         }
 
-    vector<vector<vector<double> > > get Ufield()
+    vector<vector<vector<double> > > RBConvSim::getUfield()
         {
  	if (!simRun_)
 	    {
@@ -99,42 +169,3 @@ class RBConvSim {
 	return Ufield;
         }
         }
-
-  private:
-    //DO NOT CHANGE
-    double L_ = 1; //simulation box width
-    double h_ = 1; //simulation box height
-    double horzmesh_ = 20;
-    double vertmesh_ = 20;
-    double meshsize_ = 400;
-    double tend_ = 2000; //simulation end time
-    double deltat_ = 20; // simulation time step
-    double g = 9.81; // acceleration of gravity
-    fs::path casedir_;
-	
-    //CHANGED BY PROGRAM
-    double Ra_; //Rayleigh Number
-    double deltaT_; //temperature difference
-    vector<vector<double> > Tfield_; //scalar x space x time
-    vector<vector<vector<double> > > Ufield_; //3D vector x space x time
-    bool simRun_ = false;
-	
-    //CHANGED DIRECTLY BY USER
-    double nu_; //kinematic viscosity
-    double TCeil_; //temperature at z = h
-    double TFloor_; //temperature at z = 0
-    double beta_; //thermal expansion coefficient
-    double Pr_; //Prandtl Number
-
-    void update();
-	{
-	    Ra_ = Pr_*alpha_*g*deltaT_*exp(h_,3)/exp(nu_,2);
-	    deltaT_ = TFloor_ - TCeil_;
-	    system("cd "+ casedir_);
-	    system("foamListTimes -rm");
-	    system("cd -");
-	    Tfield_.clear();
-	    Ufield_.clear();
-	    simRun_ = false
-	}
-};
