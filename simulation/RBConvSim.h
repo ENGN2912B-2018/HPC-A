@@ -26,22 +26,17 @@ class RBConvSim {
     void setNu(double nu)
 	{
 		nu_ = nu;
-		simulationResults_.clear();
-   		setRaPr();
+		update();
 	}
     void setTFloor(double TFloor)
 	{
 		TFloor_ = TFloor;
-		deltaT_ = TFloor_ - TCeil_;    
-		simulationResults_.clear();
-    		setRaPr();
+    		update();
 	}
     void setTCeil(double TCeil)
 	{
 		TCeil_ = TCeil;
-	    	deltaT_ = TFloor_ - TCeil_;    
-		simulationResults_.clear();
-		setRaPr();
+		update();
 	}
     //Getters
      double getBeta()
@@ -62,12 +57,12 @@ class RBConvSim {
 	}
     double getRayleigh()
         {
-	return Ra_;
+	       return Ra_;
         }
 	
     double getPrandtl()
         {
-	return Pr_;
+	       return Pr_;
         }
 	
     void runSimulation()
@@ -80,17 +75,30 @@ class RBConvSim {
 	
     vector<vector<double> > getTfield()
         {
+	if (!simRun_)
+	    {
+		//some kind of exception
+	    }
 	if Tfield_.empty()
 	    {
-	
+	        //get data from file
 	    }
 	return Tfield;
         }
 
     vector<vector<vector<double> > > get Ufield()
         {
+ 	if (!simRun_)
+	    {
+		//some kind of exception
+	    }
+	if Ufield_.empty()
+	    {
+	        //get data from file
+	    }
+	return Ufield;
         }
-
+        }
 
   private:
     //DO NOT CHANGE
@@ -101,7 +109,9 @@ class RBConvSim {
     double meshsize_ = 400;
     double tend_ = 2000; //simulation end time
     double deltat_ = 20; // simulation time step
+    double g = 9.81; // acceleration of gravity
     fs::path casedir_;
+	
     //CHANGED BY PROGRAM
     double Ra_; //Rayleigh Number
     double deltaT_; //temperature difference
@@ -116,9 +126,10 @@ class RBConvSim {
     double beta_; //thermal expansion coefficient
     double Pr_; //Prandtl Number
 
-    update();
+    void update();
 	{
-	    Ra_ = alpha_*g*deltaT_*exp(h_,3)/(nu_*kappa_);
+	    Ra_ = Pr_*alpha_*g*deltaT_*exp(h_,3)/exp(nu_,2);
+	    deltaT_ = TFloor_ - TCeil_;
 	    system("cd "+ casedir_);
 	    system("foamListTimes -rm");
 	    system("cd -");
@@ -126,8 +137,4 @@ class RBConvSim {
 	    Ufield_.clear();
 	    simRun_ = false
 	}
-    setRaPr()
-    {
-	Ra_ = alpha_*g*deltaT_*exp(h_,3)/(nu_*kappa_);
-    }
 };
