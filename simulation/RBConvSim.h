@@ -1,7 +1,7 @@
 #include <iostream>
 #include <string>
 #include <ios>
-
+#include <stdlib.h> 
 
 typedef std::tuple<vectorField, scalarField, scalarField> resultsContainer;
 // stores
@@ -15,58 +15,82 @@ using namespace std;
 class RBConvSim {
   public:
     RBConvSim() {}
-    void setThermalConductivity(double alpha)
+    void setBeta(double beta)
 	{
-		alpha_ = alpha;
+		beta_ = beta;
 		simulationResults_.clear();
     		setRaPr();
 	}
-    void setKViscosity(double nu)
+    void setNu(double nu)
 	{
 		nu_ = nu;
 		simulationResults_.clear();
    		setRaPr();
 	}
-    void setDensity(double rho)
+    void setTFloor(double TFloor)
 	{
-		rho_ = rho;
+		TFloor_ = TFloor;
+		deltaT_ = TFloor_ - TCeil_;    
 		simulationResults_.clear();
     		setRaPr();
 	}
-    void setLowTemperature(double T1)
+    void setTCeil(double TCeil)
 	{
-		T1_ = T1;
-		deltaT_ = T2_ - T1_;    
-		simulationResults_.clear();
-    		setRaPr();
-	}
-    void setHighTemperature(double T2)
-	{
-		T2_ = T2;
-	    	deltaT_ = T2_ - T1_;    
+		TCeil_ = TCeil;
+	    	deltaT_ = TFloor_ - TCeil_;    
 		simulationResults_.clear();
 		setRaPr();
 	}
-    void runSimulation()
-    {
-	    //OpenFOAM code here
-	    
-    }
 	
-    vector<resultsContainer> getResults()
-    {
-	return simulationResults_;    
-    }
-	
+    void getBeta()
+	{
+		beta_ = beta;
+		simulationResults_.clear();
+    		setRaPr();
+	}
+    void getNu()
+	{
+		nu_ = nu;
+		simulationResults_.clear();
+   		setRaPr();
+	}
+    void getTFloor()
+	{
+		TFloor_ = TFloor;
+		deltaT_ = TFloor_ - TCeil_;    
+		simulationResults_.clear();
+    		setRaPr();
+	}
+    void getTCeil()
+	{
+		TCeil_ = TCeil;
+	    	deltaT_ = TFloor_ - TCeil_;    
+		simulationResults_.clear();
+		setRaPr();
+	}
     double getRayleigh()
     {
-	return Ra_;    
+	return Ra_;
     }
 	
     double getPrandtl()
     {
 	return Pr_;
     }
+	
+	
+    void runSimulation()
+    {
+	    system("bouyantBoussinesqPimpleFoam -case $FOAM_RUN/tutorials/heatTransfer/bouyantBoussinesqPimpleFoam/RBConvection");
+	    
+    }
+	
+    vector<resultsContainer> getResults()
+    {
+	return simulationResults_;
+    }
+	
+
 
   private:
     double L_; //simulation box width
@@ -75,15 +99,12 @@ class RBConvSim {
     double deltat_; // simulation time step
     
     double nu_; //kinematic viscosity
-    double rho_; //density
     double T1_; //temperature at z = h
     double T2_; //temperature at z = 0
     double deltaT_; //temperature difference
-    double alpha_; //volumetric coefficient of thermal expansion
-    double kappa_; //thermal diffusivity
-    double g = 9.81; //acceleration of gravity
-    double Ra_; //Rayleigh Number
+    double beta_; //thermal expansion coefficient
     double Pr_; //Prandtl Number
+    double Ra_; //Rayleigh Number
     vector<resultsContainer> simulationResults_; //results of simulation, each vector element is a time
 	
     setRaPr()
