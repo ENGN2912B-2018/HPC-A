@@ -1,6 +1,11 @@
 # Build directory
 build
 
+# OpenFOAM ASCII files
+RBConvection/*0/
+!RBConvection/0/
+RBConvection/VTK/
+
 # Visual Studio diretory
 .vs
 
