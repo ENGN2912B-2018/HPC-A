@@ -21,7 +21,7 @@ This section provides instructions for running openFOAM simulations on the Brown
 `module load mpi/openmpi_2.0.3_intel`
 `module load openfoam/4.1`
 
-Then, the following command should be run:
+Then, the following command should be run. Please note that this needs to be run each time a new session is started.
 
 `source $FOAM_INST_DIR/OpenFOAM-4.1/etc/bashrc`
 
@@ -38,7 +38,7 @@ If you have already done this step, there is no need to repeat it.
 ### Simulation: Setting up the simulation
 In OpenFOAM, the details of a simulation are included in what is called a case directory. The version of openFOAM available on the Brown CCV, openFOAM 4.1, does not have a case directory for Rayleigh Benard convection, so we will create our own. First, navigate to the solver directory:
 
-'cd $FOAM_RUN/tutorials/heatTransfer/bouyantBoussinesqPimpleFoam/'
+`cd $FOAM_RUN/tutorials/heatTransfer/buoyantBoussinesqPimpleFoam/`
 
 You can download the case directory from this Github repository, which is based off of the guide on [CuriosityFluids](https://curiosityfluids.com/2017/06/12/rayleigh-benard-convection-using-buoyantboussinesqpimplefoam/). This case directory models a 2D flow in a rectangular region. Alternatively, you can download and modify the case directory for Rayleigh-Benard Convection [here](https://github.com/OpenFOAM/OpenFOAM-6/tree/master/tutorials/heatTransfer/buoyantBoussinesqPimpleFoam/BernardCells), which is set up to model 3D convection. The files included in this directory and their purpose are described here. To begin with, the case directory contains subdirectories titled '0', 'constant', and 'system' directories. The '0' directory contains files describing the initial conditions. The 'constant' directory contains information on physical constants and properties of the fluid. The 'system' directory contains directions for setting up the simulation. The case directory will also contain time directories corresponding to time steps in the simulation once the solver has been run. These directories contain the results of the simulation at each time step. A file tree of the case directory is shown below.
 
@@ -65,30 +65,30 @@ You can download the case directory from this Github repository, which is based 
 Information regarding how to specify the geometry of a mesh can be found on the [OpenFOAM User Guide](https://cfd.direct/openfoam/user-guide/v4-mesh-description/).
 
 
-Once you are finished editing the file 'blockMeshDict', create the mesh by entering the following command in the case directory:
+Once you are finished editing the file `blockMeshDict`, create the mesh by entering the following command in the case directory:
 
-'blockMesh'
+`blockMesh`
 
 #### 2. Set Boundary and Initial Conditions
-Initial conditions can be changed by accessing the '0' folder from the case directory and changing the parameters contained in the files there.
+Initial conditions can be changed by accessing the `0` folder from the case directory and changing the parameters contained in the files there.
 
 #### 3. Set Physical Properties
 From the case directory, navigate to the system folder:
 
-'cd constant'
+`cd constant`
 
-Then, open the file 'transportProperties' in your text editor of choice and edit the fields "nu", "beta", "TRef", and "Pr" as desired.
+Then, open the file `transportProperties` in your text editor of choice and edit the fields "nu", "beta", "TRef", and "Pr" as desired.
 #### 4. Set Simulation options
 From the case directory, navigate to the system folder:
 
-'cd system'
+`cd system`
 
-Then, open the file 'controlDict' in your text editor of choice and edit the fields "startTime", "endTime", "deltaT", and "writeInterval" as desired.
+Then, open the file `controlDict` in your text editor of choice and edit the fields "startTime", "endTime", "deltaT", and "writeInterval" as desired.
 
 #### 5. Run the application
 Enter the following text in the command line from the case directory:
 
-'bouyantBoussinesqPimpleFoam'
+`buoyantBoussinesqPimpleFoam`
 
 ### Simulation: Saving data and loading data
 #### Postprocessing
@@ -104,3 +104,4 @@ https://cfd.direct/openfoam/user-guide-v4/
 
 http://www.hpc.lsu.edu/training/weekly-materials/2014-Fall/intro_of_20141105.pdf
 
+https://github.com/UnnamedMoose/BasicOpenFOAMProgrammingTutorials
