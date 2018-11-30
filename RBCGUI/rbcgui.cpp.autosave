@@ -1,0 +1,157 @@
+//#define vtkRenderingCore_AUTOINIT 4(vtkInteractionStyle,vtkRenderingFreeType,vtkRenderingFreeTypeOpenGL,vtkRenderingOpenGL)
+//#define vtkRenderingVolume_AUTOINIT 1(vtkRenderingVolumeOpenGL)
+
+#include "rbcgui.h"
+#include "ui_rbcgui.h"
+
+#include<QtWidgets>
+#include<QApplication>
+//#include "qvtkopenglwidget.h"
+#include<QVTKOpenGLWidget.h>
+
+
+#include <vtkRenderer.h>
+#include <vtkRenderWindow.h>
+#include "vtkGenericOpenGLRenderWindow.h"
+#include <vtkRenderWindowInteractor.h>
+
+#include <vtkNew.h>
+#include <vtkSmartPointer.h>
+#include<vtkSmartPointerBase.h>
+#include <vtkImageViewer2.h>
+#include <vtkPNGReader.h>
+#include <vtkImageAlgorithm.h>
+#include <vtkEventQtSlotConnect.h>
+#include <vtkInteractorStyleTrackballActor.h>
+#include <vtkRenderingOpenGL2Module.h>
+
+
+RBCGUI::RBCGUI(QWidget *parent) :
+    QMainWindow(parent),
+    ui(new Ui::RBCGUI)
+{
+    ui->setupUi(this);
+       //file menu
+       QMenu *fileMenu = menuBar()->addMenu(tr("&File"));
+       QMenu *editMenu = menuBar()->addMenu(tr("&Edit"));
+       QToolBar *mainToolBar = addToolBar(tr("Main"));
+
+       //[0] open:fileMenu
+       const QIcon openIcon = QIcon(":/images/open.png");
+       QAction *openAct = new QAction(openIcon, tr("&Open"), this);
+       openAct->setShortcuts(QKeySequence::Open);
+       openAct->setStatusTip(tr("Open a file"));
+       //connect(saveAct, &QAction::triggered, this, &MainWindow::newFile);
+       fileMenu->addAction(openAct);
+       mainToolBar->addAction(openAct);
+
+       //[1]save:fileMenu
+       const QIcon saveIcon = QIcon(":/images/save.png");
+       QAction *saveAct = new QAction(saveIcon, tr("&Save"), this);
+       saveAct->setShortcuts(QKeySequence::Save);
+       saveAct->setStatusTip(tr("Save a file"));
+       //connect(saveAct, &QAction::triggered, this, &MainWindow::newFile);
+       fileMenu->addAction(saveAct);
+       mainToolBar->addAction(saveAct);
+
+       //[2] zoom-in:editMenu
+       const QIcon zoominIcon = QIcon(":/images/zoom-in.png");
+       QAction *zoominAct = new QAction(zoominIcon, tr("&Zoom-in"), this);
+       //zoominAct->setShortcuts(QKeySequence::Zoomin);
+       zoominAct->setStatusTip(tr("Zoom in the graph"));
+       //connect(saveAct, &QAction::triggered, this, &MainWindow::newFile);
+       editMenu->addAction(zoominAct);
+       mainToolBar->addAction(zoominAct);
+
+       //[3] zoom-out:editMenu
+       const QIcon zoomoutIcon = QIcon(":/images/zoom-out.png");
+       QAction *zoomoutAct = new QAction(zoomoutIcon, tr("&Zoom-out"), this);
+       //zoominAct->setShortcuts(QKeySequence::Zoomin);
+       zoomoutAct->setStatusTip(tr("Zoom out the graph"));
+       //connect(saveAct, &QAction::triggered, this, &MainWindow::newFile);
+       editMenu->addAction(zoomoutAct);
+       mainToolBar->addAction(zoomoutAct);
+
+       //[4] move:editMenu
+       const QIcon moveIcon = QIcon(":/images/move.png");
+       QAction *moveAct = new QAction(moveIcon, tr("&Move"), this);
+       //zoominAct->setShortcuts(QKeySequence::Zoomin);
+       moveAct->setStatusTip(tr("Move the graph"));
+       //connect(saveAct, &QAction::triggered, this, &MainWindow::newFile);
+       editMenu->addAction(moveAct);
+       mainToolBar->addAction(moveAct);
+
+       //widget window
+       //vtkNew<vtkGenericOpenGLRenderWindow> renderWindow;//Allocate and hold a VTK object
+       //this->qvtkWidget->SetRenderWindow(renderWindow);
+
+
+
+
+
+
+
+
+
+       //[5]load vtk image
+       const char* filename="RBCexample.png";
+       vtkSmartPointer<vtkPNGReader> reader = vtkSmartPointer<vtkPNGReader>::New();
+       reader->SetFileName(filename);
+       //reader->Update();
+
+       vtkSmartPointer<vtkImageViewer2> viewer = vtkSmartPointer<vtkImageViewer2>::New();
+       viewer->SetInputConnection(reader->GetOutputPort());
+       //和ui文件中的 my_widget 对应
+       vtkSmartPointer<vtkRenderWindowInteractor>renderWindowInteractor = \
+               vtkSmartPointer<vtkRenderWindowInteractor>::New();
+       viewer->SetupInteractor(renderWindowInteractor);
+       viewer->SetRenderWindow(ui->qvtkWidget->GetRenderWindow());
+       viewer->Render();
+       viewer->GetRenderer()->ResetCamera();
+       viewer->Render();
+       renderWindowInteractor->Start();
+
+
+
+}
+
+
+
+RBCGUI::~RBCGUI()
+{
+    delete ui;
+}
+
+
+
+void RBCGUI::on_parameter_clicked()
+{
+//open a new window which contains all the parameters that can be modified.
+}
+
+
+
+/*void RBCGUI::loadFile(const QString &fileName)
+//! [42] //! [43]
+{
+    QFile file(fileName);
+    if (!file.open(QFile::ReadOnly | QFile::Text)) {
+        QMessageBox::warning(this, tr("Application"),
+                             tr("Cannot read file %1:\n%2.")
+                             .arg(QDir::toNativeSeparators(fileName), file.errorString()));
+        return;
+    }
+
+    QTextStream in(&file);
+#ifndef QT_NO_CURSOR
+    QApplication::setOverrideCursor(Qt::WaitCursor);
+#endif
+    textEdit->setPlainText(in.readAll());
+#ifndef QT_NO_CURSOR
+    QApplication::restoreOverrideCursor();
+#endif
+
+    //setCurQVTKOpenGLWidgetrentFile(fileName);
+    statusBar()->showMessage(tr("File loaded"), 2000);
+}*/
+
