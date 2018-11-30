@@ -35,6 +35,7 @@ class RBConvSim {
 		beta_ = beta;
 	    //modify file
 		update();
+	        return;
 	}
     
     void setNu(double nu = nu_)
@@ -42,24 +43,28 @@ class RBConvSim {
 		nu_ = nu;
 	    // modify file
 		update();
+	        return;
 	}
     void setTFloor(double TFloor = TFloor_)
 	{
 		TFloor_ = TFloor;
 	    //modify file
     		update();
+	        return;
 	}
     void setTCeil(double TCeil = TCeil_)
 	{
 		TCeil_ = TCeil;
 	    //modify file
 		update();
+	        return;
 	}
     void setPr(double Pr = Pr_)
 	{
 		Pr_ = Pr;
 	    //modify file
 		update();
+	        return;
 	}
 	
     //Getters
@@ -77,7 +82,7 @@ class RBConvSim {
 	}
     double getTCeil()
 	{
-		return TCeil_'
+		return TCeil_;
 	}
     double getPr()
         {
@@ -85,7 +90,7 @@ class RBConvSim {
         }
     double getdeltaT()
 	{
-	       return deltaT_'
+	       return deltaT_;
 	}
     double getRa()
         {
@@ -124,11 +129,11 @@ class RBConvSim {
 
     //CHANGED DIRECTLY BY USER
     //default values
-    double nu_ = 1e-5; //kinematic viscosity
-    double TCeil_ = 280; //temperature at z = h
-    double TFloor_ = 340; //temperature at z = 0
-    double beta_ = 1; //thermal expansion coefficient
-    double Pr_ = .85; //Prandtl Number
+    double nu_; //kinematic viscosity
+    double TCeil_; //temperature at z = h
+    double TFloor_; //temperature at z = 0
+    double beta_; //thermal expansion coefficient
+    double Pr_; //Prandtl Number
 
     void update()
 	{
