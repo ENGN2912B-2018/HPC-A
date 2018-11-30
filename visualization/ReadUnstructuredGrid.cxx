@@ -7,6 +7,9 @@
 #include <vtkAbstractArray.h>
 #include <vtkCellData.h>
 #include <vtkColor.h>
+#include <vtkFloatArray.h>
+#include <vtkIntArray.h>
+#include <vtkLookupTable.h>
 #include <vtkScalarsToColors.h>
 #include <vtkVariant.h>
 #include <vtkVariantArray.h>
@@ -26,7 +29,7 @@
 #include <vtkCellIterator.h>
 #include <vtkCellTypes.h>
 
-//#define DEBUG
+#define DEBUG
 
 int main (int argc, char *argv[]){
   if(argc < 2){
@@ -51,14 +54,39 @@ int main (int argc, char *argv[]){
   cellData = reader->GetOutput()->GetCellData();
 
   // Get the array?
-  //vtkSmartPointer<vtkAbstractArray> abstractArrayID =
-  //  vtkSmartPointer<vtkAbstractArray>::New();
-  vtkAbstractArray *abstractArrayID;
-  //vtkSmartPointer<vtkAbstractArray> abstractArrayTemperature =
-  //  vtkSmartPointer<vtkAbstractArray>::New();
-  vtkAbstractArray *abstractArrayTemperature;
-  abstractArrayID = cellData->GetAbstractArray("cellID");
-  abstractArrayTemperature = cellData->GetAbstractArray("T");
+  vtkSmartPointer<vtkIntArray> arrayID =
+    vtkSmartPointer<vtkIntArray>::New();
+  //vtkAbstractArray *arrayID;
+  arrayID =
+    vtkIntArray::SafeDownCast(cellData->GetAbstractArray("cellID"));
+  arrayID->SetName("CellID");
+  int arrayIDRange[2];
+  arrayID->GetValueRange(arrayIDRange);
+  vtkSmartPointer<vtkFloatArray> arrayTemperature =
+    vtkSmartPointer<vtkFloatArray>::New();
+
+  //vtkAbstractArray *arrayTemperature;
+  arrayTemperature =
+    vtkFloatArray::SafeDownCast(cellData->GetAbstractArray("T"));
+  arrayTemperature->SetName("Temperature");
+  double arrayTemperatureRange[2];
+  arrayTemperature->GetRange(arrayTemperatureRange);
+  //int dimension = arrayID->GetNumberOfComponents();
+
+  // Set up a lookupTable
+  vtkSmartPointer<vtkLookupTable> lut =
+    vtkSmartPointer<vtkLookupTable>::New();
+
+  #ifdef DEBUG
+    std::cout << "Hello!" << endl;
+    std::cout << "Range of arrayID: " << arrayIDRange[0]
+      << " " << arrayIDRange[1] << endl;
+    std::cout << "Range of arrayTemperature: " << arrayTemperatureRange[0]
+      << " " << arrayTemperatureRange[1] << endl;
+  #endif
+
+
+  /////     Data manipulation ends here     /////
 
   // Connect with a Mapper
    vtkSmartPointer<vtkDataSetMapper> dataMapper =
@@ -84,12 +112,12 @@ int main (int argc, char *argv[]){
   iren->SetRenderWindow(renWin);
   iren->Start();
 
-  #ifdef DEBUG
-    //std::cout << "Counter after for loop: " << counter << endl;
-    std::cout << *cellData << endl;
-    std::cout << *abstractArrayID << endl;
-  #endif
-  //abstractArrayID->Delete();
-  //abstractArrayTemperature->Delete();
+  // #ifdef DEBUG
+  //   //std::cout << "Counter after for loop: " << counter << endl;
+  //   std::cout << *cellData << endl;
+  //   std::cout << *arrayID << endl;
+  // #endif
+  //arrayID->Delete();
+  //arrayTemperature->Delete();
   return EXIT_SUCCESS;
 }
