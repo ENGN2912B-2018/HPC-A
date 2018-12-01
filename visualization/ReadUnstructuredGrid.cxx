@@ -10,6 +10,7 @@
 #include <vtkFloatArray.h>
 #include <vtkIntArray.h>
 #include <vtkLookupTable.h>
+#include <vtkPlaneSource.h>
 #include <vtkScalarsToColors.h>
 #include <vtkVariant.h>
 #include <vtkVariantArray.h>
@@ -19,11 +20,11 @@
 #include <vtkCamera.h>
 #include <vtkDataSetMapper.h>
 #include <vtkNamedColors.h>
+#include <vtkPolyDataMapper.h>
 #include <vtkProperty.h>
 #include <vtkRenderWindow.h>
 #include <vtkRenderWindowInteractor.h>
 #include <vtkRenderer.h>
-
 #include <vtkSmartPointer.h>
 
 #include <vtkCellIterator.h>
@@ -36,8 +37,13 @@ int main (int argc, char *argv[]){
     std::cout << "Usage: " << argv[0] << " filename.vtk" << std::endl;
     return EXIT_FAILURE;
   }
-  vtkSmartPointer<vtkNamedColors> colors =
-    vtkSmartPointer<vtkNamedColors>::New();
+
+  // Set the geometry
+  int resolution = 20;
+  vtkSmartPointer<vtkPlaneSource> idPlane =
+    vtkSmartPointer<vtkPlaneSource>::New();
+  idPlane->SetXResolution(resolution);
+  idPlane->SetYResolution(resolution);
 
   // Create the reader for the data.
   std::string filename = argv[1];
@@ -53,7 +59,7 @@ int main (int argc, char *argv[]){
     vtkSmartPointer<vtkCellData>::New();
   cellData = reader->GetOutput()->GetCellData();
 
-  // Get the array?
+  // Get the array using SafeDownCast()
   vtkSmartPointer<vtkIntArray> arrayID =
     vtkSmartPointer<vtkIntArray>::New();
   //vtkAbstractArray *arrayID;
@@ -61,7 +67,7 @@ int main (int argc, char *argv[]){
     vtkIntArray::SafeDownCast(cellData->GetAbstractArray("cellID"));
   arrayID->SetName("CellID");
   int arrayIDRange[2];
-  arrayID->GetValueRange(arrayIDRange);
+  arrayID->GetValueRange(arrayIDRange); // Note: This is not GetRange()!
   vtkSmartPointer<vtkFloatArray> arrayTemperature =
     vtkSmartPointer<vtkFloatArray>::New();
 
@@ -73,9 +79,29 @@ int main (int argc, char *argv[]){
   arrayTemperature->GetRange(arrayTemperatureRange);
   //int dimension = arrayID->GetNumberOfComponents();
 
-  // Set up a lookupTable
-  vtkSmartPointer<vtkLookupTable> lut =
+  // Set up lookupTables
+  vtkSmartPointer<vtkLookupTable> lutID =
     vtkSmartPointer<vtkLookupTable>::New();
+  int tableSize = std::max(resolution*resolution + 1, 400);
+  lutID->SetTableRange(arrayIDRange[0], arrayIDRange[1]);
+  lutID->SetNumberOfTableValues(tableSize);
+  lutID->Build();
+
+  vtkSmartPointer<vtkLookupTable> lutTemperture =
+    vtkSmartPointer<vtkLookupTable>::New();
+  lutTemperture->SetTableRange(arrayTemperatureRange[0], arrayTemperatureRange[1]);
+  lutTemperture->SetNumberOfTableValues(tableSize);
+  lutTemperture->Build();
+
+  vtkSmartPointer<vtkNamedColors> colors =
+    vtkSmartPointer<vtkNamedColors>::New();
+  lutTemperture->SetTableValue
+    (arrayTemperatureRange[0], colors->GetColor4d("Tomato").GetData());
+  lutTemperture->SetTableValue
+    (arrayTemperatureRange[1], colors->GetColor3d("MidnightBlue").GetData());
+
+  idPlane->Update();
+  idPlane->GetOutput()->GetCellData()->SetScalars(arrayTemperature);
 
   #ifdef DEBUG
     std::cout << "Hello!" << endl;
@@ -89,27 +115,33 @@ int main (int argc, char *argv[]){
   /////     Data manipulation ends here     /////
 
   // Connect with a Mapper
-   vtkSmartPointer<vtkDataSetMapper> dataMapper =
-     vtkSmartPointer<vtkDataSetMapper>::New();
-   dataMapper->SetInputConnection(reader->GetOutputPort());
+   // vtkSmartPointer<vtkDataSetMapper> dataMapper =
+   //   vtkSmartPointer<vtkDataSetMapper>::New();
+   // dataMapper->SetInputConnection(reader->GetOutputPort());
+   vtkSmartPointer<vtkPolyDataMapper> mapperTemperture =
+     vtkSmartPointer<vtkPolyDataMapper>::New();
+   mapperTemperture->SetInputConnection(idPlane->GetOutputPort());
+   mapperTemperture->SetScalarRange(0, tableSize - 1);
+   mapperTemperture->SetLookupTable(lutTemperture);
 
    vtkSmartPointer<vtkActor> dataActor =
     vtkSmartPointer<vtkActor>::New();
-  dataActor->SetMapper(dataMapper);
+  dataActor->SetMapper(mapperTemperture);
 
   vtkSmartPointer<vtkRenderer> ren =
     vtkSmartPointer<vtkRenderer>::New();
-  ren->SetBackground(0, 1, 0);
   ren->AddActor(dataActor);
+  ren->SetBackground(colors->GetColor3d("SlateGray").GetData());
 
   vtkSmartPointer<vtkRenderWindow> renWin =
     vtkSmartPointer<vtkRenderWindow>::New();
   renWin->AddRenderer(ren);
-  renWin->SetSize(300, 300);
+  //renWin->SetSize(300, 300);
 
   vtkSmartPointer<vtkRenderWindowInteractor> iren =
     vtkSmartPointer<vtkRenderWindowInteractor>::New();
   iren->SetRenderWindow(renWin);
+  renWin->Render();
   iren->Start();
 
   // #ifdef DEBUG
