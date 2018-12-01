@@ -16,13 +16,16 @@ Graphical User Interface is like a conductor of the project. It control the prog
 
 ## Installation
 We need to install Qt and VTK. The detailed installation guides are here: 
+
 [Qt Installation Guide]()
+
 [VTK Installation GUide]()
 
-## Build Instruction
-- **Build a Qt project with Qt Creator: **
 
-- **Build a Qt project with CMake: **
+## Build Instruction
+### Build a Qt project with Qt Creator: 
+
+### Build a Qt project with CMake: 
 
 
 ## Reference
