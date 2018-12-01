@@ -70,6 +70,7 @@ The second line will create the Qt make file.
 The last line will compile the Qt make file on your system into an executable program. At this point, providing that there are no errors the file should compile into an executable program.
 
 - **Run executable file:**
+
  ./QtHelloWorld
 
 
