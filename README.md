@@ -17,7 +17,7 @@ Graphical User Interface is like a conductor of the project. It control the prog
 ## Installation
 We need to install Qt and VTK. The detailed installation guides are here: 
 
-[Qt Installation Guide]()
+[Qt Installation Guide](https://github.com/ENGN2912B-2018/HPC-A/blob/gui/Qt%20installation%20guide.md)
 
 [VTK Installation GUide]()
 
