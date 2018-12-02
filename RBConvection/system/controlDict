@@ -67,7 +67,7 @@ functions{
 
         writeControl    writeTime;
         writeInterval   1;
-        objects     	(U, T);
+        objects         (U T phi alphat p p_rgh);
     }
 }
         
