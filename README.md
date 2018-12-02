@@ -10,17 +10,18 @@ Yang Jiao, Yiming Li, Kit Sum Wu
 ## Installation
 ### System requirements
 - **Hardware:** For now the project can be built and run in a Linux PC without GPU. It is fully compatible with the Brown CCV environment.
-- **Operating System:** For now the visualization module is implemented on a PC with Ubuntu 18.04 LTS, 
+- **Operating System:** For now the visualization module is implemented on a PC with Ubuntu 18.04 LTS,
 and it can also be run on Brown CCV, which uses RedHat7 operation system.
 - **Libraries and packages**: This project depends on OpenFOAM 4.1, VTK 8.1.0 and Qt 5.10.1. You need
 to install these modules to build the software. Instructions for Brown CCV users to load these modules will be provided.
+
 ### Build instructions
 
 In your terminal/command prompt:
 1. Make sure you load the vtk module: ``module load vtk/8.1.0``
 1. Clone this repository into your directory: ``git clone https://github.com/ENGN2912B-2018/HPC-A.git``
 2. Switch to visualization directory: ``cd visualization``
-2. Create a build directory: 
+2. Create a build directory:
 ```
 mkdir build
 cd build
@@ -39,7 +40,13 @@ To use the software, for now you should first use OpenFOAM to generate the simul
 Now you will have a directory called `VTK/` under your case directory. Copy one of the `.vtk` file into the `visualization/build/` directory.
 
 ### Visualization
-In the `build/` directory, simply run `./ReadUnstructuredGrid <VTK>`. `<VTK>` is your ``.vtk`` file copied.
+In the `build/` directory, simply run `./ReadUnstructuredGrid <VTK>`, where `<VTK>` is your ``.vtk`` file copied.
 
 ## Reference
-Coming soon!
+
+[writeVTK, an OpenFOAM function object](https://github.com/OpenFOAM/OpenFOAM-4.x/blob/master/applications/utilities/postProcessing/dataConversion/foamToVTK/foamToVTK/writeVTK/controlDict)  
+[VTK Examples: ColorCells](https://lorensen.github.io/VTKExamples/site/Cxx/PolyData/ColorCells/)  
+[VTK Examples: ReadLegacyUnstructuredGrid](https://lorensen.github.io/VTKExamples/site/Cxx/IO/ReadLegacyUnstructuredGrid/)  
+[VTK Examples: Hawaii](https://lorensen.github.io/VTKExamples/site/Cxx/Visualization/Hawaii/)  
+[(PDF) VTK file formats](https://www.vtk.org/wp-content/uploads/2015/04/file-formats.pdf)  
+[(PDF) Simple Visualization of unstructured grids with VTK](https://hal.inria.fr/inria-00107738/document)
