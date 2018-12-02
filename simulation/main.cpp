@@ -13,8 +13,12 @@ using namespace std;
 
 // main function
 int main() {
+	cout << "Instantiate Simulation Object (automatically checks setters)" << endl;
+	RBConvSim test;
+	cout << "Instantiation Successful" << endl;	
 
-	RBConvSim();
-
+	cout << "Run Simulation" << endl;
+	test.runSimulation();
+	cout << "Simulation Successful" << endl;
 	return 0;
 }
