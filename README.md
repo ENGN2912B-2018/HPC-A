@@ -19,6 +19,7 @@ Graphical User Interface is like a conductor of the project. It control the prog
 This section provides instructions for running openFOAM simulations on the Brown CCV Linux Redhat environment. First, the following commands should be entered into the terminal to load modules which are necessary for the project:
 
 `module load mpi/openmpi_2.0.3_intel`
+
 `module load openfoam/4.1`
 
 Then, the following command should be run. Please note that this needs to be run each time a new ccv session is started.
