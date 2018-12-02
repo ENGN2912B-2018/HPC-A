@@ -1,13 +1,11 @@
-#include <iostream>
 #include <string>
 #include <ios>
 #include <stdlib.h>
-#include <exception>
-#include <string>
 #include <iostream>
 #include <fstream>
 #include <vector>
 #include <regex>
+#include <cmath>
 
 using namespace std;
 
@@ -16,20 +14,19 @@ class RBConvSim {
     //Constructors
     RBConvSim()
     {
-    	system("source $FOAM_INST_DIR/OpenFOAM-4.1/etc/bashrc")
-    	//set parameters in simulation based on default
-	system("cd "+ casedir_);
-        //setNu();
-	//setBeta();
-	//setTFloor();
-	//setTCeil();
-	//setPr();
+	system("cd $FOAM_RUN/tutorials/heatTransfer/buoyantBoussinesqPimpleFoam/RBConvection");
+	//set parameters in simulation based on default
+        //setNu(10e-6);
+	//setBeta(1);
+	//setTFloor(340);
+	//setTCeil(280);
+	//setPr(1);
     }
     //Destructor
-    ~RBConv() {};
+    ~RBConvSim() {};
 	
     //Setters
-    void setBeta(double beta = beta_)
+    void setBeta(double beta)
 	{
 		beta_ = beta;
 	    //modify file
@@ -37,29 +34,24 @@ class RBConvSim {
 	        return;
 	}
     
-    void setNu(double nu = nu_)
+    void setNu(double nu)
 	{
 		nu_ = nu;
-
-	    // modify file
+		string command;
+		command = "cd $FOAM_RUN/tutorials/heatTransfer/buoyantBoussinesqPimpleFoam/RBConvection/constant && set 1 " + to_string(nu);
+		system(command.c_str());
+		system("cd $FOAM_RUN/tutorials/heatTransfer/buoyantBoussinesqPimpleFoam/RBConvection/constant && rm transportProperties && mv transportProperties0 transportProperties");
 		update();
 	        return;
 	}
-    void setTFloor(double TFloor = TFloor_)
+    void setTFloor(double TFloor)
 	{
 		TFloor_ = TFloor;
 	    //modify file
-    		update();
-	        return;
-	}
-    void setTCeil(double TCeil = TCeil_)
-	{
-		TCeil_ = TCeil;
-	    //modify file
 		update();
 	        return;
 	}
-    void setPr(double Pr = Pr_)
+    void setPr(double Pr)
 	{
 		Pr_ = Pr;
 	    //modify file
@@ -74,7 +66,7 @@ class RBConvSim {
 	}
      double getNu()
 	{
-		return Nu_;
+		return nu_;
 	}
      double getTFloor()
 	{
@@ -99,9 +91,7 @@ class RBConvSim {
 
     void runSimulation()
         {
-	    system("cd "+ casedir_);
-	    system("bouyantBoussinesqPimpleFoam");
-	    system("cd -");
+	    system("buoyantBoussinesqPimpleFoam");
 	    simRun_ = true;
         }
 	
@@ -112,13 +102,13 @@ class RBConvSim {
     //DO NOT CHANGE
     double L_ = 1; //simulation box width
     double h_ = 1; //simulation box height
+    double TCeil_ = 280; // temperature at y = h;
     double horzmesh_ = 20;
     double vertmesh_ = 20;
     double meshsize_ = 400;
     double tend_ = 2000; //simulation end time
     double deltat_ = 20; // simulation time step
     double g = 9.81; // acceleration of gravity
-    string casedir_ = "$FOAM_RUN/tutorials/heatTransfer/bouyantBoussinesqPimpleFoam/RBConvection";
 
     //CHANGED BY PROGRAM
     double Ra_; //Rayleigh Number
@@ -128,26 +118,23 @@ class RBConvSim {
     bool simRun_ = false;
 
     //CHANGED DIRECTLY BY USER
-    //default values
     double nu_; //kinematic viscosity
-    double TCeil_; //temperature at z = h
-    double TFloor_; //temperature at z = 0
+    double TFloor_; //temperature at y = 0   
     double beta_; //thermal expansion coefficient
     double Pr_; //Prandtl Number
 
     void update()
 	{
-	    Ra_ = Pr_*alpha_*g*deltaT_*exp(h_,3)/exp(nu_,2);
+	    Ra_ = Pr_*beta_*g*deltaT_*pow(h_,3)/pow(nu_,2);
 	    deltaT_ = TFloor_ - TCeil_;
-	    system("cd " + casedir_);
+	    system("cd $FOAM_RUN/tutorials/heatTransfer/buoyantBoussinesqPimpleFoam/RBConvection");
 	    system("foamListTimes -rm");
-	    system("cd -");
 	    Tfield_.clear();
 	    Ufield_.clear();
 	    simRun_ = false;
 	}
 };
-
+/*
     vector<vector<double> > RBConvSim::getTfield()
         {
 	if (!simRun_)
@@ -163,7 +150,8 @@ class RBConvSim {
 
     vector<vector<vector<double> > > RBConvSim::getUfield()
         {
- 	if (!simRun_)
+ 	
+        if (!simRun_)
 	    {
 		//some kind of exception
 	    }
@@ -174,3 +162,4 @@ class RBConvSim {
 	return Ufield;
         }
         }
+*/

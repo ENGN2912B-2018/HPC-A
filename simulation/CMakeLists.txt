@@ -14,3 +14,4 @@ add_subdirectory(src)
 
 # create the executable
 add_executable(main main.cpp)
+add_executable(set set.cpp)

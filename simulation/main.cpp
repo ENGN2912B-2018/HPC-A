@@ -4,18 +4,17 @@
 #include <stdlib.h>
 #include <exception>
 #include <string>
-#include <iostream>
 #include <fstream>
 #include <vector>
 #include <regex>
-#include "RBConVSim.h"
+#include "RBConvSim.h"
 
 using namespace std;
 
 // main function
 int main() {
 
-RBConvSim()
+	RBConvSim();
 
 	return 0;
 }
