@@ -100,10 +100,7 @@ This should create the executable `set` in the `build` folder. Run the following
 
 `cp set $FOAM_RUN/tutorials/heatTransfer/buoyantBoussinesqPimpleFoam/RBConvection/constant`
 
-With this, the preparations to interface with OpenFOAM from C++ are finished.
-
-### Simulation
-If you include the `RBConvSim.h` file in your C++ code, you can instantiate a simulation class, modify parameters from within C++, and run simulations.
+With this, the preparations to interface with OpenFOAM from C++ are finished. If you include the `RBConvSim.h` file in your C++ code, you can instantiate a simulation class, modify parameters, and run simulations from within C++.
 #### Postprocessing
 
 ## References
