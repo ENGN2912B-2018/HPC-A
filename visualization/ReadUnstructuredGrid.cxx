@@ -34,7 +34,7 @@
 #include <string>
 
 #define DEBUG
-// TODO: 1. Set up the color schemes  ()
+// TODO: 1. Set up the color schemes  (x)
 //       2. Work on multiple files    ()
 //       3. Work on other data types  ()
 //       4. Funtionalize the project  ()
@@ -45,6 +45,7 @@
 // min, max:    double, setting the scale and range of visualization? (TBD)
 // param:       string/char, indicates which parameter to be visualized
 // path:        string, indicates the path of vtk files (TBD)
+// resolution:  the resolution of the simulation results (TBD)
 
 namespace
 {
@@ -57,8 +58,14 @@ void MakeLUT(int const& colorScheme, vtkLookupTable* lut);
 
 
 int main (int argc, char *argv[]){
-  if(argc < 2){
-    std::cout << "Usage: " << argv[0] << " filename.vtk" << std::endl;
+  if(argc < 3){
+    std::cout << "Usage: " << argv[0] <<
+      "<path> <time step> [colorSecheme]" << std::endl;
+    std::cout
+      << "<path>: The relative path of the folder where the .vtk files are stored"
+      << std::endl;
+    std::cout << "<time step>: The time step of simulation." << std::endl;
+    std::cout << "[colorScheme]: (OPTIONAL): The colors scheme." << std::endl;
     return EXIT_FAILURE;
   }
 
@@ -74,9 +81,25 @@ int main (int argc, char *argv[]){
   temperaturePlane->SetXResolution(resolution);
   temperaturePlane->SetYResolution(resolution);
 
-  // Create the reader for the data.
-  std::string filename = argv[1];
+  // Parsing the commandline arguments
+  std::string path = argv[1]; // The path of vtk files stored
+  if(path.back() != '/'){
+    path.push_back('/');
+  }
+  std::string filenum = argv[2]; // The "number" or time step of simulation
+  std::string filename = path + "RBConvection_" + filenum + ".vtk";
   std::cout << "Loading " << filename.c_str() << std::endl;
+
+  int colorScheme = 0;
+
+  if (argc == 4)
+  {
+    colorScheme = std::abs(atoi(argv[3]));
+    colorScheme = (colorScheme > 2) ? 0 : colorScheme;
+  }
+
+
+  // Create the reader for the data
   vtkSmartPointer<vtkUnstructuredGridReader> reader =
     vtkSmartPointer<vtkUnstructuredGridReader>::New();
   reader->SetFileName(filename.c_str());
@@ -109,13 +132,6 @@ int main (int argc, char *argv[]){
   //int dimension = arrayID->GetNumberOfComponents();
 
   // Set up lookupTables
-  int colorScheme = 0;
-
-  if (argc == 3)
-  {
-    colorScheme = std::abs(atoi(argv[2]));
-    colorScheme = (colorScheme > 2) ? 0 : colorScheme;
-  }
 
   vtkSmartPointer<vtkLookupTable> lutID =
     vtkSmartPointer<vtkLookupTable>::New();
