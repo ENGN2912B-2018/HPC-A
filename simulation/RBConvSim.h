@@ -1,8 +1,7 @@
 #include <iostream>
 #include <string>
 #include <ios>
-#include <stdlib.h> 
-#include <boost/filesystem.hpp>
+#include <stdlib.h>
 #include <exception>
 #include <string>
 #include <iostream>
@@ -10,7 +9,6 @@
 #include <vector>
 #include <regex>
 
-namespace fs = boost::filesystem;
 using namespace std;
 
 class RBConvSim {
@@ -19,12 +17,13 @@ class RBConvSim {
     RBConvSim()
     {
     	system("source $FOAM_INST_DIR/OpenFOAM-4.1/etc/bashrc")
-    	//set parameters in simulation based on defaults
-        setNu();
-	setBeta();
-	setTFloor();
-	setTCeil();
-	setPr();
+    	//set parameters in simulation based on default
+	system("cd "+ casedir_);
+        //setNu();
+	//setBeta();
+	//setTFloor();
+	//setTCeil();
+	//setPr();
     }
     //Destructor
     ~RBConv() {};
@@ -41,6 +40,7 @@ class RBConvSim {
     void setNu(double nu = nu_)
 	{
 		nu_ = nu;
+
 	    // modify file
 		update();
 	        return;
