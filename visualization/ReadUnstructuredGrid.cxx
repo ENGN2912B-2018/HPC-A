@@ -45,6 +45,11 @@ int main (int argc, char *argv[]){
   idPlane->SetXResolution(resolution);
   idPlane->SetYResolution(resolution);
 
+  vtkSmartPointer<vtkPlaneSource> temperaturePlane =
+    vtkSmartPointer<vtkPlaneSource>::New();
+  temperaturePlane->SetXResolution(resolution);
+  temperaturePlane->SetYResolution(resolution);
+
   // Create the reader for the data.
   std::string filename = argv[1];
   std::cout << "Loading " << filename.c_str() << std::endl;
@@ -89,19 +94,22 @@ int main (int argc, char *argv[]){
 
   vtkSmartPointer<vtkLookupTable> lutTemperture =
     vtkSmartPointer<vtkLookupTable>::New();
-  lutTemperture->SetTableRange(arrayTemperatureRange[0], arrayTemperatureRange[1]);
   lutTemperture->SetNumberOfTableValues(tableSize);
+  lutTemperture->SetTableRange(arrayTemperatureRange[0], arrayTemperatureRange[1]);
   lutTemperture->Build();
 
   vtkSmartPointer<vtkNamedColors> colors =
     vtkSmartPointer<vtkNamedColors>::New();
-  lutTemperture->SetTableValue
-    (arrayTemperatureRange[0], colors->GetColor4d("Tomato").GetData());
-  lutTemperture->SetTableValue
-    (arrayTemperatureRange[1], colors->GetColor3d("MidnightBlue").GetData());
+  // lutTemperture->SetTableValue
+  //   (arrayTemperatureRange[0], colors->GetColor4d("Tomato").GetData());
+  // lutTemperture->SetTableValue
+  //   (arrayTemperatureRange[1], colors->GetColor3d("MidnightBlue").GetData());
 
   idPlane->Update();
-  idPlane->GetOutput()->GetCellData()->SetScalars(arrayTemperature);
+  idPlane->GetOutput()->GetCellData()->SetScalars(arrayID);
+
+  temperaturePlane->Update();
+  temperaturePlane->GetOutput()->GetCellData()->SetScalars(arrayTemperature);
 
   #ifdef DEBUG
     std::cout << "Hello!" << endl;
@@ -109,6 +117,28 @@ int main (int argc, char *argv[]){
       << " " << arrayIDRange[1] << endl;
     std::cout << "Range of arrayTemperature: " << arrayTemperatureRange[0]
       << " " << arrayTemperatureRange[1] << endl;
+    std::cout << "Values of the float array: " << endl;
+    for(int i = 0; i < 400; i++){
+      std::cout << arrayTemperature->GetVariantValue(i) << " ";
+      if(i % 20 == 19){
+        std::cout << "\n";
+      }
+    }
+    std::cout << "Values of the int array: " << endl;
+    for(int i = 0; i < 400; i++){
+      std::cout << arrayID->GetVariantValue(i) << " ";
+      if(i % 20 == 19){
+        std::cout << "\n";
+      }
+    }
+
+    double tableColor[3];
+    lutTemperture->GetColor(arrayTemperatureRange[0], tableColor);
+    std::cout << "The color of arrayTemperatureRange[0]: " <<
+    tableColor[0] << " " << tableColor[1] << " " << tableColor[2] << std::endl;
+    lutTemperture->GetColor(arrayTemperatureRange[1], tableColor);
+    std::cout << "The color of arrayTemperatureRange[1]: " <<
+    tableColor[0] << " " << tableColor[1] << " " << tableColor[2] << std::endl;
   #endif
 
 
@@ -118,15 +148,15 @@ int main (int argc, char *argv[]){
    // vtkSmartPointer<vtkDataSetMapper> dataMapper =
    //   vtkSmartPointer<vtkDataSetMapper>::New();
    // dataMapper->SetInputConnection(reader->GetOutputPort());
-   vtkSmartPointer<vtkPolyDataMapper> mapperTemperture =
+   vtkSmartPointer<vtkPolyDataMapper> mapper =
      vtkSmartPointer<vtkPolyDataMapper>::New();
-   mapperTemperture->SetInputConnection(idPlane->GetOutputPort());
-   mapperTemperture->SetScalarRange(0, tableSize - 1);
-   mapperTemperture->SetLookupTable(lutTemperture);
+   mapper->SetInputConnection(temperaturePlane->GetOutputPort());
+   mapper->SetScalarRange(arrayTemperatureRange[0], arrayTemperatureRange[1]);
+   mapper->SetLookupTable(lutTemperture);
 
    vtkSmartPointer<vtkActor> dataActor =
     vtkSmartPointer<vtkActor>::New();
-  dataActor->SetMapper(mapperTemperture);
+  dataActor->SetMapper(mapper);
 
   vtkSmartPointer<vtkRenderer> ren =
     vtkSmartPointer<vtkRenderer>::New();
