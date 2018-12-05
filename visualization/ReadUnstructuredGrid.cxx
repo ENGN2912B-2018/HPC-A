@@ -75,7 +75,7 @@ int main (int argc, char *argv[]){
   }
 
   // Set the geometry
-  int resolution = 20;
+  int resolution = 40;
   vtkSmartPointer<vtkPlaneSource> idPlane =
     vtkSmartPointer<vtkPlaneSource>::New();
   idPlane->SetXResolution(resolution);
@@ -141,12 +141,29 @@ int main (int argc, char *argv[]){
   vtkSmartPointer<vtkRenderWindowInteractor> iren =
     vtkSmartPointer<vtkRenderWindowInteractor>::New();
 
-    std::string filenum = argv[2]; // The "number" or time step of simulation
-    int filemax = std::stoi(filenum);
+  std::string fileArgMax = argv[2]; // The "number" or time step of simulation
+  int filemax = std::stoi(fileArgMax);
+
+//  int temperatureMin = 280;
+//  int temperatureMax = 340;
+
+  std::string filename = path + "RBConvection_" +
+    fileArgMax + ".vtk";
+  reader->SetFileName(filename.c_str());
+  reader->SetFieldDataName("attributes");
+  reader->Update();
+  cellData = reader->GetOutput()->GetCellData();
+  arrayTemperature =
+    vtkFloatArray::SafeDownCast(cellData->GetAbstractArray("T"));
+  arrayTemperature->SetName("Temperature");
+  double temperatureMinMax[2];
+  arrayTemperature->GetRange(temperatureMinMax);
+  temperatureMinMax[0] = 280;
 
 
 
-  for(int fileindex = 10; fileindex <= filemax; fileindex += 10 ){
+
+  for(int fileindex = 100; fileindex <= filemax; fileindex += 100 ){
       std::string filename = path + "RBConvection_" +
         std::to_string(fileindex) + ".vtk";
       std::cout << "Loading " << filename.c_str() << std::endl;
@@ -179,7 +196,7 @@ int main (int argc, char *argv[]){
       // Set up lookupTables
 
 
-      int tableSize = std::max(resolution*resolution + 1, 400);
+      int tableSize = std::max(resolution*resolution + 1, 1600);
       lutID->SetNumberOfTableValues(tableSize);
       lutID->SetTableRange(arrayIDRange[0], arrayIDRange[1]);
       lutID->Build();
@@ -188,7 +205,8 @@ int main (int argc, char *argv[]){
       lutTemperture->SetNumberOfTableValues(tableSize);
       // Set up the color scheme
       MakeLUT(colorScheme, lutTemperture);
-      lutTemperture->SetTableRange(arrayTemperatureRange[0], arrayTemperatureRange[1]);
+      //lutTemperture->SetTableRange(arrayTemperatureRange[0], arrayTemperatureRange[1]);
+      lutTemperture->SetTableRange(temperatureMinMax[0], temperatureMinMax[1]);
       lutTemperture->Build();
 
 
@@ -209,20 +227,22 @@ int main (int argc, char *argv[]){
           << " " << arrayIDRange[1] << endl;
         std::cout << "Range of arrayTemperature: " << arrayTemperatureRange[0]
           << " " << arrayTemperatureRange[1] << endl;
-        std::cout << "Values of the float array: " << endl;
-        for(int i = 0; i < 400; i++){
-          std::cout << arrayTemperature->GetVariantValue(i) << " ";
-          if(i % 20 == 19){
-            std::cout << "\n";
-          }
-        }
-        std::cout << "Values of the int array: " << endl;
-        for(int i = 0; i < 400; i++){
-          std::cout << arrayID->GetVariantValue(i) << " ";
-          if(i % 20 == 19){
-            std::cout << "\n";
-          }
-        }
+        std::cout << "Range used in lut: " << temperatureMinMax[0]
+          << " " << temperatureMinMax[1] << endl;
+        // std::cout << "Values of the float array: " << endl;
+        // for(int i = 0; i < resolution*resolution; i++){
+        //   std::cout << arrayTemperature->GetVariantValue(i) << " ";
+        //   if(i % resolution == (resolution-1)){
+        //     std::cout << "\n";
+        //   }
+        // }
+        // std::cout << "Values of the int array: " << endl;
+        // for(int i = 0; i < resolution*resolution; i++){
+        //   std::cout << arrayID->GetVariantValue(i) << " ";
+        //   if(i % resolution == (resolution-1)){
+        //     std::cout << "\n";
+        //   }
+        // }
 
         double tableColor[3];
         lutTemperture->GetColor(arrayTemperatureRange[0], tableColor);
@@ -242,9 +262,9 @@ int main (int argc, char *argv[]){
        // dataMapper->SetInputConnection(reader->GetOutputPort());
 
        mapper->SetInputConnection(temperaturePlane->GetOutputPort());
-       mapper->SetScalarRange(arrayTemperatureRange[0], arrayTemperatureRange[1]);
+       //mapper->SetScalarRange(arrayTemperatureRange[0], arrayTemperatureRange[1]);
+       mapper->SetScalarRange(temperatureMinMax[0], temperatureMinMax[1]);
        mapper->SetLookupTable(lutTemperture);
-
 
       dataActor->SetMapper(mapper);
 
