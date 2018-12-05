@@ -23,13 +23,13 @@ startTime       0;
 
 stopAt          endTime;
 
-endTime         200;
+endTime         2000;
 
-deltaT          .2;
+deltaT          .5;
 
 writeControl    timeStep;
 
-writeInterval   50;
+writeInterval   200;
 
 purgeWrite      0;
 
@@ -49,27 +49,15 @@ adjustTimeStep  no;
 
 maxCo           0.5;
 
+
 functions{
-//    vtkWrite{
-//        type            vtkWrite;
-//        libs            ("libutilityFunctionObjects.so");
-//        directory       "./VTK/"
-//        writeControl    writeTime;
-//        writeInterval   1;
-//        format          binary;
-//        legacy          false;
-//        fields          (U, T);
-//        writeIds        true;
-//    }
     writeVTK{
         type            writeVTK;
         libs            ("libfoamToVTK.so");
-
+        
         writeControl    writeTime;
         writeInterval   1;
         objects         (U T phi alphat p p_rgh);
     }
 }
-        
-
 // ************************************************************************* //
