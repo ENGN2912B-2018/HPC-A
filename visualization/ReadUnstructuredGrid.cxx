@@ -32,10 +32,12 @@
 #include <vtkCellTypes.h>
 
 #include <string>
+#include <chrono>
+#include <thread>
 
 #define DEBUG
 // TODO: 1. Set up the color schemes  (x)
-//       2. Work on multiple files    ()
+//       2. Work on multiple files    (x)
 //       3. Work on other data types  ()
 //       4. Funtionalize the project  ()
 /////----     Ready to release      ----/////
@@ -86,9 +88,7 @@ int main (int argc, char *argv[]){
   if(path.back() != '/'){
     path.push_back('/');
   }
-  std::string filenum = argv[2]; // The "number" or time step of simulation
-  std::string filename = path + "RBConvection_" + filenum + ".vtk";
-  std::cout << "Loading " << filename.c_str() << std::endl;
+
 
   int colorScheme = 0;
 
@@ -99,131 +99,166 @@ int main (int argc, char *argv[]){
   }
 
 
+
+  ///   Data Structres   ///
   // Create the reader for the data
   vtkSmartPointer<vtkUnstructuredGridReader> reader =
     vtkSmartPointer<vtkUnstructuredGridReader>::New();
-  reader->SetFileName(filename.c_str());
-  reader->SetFieldDataName("attributes");
-  reader->Update();
 
-  // Achieving the Cell data
   vtkSmartPointer<vtkCellData> cellData =
     vtkSmartPointer<vtkCellData>::New();
-  cellData = reader->GetOutput()->GetCellData();
 
-  // Get the array using SafeDownCast()
   vtkSmartPointer<vtkIntArray> arrayID =
     vtkSmartPointer<vtkIntArray>::New();
-  //vtkAbstractArray *arrayID;
-  arrayID =
-    vtkIntArray::SafeDownCast(cellData->GetAbstractArray("cellID"));
-  arrayID->SetName("CellID");
-  int arrayIDRange[2];
-  arrayID->GetValueRange(arrayIDRange); // Note: This is not GetRange()!
+
   vtkSmartPointer<vtkFloatArray> arrayTemperature =
     vtkSmartPointer<vtkFloatArray>::New();
 
-  //vtkAbstractArray *arrayTemperature;
-  arrayTemperature =
-    vtkFloatArray::SafeDownCast(cellData->GetAbstractArray("T"));
-  arrayTemperature->SetName("Temperature");
-  double arrayTemperatureRange[2];
-  arrayTemperature->GetRange(arrayTemperatureRange);
-  //int dimension = arrayID->GetNumberOfComponents();
-
-  // Set up lookupTables
-
   vtkSmartPointer<vtkLookupTable> lutID =
     vtkSmartPointer<vtkLookupTable>::New();
-  int tableSize = std::max(resolution*resolution + 1, 400);
-  lutID->SetNumberOfTableValues(tableSize);
-  lutID->SetTableRange(arrayIDRange[0], arrayIDRange[1]);
-  lutID->Build();
 
   vtkSmartPointer<vtkLookupTable> lutTemperture =
     vtkSmartPointer<vtkLookupTable>::New();
-  lutTemperture->SetNumberOfTableValues(tableSize);
-  // Set up the color scheme
-  MakeLUT(colorScheme, lutTemperture);
-  lutTemperture->SetTableRange(arrayTemperatureRange[0], arrayTemperatureRange[1]);
-  lutTemperture->Build();
 
   vtkSmartPointer<vtkNamedColors> colors =
     vtkSmartPointer<vtkNamedColors>::New();
-  //  lutTemperture->SetTableValue
-  //    (arrayTemperatureRange[0], colors->GetColor4d("Tomato").GetData());
-  // lutTemperture->SetTableValue
-  //   (arrayTemperatureRange[1], colors->GetColor3d("MidnightBlue").GetData());
 
-  idPlane->Update();
-  idPlane->GetOutput()->GetCellData()->SetScalars(arrayID);
+  vtkSmartPointer<vtkPolyDataMapper> mapper =
+    vtkSmartPointer<vtkPolyDataMapper>::New();
 
-  temperaturePlane->Update();
-  temperaturePlane->GetOutput()->GetCellData()->SetScalars(arrayTemperature);
-
-  #ifdef DEBUG
-    std::cout << "Hello!" << endl;
-    std::cout << "Range of arrayID: " << arrayIDRange[0]
-      << " " << arrayIDRange[1] << endl;
-    std::cout << "Range of arrayTemperature: " << arrayTemperatureRange[0]
-      << " " << arrayTemperatureRange[1] << endl;
-    std::cout << "Values of the float array: " << endl;
-    for(int i = 0; i < 400; i++){
-      std::cout << arrayTemperature->GetVariantValue(i) << " ";
-      if(i % 20 == 19){
-        std::cout << "\n";
-      }
-    }
-    std::cout << "Values of the int array: " << endl;
-    for(int i = 0; i < 400; i++){
-      std::cout << arrayID->GetVariantValue(i) << " ";
-      if(i % 20 == 19){
-        std::cout << "\n";
-      }
-    }
-
-    double tableColor[3];
-    lutTemperture->GetColor(arrayTemperatureRange[0], tableColor);
-    std::cout << "The color of arrayTemperatureRange[0]: " <<
-    tableColor[0] << " " << tableColor[1] << " " << tableColor[2] << std::endl;
-    lutTemperture->GetColor(arrayTemperatureRange[1], tableColor);
-    std::cout << "The color of arrayTemperatureRange[1]: " <<
-    tableColor[0] << " " << tableColor[1] << " " << tableColor[2] << std::endl;
-  #endif
-
-
-  /////     Data manipulation ends here     /////
-
-  // Connect with a Mapper
-   // vtkSmartPointer<vtkDataSetMapper> dataMapper =
-   //   vtkSmartPointer<vtkDataSetMapper>::New();
-   // dataMapper->SetInputConnection(reader->GetOutputPort());
-   vtkSmartPointer<vtkPolyDataMapper> mapper =
-     vtkSmartPointer<vtkPolyDataMapper>::New();
-   mapper->SetInputConnection(temperaturePlane->GetOutputPort());
-   mapper->SetScalarRange(arrayTemperatureRange[0], arrayTemperatureRange[1]);
-   mapper->SetLookupTable(lutTemperture);
-
-   vtkSmartPointer<vtkActor> dataActor =
+  vtkSmartPointer<vtkActor> dataActor =
     vtkSmartPointer<vtkActor>::New();
-  dataActor->SetMapper(mapper);
 
   vtkSmartPointer<vtkRenderer> ren =
     vtkSmartPointer<vtkRenderer>::New();
-  ren->AddActor(dataActor);
-  ren->SetBackground(colors->GetColor3d("SlateGray").GetData());
 
   vtkSmartPointer<vtkRenderWindow> renWin =
     vtkSmartPointer<vtkRenderWindow>::New();
-  renWin->AddRenderer(ren);
-  //renWin->SetSize(300, 300);
 
   vtkSmartPointer<vtkRenderWindowInteractor> iren =
     vtkSmartPointer<vtkRenderWindowInteractor>::New();
-  iren->SetRenderWindow(renWin);
-  renWin->Render();
-  iren->Start();
 
+    std::string filenum = argv[2]; // The "number" or time step of simulation
+    int filemax = std::stoi(filenum);
+
+
+
+  for(int fileindex = 10; fileindex <= filemax; fileindex += 10 ){
+      std::string filename = path + "RBConvection_" +
+        std::to_string(fileindex) + ".vtk";
+      std::cout << "Loading " << filename.c_str() << std::endl;
+      reader->SetFileName(filename.c_str());
+      reader->SetFieldDataName("attributes");
+      reader->Update();
+
+      // Achieving the Cell data
+
+      cellData = reader->GetOutput()->GetCellData();
+
+      // Get the array using SafeDownCast()
+
+      //vtkAbstractArray *arrayID;
+      arrayID =
+        vtkIntArray::SafeDownCast(cellData->GetAbstractArray("cellID"));
+      arrayID->SetName("CellID");
+      int arrayIDRange[2];
+      arrayID->GetValueRange(arrayIDRange); // Note: This is not GetRange()!
+
+
+      //vtkAbstractArray *arrayTemperature;
+      arrayTemperature =
+        vtkFloatArray::SafeDownCast(cellData->GetAbstractArray("T"));
+      arrayTemperature->SetName("Temperature");
+      double arrayTemperatureRange[2];
+      arrayTemperature->GetRange(arrayTemperatureRange);
+      //int dimension = arrayID->GetNumberOfComponents();
+
+      // Set up lookupTables
+
+
+      int tableSize = std::max(resolution*resolution + 1, 400);
+      lutID->SetNumberOfTableValues(tableSize);
+      lutID->SetTableRange(arrayIDRange[0], arrayIDRange[1]);
+      lutID->Build();
+
+
+      lutTemperture->SetNumberOfTableValues(tableSize);
+      // Set up the color scheme
+      MakeLUT(colorScheme, lutTemperture);
+      lutTemperture->SetTableRange(arrayTemperatureRange[0], arrayTemperatureRange[1]);
+      lutTemperture->Build();
+
+
+      //  lutTemperture->SetTableValue
+      //    (arrayTemperatureRange[0], colors->GetColor4d("Tomato").GetData());
+      // lutTemperture->SetTableValue
+      //   (arrayTemperatureRange[1], colors->GetColor3d("MidnightBlue").GetData());
+
+      idPlane->Update();
+      idPlane->GetOutput()->GetCellData()->SetScalars(arrayID);
+
+      temperaturePlane->Update();
+      temperaturePlane->GetOutput()->GetCellData()->SetScalars(arrayTemperature);
+
+      #ifdef DEBUG
+        std::cout << "Hello!" << endl;
+        std::cout << "Range of arrayID: " << arrayIDRange[0]
+          << " " << arrayIDRange[1] << endl;
+        std::cout << "Range of arrayTemperature: " << arrayTemperatureRange[0]
+          << " " << arrayTemperatureRange[1] << endl;
+        std::cout << "Values of the float array: " << endl;
+        for(int i = 0; i < 400; i++){
+          std::cout << arrayTemperature->GetVariantValue(i) << " ";
+          if(i % 20 == 19){
+            std::cout << "\n";
+          }
+        }
+        std::cout << "Values of the int array: " << endl;
+        for(int i = 0; i < 400; i++){
+          std::cout << arrayID->GetVariantValue(i) << " ";
+          if(i % 20 == 19){
+            std::cout << "\n";
+          }
+        }
+
+        double tableColor[3];
+        lutTemperture->GetColor(arrayTemperatureRange[0], tableColor);
+        std::cout << "The color of arrayTemperatureRange[0]: " <<
+        tableColor[0] << " " << tableColor[1] << " " << tableColor[2] << std::endl;
+        lutTemperture->GetColor(arrayTemperatureRange[1], tableColor);
+        std::cout << "The color of arrayTemperatureRange[1]: " <<
+        tableColor[0] << " " << tableColor[1] << " " << tableColor[2] << std::endl;
+      #endif
+
+
+      /////     Data manipulation ends here     /////
+
+      // Connect with a Mapper
+       // vtkSmartPointer<vtkDataSetMapper> dataMapper =
+       //   vtkSmartPointer<vtkDataSetMapper>::New();
+       // dataMapper->SetInputConnection(reader->GetOutputPort());
+
+       mapper->SetInputConnection(temperaturePlane->GetOutputPort());
+       mapper->SetScalarRange(arrayTemperatureRange[0], arrayTemperatureRange[1]);
+       mapper->SetLookupTable(lutTemperture);
+
+
+      dataActor->SetMapper(mapper);
+
+
+      ren->AddActor(dataActor);
+      ren->SetBackground(colors->GetColor3d("SlateGray").GetData());
+
+
+      renWin->AddRenderer(ren);
+      renWin->SetSize(800, 800);
+
+
+      iren->SetRenderWindow(renWin);
+      renWin->Render();
+      std::this_thread::sleep_for(std::chrono::seconds(1));
+      //iren->Start();
+    }
   // #ifdef DEBUG
   //   //std::cout << "Counter after for loop: " << counter << endl;
   //   std::cout << *cellData << endl;
