@@ -1,3 +1,4 @@
+
 # HPC-A
 ## Numerical Simulation and Visualization of 2D Rayleigh-Bénard Convection
 This project is a simulation software for 2D Rayleigh--Bénard Convection. The software takes the input
@@ -103,6 +104,24 @@ This should create the executable `set` in the `build` folder. Run the following
 
 With this, the preparations to interface with OpenFOAM from C++ are finished. If you include the `RBConvSim.h` file in your C++ code, you can instantiate a simulation class, modify parameters, and run simulations from within C++.
 
+### Visulization: Build instructions
+
+In your terminal/command prompt:
+1. Make sure you load the vtk module: ``module load vtk/8.1.0``
+1. Clone this repository into your directory: ``git clone https://github.com/ENGN2912B-2018/HPC-A.git``
+2. Switch to visualization directory: ``cd visualization``
+2. Create a build directory:
+```
+mkdir build
+cd build
+```
+3. Configure and generate CMake: ``cmake ..``
+4. Build the project: ``make``
+
+### Visualization: Generate the results
+In the `build/` directory, simply run `./mainVisualizer`.
+
+
 ## Usage documentation
 
 Coming Soon!
@@ -119,3 +138,11 @@ https://cfd.direct/openfoam/user-guide-v4/
 http://www.hpc.lsu.edu/training/weekly-materials/2014-Fall/intro_of_20141105.pdf
 
 https://github.com/UnnamedMoose/BasicOpenFOAMProgrammingTutorials
+
+[writeVTK, an OpenFOAM function object](https://github.com/OpenFOAM/OpenFOAM-4.x/blob/master/applications/utilities/postProcessing/dataConversion/foamToVTK/foamToVTK/writeVTK/controlDict)  
+[VTK Examples: ColorCells](https://lorensen.github.io/VTKExamples/site/Cxx/PolyData/ColorCells/)  
+[VTK Examples: ReadLegacyUnstructuredGrid](https://lorensen.github.io/VTKExamples/site/Cxx/IO/ReadLegacyUnstructuredGrid/)  
+[VTK Examples: Hawaii](https://lorensen.github.io/VTKExamples/site/Cxx/Visualization/Hawaii/)  
+[(PDF) VTK file formats](https://www.vtk.org/wp-content/uploads/2015/04/file-formats.pdf)  
+[(PDF) Simple Visualization of unstructured grids with VTK](https://hal.inria.fr/inria-00107738/document)
+

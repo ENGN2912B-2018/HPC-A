@@ -1,6 +1,17 @@
 # Build directory
-build
+build*
 polyMesh
+
+# Deprecated files
+deprecated*
+
+# OpenFOAM ASCII files
+# RBConvection/*0/
+# !RBConvection/0/
+# RBConvection/VTK/
+
+# Visual Studio diretory
+.vs
 
 # Vim swap files
 *.swp
