@@ -107,9 +107,8 @@ class RBConvSim {
 
     void runSimulation()
         {
+	    system("cd $FOAM_RUN/tutorials/heatTransfer/buoyantBoussinesqPimpleFoam/RBConvection && blockMesh");
 	    system("cd $FOAM_RUN/tutorials/heatTransfer/buoyantBoussinesqPimpleFoam/RBConvection && buoyantBoussinesqPimpleFoam");
-	    system("cd $FOAM_RUN/tutorials/heatTransfer/buoyantBoussinesqPimpleFoam/RBConvection && postProcess -func \"mag(U)\"");
-
 	    simRun_ = true;
         }	
 
