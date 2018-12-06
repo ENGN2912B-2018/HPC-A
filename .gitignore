@@ -1,5 +1,5 @@
 # Build directory
-build
+build*
 
 # OpenFOAM ASCII files
 # RBConvection/*0/

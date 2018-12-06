@@ -40,15 +40,16 @@ class RBVisualizer{
   public:
     // Constructors
     RBVisualizer();
-    RBVisualizer(int colorScheme, int resolution, std::string path,
-      std::string parameter, int timeStep, int timeMax);
+    RBVisualizer(int colorScheme, int resolutionX, int resolutionY,
+       std::string path, std::string parameter, int timeStep, int timeMax);
 
     // Destrcutors
     ~RBVisualizer();
 
     // Getters
     int getColorScheme() const;
-    int getResolution() const;
+    int getResolutionX() const;
+    int getResolutionY() const;
     int getTimeStep() const;
     int getTimeMax() const;
     double getParameterMin() const;
@@ -56,19 +57,22 @@ class RBVisualizer{
 
     // Setters
     void setColorScheme(int colors);
-    void setResolution(int reso);
-    void setParameterRange(double min, double max);
+    void setResolutionX(int resoX);
+    void setResolutionY(int resoY);
+    void setParameterMin(double min);
+    void setParameterMax(double max);
 
     // Member methods
     void readParameterMinMax();
     void mainVisualizer();
 
     // Methods for debugging
-    void coutDebugger();
+    void coutDebugger(int debugMode);
 
   private:
     int           colorScheme = 0;
-    int           resolution = 0;
+    int           resolutionX = 0;
+    int           resolutionY = 0;
     int           timeStep = 0;
     int           timeMax = 0;
     std::string   filePath;
@@ -77,4 +81,4 @@ class RBVisualizer{
     double        parameterMax;
     std::string   parameterCode;
 
-}
+};

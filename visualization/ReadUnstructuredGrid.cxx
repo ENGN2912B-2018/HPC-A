@@ -59,6 +59,8 @@ namespace
 @param lut - An indexed lookup table.
 */
 void MakeLUT(int const& colorScheme, vtkLookupTable* lut);
+
+
 }
 
 
@@ -142,7 +144,7 @@ int main (int argc, char *argv[]){
     vtkSmartPointer<vtkRenderWindowInteractor>::New();
 
   std::string fileArgMax = argv[2]; // The "number" or time step of simulation
-  int filemax = std::stoi(fileArgMax);
+  int fileMax = std::stoi(fileArgMax);
 
 //  int temperatureMin = 280;
 //  int temperatureMax = 340;
@@ -163,9 +165,9 @@ int main (int argc, char *argv[]){
 
 
 
-  for(int fileindex = 100; fileindex <= filemax; fileindex += 100 ){
+  for(int fileIndex = 100; fileIndex <= fileMax; fileIndex += 100 ){
       std::string filename = path + "RBConvection_" +
-        std::to_string(fileindex) + ".vtk";
+        std::to_string(fileIndex) + ".vtk";
       std::cout << "Loading " << filename.c_str() << std::endl;
       reader->SetFileName(filename.c_str());
       reader->SetFieldDataName("attributes");
