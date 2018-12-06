@@ -29,7 +29,9 @@ deltaT          .5;
 
 writeControl    timeStep;
 
-writeInterval   200;
+
+writeInterval   40;
+
 
 purgeWrite      0;
 
@@ -50,7 +52,10 @@ adjustTimeStep  no;
 maxCo           0.5;
 
 
+
 functions{
+    #includeFunc mag(U)
+  
     writeVTK{
         type            writeVTK;
         libs            ("libfoamToVTK.so");
@@ -60,4 +65,5 @@ functions{
         objects         (U T phi alphat p p_rgh);
     }
 }
+
 // ************************************************************************* //
