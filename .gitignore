@@ -1,6 +1,9 @@
 # Build directory
 build*
 
+# Deprecated files
+deprecated*
+
 # OpenFOAM ASCII files
 # RBConvection/*0/
 # !RBConvection/0/
