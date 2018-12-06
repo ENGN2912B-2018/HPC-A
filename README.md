@@ -19,9 +19,10 @@ Graphical User Interface is like a conductor of the project. It control the prog
 This section provides instructions for running openFOAM simulations on the Brown CCV Linux Redhat environment. First, the following commands should be entered into the terminal to load modules which are necessary for the project:
 
 `module load mpi/openmpi_2.0.3_intel`
+
 `module load openfoam/4.1`
 
-Then, the following command should be run. Please note that this needs to be run each time a new session is started.
+Then, the following command should be run. Please note that this needs to be run each time a new ccv session is started.
 
 `source $FOAM_INST_DIR/OpenFOAM-4.1/etc/bashrc`
 
@@ -44,11 +45,14 @@ You can download the case directory from this Github repository, which is based 
 
 ```bash
 ├── 0
+│   ├── alphat
+│   ├── epsilon
+│   ├── k
+│   ├── nut
 │   ├── p
 │   ├── p_rgh
 │   ├── T
 │   ├── U
-│   ├── alphat
 ├── constant
 │   ├── g
 │   ├── transportProperties
@@ -56,42 +60,47 @@ You can download the case directory from this Github repository, which is based 
 ├── system
 │   ├── blockMeshDict
 │   ├── controlDict
+│   ├── setFieldsDict
 │   ├── fvSolution
 │   ├── fvSchemes
 ├── Time Directories
+│   ├── alphatss
+│   ├── p
+│   ├── phi
+│   ├── p_rgh
+│   ├── T
+│   ├── U
+│   ├── uniform
 ```
 
 #### 1. Create Mesh
 Information regarding how to specify the geometry of a mesh can be found on the [OpenFOAM User Guide](https://cfd.direct/openfoam/user-guide/v4-mesh-description/).
 
-
 Once you are finished editing the file `blockMeshDict`, create the mesh by entering the following command in the case directory:
 
 `blockMesh`
 
-#### 2. Set Boundary and Initial Conditions
-Initial conditions can be changed by accessing the `0` folder from the case directory and changing the parameters contained in the files there.
+This will create the directory `polyMesh` in the `constant` directory. 
 
-#### 3. Set Physical Properties
-From the case directory, navigate to the system folder:
+#### 2. Enable file editing
 
-`cd constant`
+While in the `simulation` directory, create a build folder:
 
-Then, open the file `transportProperties` in your text editor of choice and edit the fields "nu", "beta", "TRef", and "Pr" as desired.
-#### 4. Set Simulation options
-From the case directory, navigate to the system folder:
+`mkdir build`
 
-`cd system`
+Then, run the following commands to compile the code:
 
-Then, open the file `controlDict` in your text editor of choice and edit the fields "startTime", "endTime", "deltaT", and "writeInterval" as desired.
+`cmake -D CMAkE_CXX_COMPILER=g++ ..`
 
-#### 5. Run the application
-Enter the following text in the command line from the case directory:
+`make`
 
-`buoyantBoussinesqPimpleFoam`
+This should create the executable `set` in the `build` folder. Run the following commands from the `build` directory to copy this file into the `0` and `constant` directories:
 
-### Simulation: Saving data and loading data
-#### Postprocessing
+`cp set $FOAM_RUN/tutorials/heatTransfer/buoyantBoussinesqPimpleFoam/RBConvection/0`
+
+`cp set $FOAM_RUN/tutorials/heatTransfer/buoyantBoussinesqPimpleFoam/RBConvection/constant`
+
+With this, the preparations to interface with OpenFOAM from C++ are finished. If you include the `RBConvSim.h` file in your C++ code, you can instantiate a simulation class, modify parameters, and run simulations from within C++.
 
 ## References
 https://openfoamwiki.net/index.php/FAQ/Installation_and_Running
