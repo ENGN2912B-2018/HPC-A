@@ -64,12 +64,13 @@ You can download the case directory from this Github repository, which is based 
 │   ├── fvSolution
 │   ├── fvSchemes
 ├── Time Directories
-│   ├── alphatss
+│   ├── alphat
 │   ├── p
 │   ├── phi
 │   ├── p_rgh
 │   ├── T
 │   ├── U
+│   ├── mag(U)
 │   ├── uniform
 ```
 
