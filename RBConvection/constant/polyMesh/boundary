@@ -21,29 +21,29 @@ FoamFile
     {
         type            wall;
         inGroups        1(wall);
-        nFaces          40;
-        startFace       3120;
+        nFaces          100;
+        startFace       9850;
     }
     ceiling
     {
         type            wall;
         inGroups        1(wall);
-        nFaces          40;
-        startFace       3160;
+        nFaces          100;
+        startFace       9950;
     }
     fixedWalls
     {
         type            wall;
         inGroups        1(wall);
-        nFaces          80;
-        startFace       3200;
+        nFaces          100;
+        startFace       10050;
     }
     frontAndBack
     {
         type            empty;
         inGroups        1(empty);
-        nFaces          3200;
-        startFace       3280;
+        nFaces          10000;
+        startFace       10150;
     }
 )
 
