@@ -1,7 +1,7 @@
 
 # HPC-A
 ## Numerical Simulation and Visualization of 2D Rayleigh-Bénard Convection
-This project is a simulation software for 2D Rayleigh--Bénard Convection. The software takes the input
+This project is a simulation software for 2D Rayleigh-Bénard Convection. The software takes the input
 from user interface, uses numerical solver to compute the temperature and velocity field of fluids,
 simulates and visualizes the results of computation, and displays results in a graphical user interface.
 
@@ -38,6 +38,8 @@ We then copy the files from the tutorials directory in the openFOAM file set to 
 If you have already done this step, there is no need to repeat it.
 
 ### Simulation: Setting up the simulation
+
+#### 1. Create case directory
 In OpenFOAM, the details of a simulation are included in what is called a case directory. The version of openFOAM available on the Brown CCV, openFOAM 4.1, does not have a case directory for Rayleigh Benard convection, so we will create our own. First, navigate to the solver directory:
 
 `cd $FOAM_RUN/tutorials/heatTransfer/buoyantBoussinesqPimpleFoam/`
@@ -75,15 +77,6 @@ You can download the case directory from this Github repository, which is based 
 │   ├── uniform
 ```
 
-#### 1. Create Mesh
-Information regarding how to specify the geometry of a mesh can be found on the [OpenFOAM User Guide](https://cfd.direct/openfoam/user-guide/v4-mesh-description/).
-
-Once you are finished editing the file `blockMeshDict`, create the mesh by entering the following command in the case directory:
-
-`blockMesh`
-
-This will create the directory `polyMesh` in the `constant` directory. 
-
 #### 2. Enable file editing
 
 While in the `simulation` directory, create a build folder:
@@ -102,7 +95,7 @@ This should create the executable `set` in the `build` folder. Run the following
 
 `cp set $FOAM_RUN/tutorials/heatTransfer/buoyantBoussinesqPimpleFoam/RBConvection/constant`
 
-With this, the preparations to interface with OpenFOAM from C++ are finished. If you include the `RBConvSim.h` file in your C++ code, you can instantiate a simulation class, modify parameters, and run simulations from within C++.
+With this, the preparations to interface with OpenFOAM from C++ are finished. If you include the `RBConvSim.h` file in your C++ code, you can instantiate a simulation class, modify parameters, and run simulations from within C++. You can check that the simulation is functioning by running the `main` executable which was created by the `make` command.
 
 ### Visulization: Build instructions
 
