@@ -26,7 +26,7 @@ In your terminal/command prompt:
 mkdir build
 cd build
 ```
-3. Configure and generate CMake: ``cmake --DCMAKE_CXX_COMPILER=g++ ..``
+3. Configure and generate CMake: ``cmake ..``
 4. Build the project: ``make``
 
 ## How to use the software:
@@ -40,7 +40,7 @@ To use the software, for now you should first use OpenFOAM to generate the simul
 Now you will have a directory called `VTK/` under your case directory. Copy one of the `.vtk` file into the `visualization/build/` directory.
 
 ### Visualization
-In the `build/` directory, simply run `./ReadUnstructuredGrid <VTK>`, where `<VTK>` is your ``.vtk`` file copied.
+In the `build/` directory, simply run `./mainVisualizer`.
 
 ## Reference
 
