@@ -38,7 +38,7 @@
 #define DEBUG
 // TODO: 1. Set up the color schemes               (x)
 //       2. Work on multiple files                 ()
-//          2.0. Create a draft animation          ()
+//          2.0. Create a draft animation          (x)
 //          2.1. Set up the interactor             ()
 //          2.2. Use a widget to control the frame ()
 //       3. Work on other data types               ()
