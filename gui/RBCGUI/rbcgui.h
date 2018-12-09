@@ -33,7 +33,7 @@ private slots:
 private:
     Ui::RBCGUI *ui;
     vtkSmartPointer<vtkEventQtSlotConnect> Connections;
-    QVTKOpenGLWidget *qvtkWidget;
+    //QVTKOpenGLWidget *qvtkWidget;
     Parameter_setting *paraWin;
 
 };

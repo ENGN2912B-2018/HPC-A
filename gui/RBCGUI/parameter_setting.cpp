@@ -50,39 +50,7 @@ Parameter_setting::Parameter_setting(QWidget *parent) : QWidget(parent)
     Pr_label->setFrameStyle(frameStyle);
     QPushButton *Pr_Button = new QPushButton(tr("modifiy Pr: "));
 
-    /*alphat_label = new QLabel;
-    alphat_label->setFrameStyle(frameStyle);
-    QPushButton *alphat_Button = new QPushButton(tr("modifiy alphat: "));
 
-    //physical constants
-    g_label = new QLabel;
-    g_label->setFrameStyle(frameStyle);
-    QPushButton *g_Button = new QPushButton(tr("modifiy g: "));
-
-    transportProperties_label = new QLabel;
-    transportProperties_label->setFrameStyle(frameStyle);
-    QPushButton *transportProperties_Button = new QPushButton(tr("modifiy transportProperties: "));
-
-    turbulenceProperties_label = new QLabel;
-    turbulenceProperties_label->setFrameStyle(frameStyle);
-    QPushButton *turbulenceProperties_Button = new QPushButton(tr("modifiy turbulenceProperties: "));
-
-    //system directory
-    blockMeshDict_label = new QLabel;
-    blockMeshDict_label->setFrameStyle(frameStyle);
-    QPushButton *blockMeshDict_Button = new QPushButton(tr("modifiy blockMeshDict: "));
-
-    controlDict_label = new QLabel;
-    controlDict_label->setFrameStyle(frameStyle);
-    QPushButton *controlDict_Button = new QPushButton(tr("modifiy controlDict: "));
-
-    fvSolution_label = new QLabel;
-    fvSolution_label->setFrameStyle(frameStyle);
-    QPushButton *fvSolution_Button = new QPushButton(tr("modifiy fvSolution: "));
-
-    fvSchemes_label = new QLabel;
-    fvSchemes_label->setFrameStyle(frameStyle);
-    QPushButton *fvSchemes_Button = new QPushButton(tr("modifiy fvSchemes: "));*/
 
     warning_label = new QLabel;
     warning_label->setFrameStyle(frameStyle);
@@ -92,18 +60,12 @@ Parameter_setting::Parameter_setting(QWidget *parent) : QWidget(parent)
     error_label->setFrameStyle(frameStyle);
     QPushButton *error_Button = new QPushButton(tr("error: "));
 
+
+
     connect(Nu_Button, &QAbstractButton::clicked, this, &Parameter_setting::set_Nu);
     connect(Beta_Button, &QAbstractButton::clicked, this, &Parameter_setting::set_Beta);
     connect(TFloor_Button, &QAbstractButton::clicked, this, &Parameter_setting::set_TFloor);
     connect(Pr_Button, &QAbstractButton::clicked, this, &Parameter_setting::set_Pr);
-    /*connect(alphat_Button, &QAbstractButton::clicked, this, &Parameter_setting::set_alphat);
-    connect(g_Button, &QAbstractButton::clicked, this, &Parameter_setting::set_g);
-    connect(transportProperties_Button, &QAbstractButton::clicked, this, &Parameter_setting::set_transportProperties);
-    connect(turbulenceProperties_Button, &QAbstractButton::clicked, this, &Parameter_setting::set_turbulenceProperties);
-    connect(blockMeshDict_Button, &QAbstractButton::clicked, this, &Parameter_setting::set_blockMeshDict);
-    connect(controlDict_Button, &QAbstractButton::clicked, this, &Parameter_setting::set_controlDict);
-    connect(fvSolution_Button, &QAbstractButton::clicked, this, &Parameter_setting::set_fvSolution);
-    connect(fvSchemes_Button, &QAbstractButton::clicked, this, &Parameter_setting::set_fvSchemes);*/
     connect(warning_Button, &QAbstractButton::clicked, this, &Parameter_setting::warningMessage);
     connect(error_Button, &QAbstractButton::clicked, this, &Parameter_setting::errorMessage);
 
@@ -122,10 +84,13 @@ Parameter_setting::Parameter_setting(QWidget *parent) : QWidget(parent)
     layout->addItem(new QSpacerItem(0, 0, QSizePolicy::Ignored, QSizePolicy::MinimumExpanding), 4, 0);
     toolbox->addItem(page, tr("modifiable parameters"));
 
+
 }
+
+
 void Parameter_setting::set_Nu()
 {
-    bool ok;
+    bool ok=0;
     double i = QInputDialog::getDouble(this, tr("modifiy Nu: "),
                                  tr("modifiy Nu: "), 0.000001, 0, 100, 6, &ok);
     if (ok)
@@ -134,13 +99,21 @@ void Parameter_setting::set_Nu()
         this->setFlag=1;
         this->setValue=i;
         invokeSet();
+        bool rm = QFile::remove("D:/Qt_projects/RBCGUI/files/transportProperties");
+        bool replace=QFile::copy("D:/Qt_projects/build-RBCGUI-Desktop_Qt_5_10_1_MSVC2017_64bit-Release/transportProperties","D:/Qt_projects/RBCGUI/files/transportProperties");
+        if(rm==true&&replace==true)
+        {
+            cout<<"replace successful "<<endl;
+        }
+
     }
+
 
 }
 
 void Parameter_setting::set_Beta()
 {
-    bool ok;
+    bool ok=0;
     double i = QInputDialog::getDouble(this, tr("modifiy Beta: "),
                                  tr("modifiy Beta: "), 0.000214, 0, 100, 6, &ok);
     if (ok)
@@ -148,10 +121,16 @@ void Parameter_setting::set_Beta()
     this->setFlag=2;
     this->setValue=i;
     invokeSet();
+    bool rm = QFile::remove("D:/Qt_projects/RBCGUI/files/transportProperties");
+    bool replace=QFile::copy("D:/Qt_projects/build-RBCGUI-Desktop_Qt_5_10_1_MSVC2017_64bit-Release/transportProperties","D:/Qt_projects/RBCGUI/files/transportProperties");
+    if(rm==true&&replace==true)
+    {
+        cout<<"replace successful "<<endl;
+    }
 }
 void Parameter_setting::set_TFloor()
 {
-    bool ok;
+    bool ok=0;
     double i = QInputDialog::getDouble(this, tr("modifiy TFloor: "),
                                  tr("modifiy TFloor: "), 340, 0, 10000, 1, &ok);
     if (ok)
@@ -159,10 +138,11 @@ void Parameter_setting::set_TFloor()
     this->setFlag=3;
     this->setValue=i;
     invokeSet();
+
 }
 void Parameter_setting::set_Pr()
 {
-    bool ok;
+    bool ok=0;
     double i = QInputDialog::getDouble(this, tr("modifiy Pr: "),
                                  tr("modifiy Pr: "), 7.56, 0, 100, 2, &ok);
     if (ok)
@@ -170,6 +150,12 @@ void Parameter_setting::set_Pr()
     this->setFlag=4;
     this->setValue=i;
     invokeSet();
+    bool rm = QFile::remove("D:/Qt_projects/RBCGUI/files/transportProperties");
+    bool replace=QFile::copy("D:/Qt_projects/build-RBCGUI-Desktop_Qt_5_10_1_MSVC2017_64bit-Release/transportProperties","D:/Qt_projects/RBCGUI/files/transportProperties");
+    if(rm==true&&replace==true)
+    {
+        cout<<"replace successful "<<endl;
+    }
 }
 
 void Parameter_setting::warningMessage()
@@ -185,9 +171,10 @@ void Parameter_setting::errorMessage()
 void Parameter_setting::invokeSet()
 {
     QFile fileIn(":/files/transportProperties");
-    QFile fileOut("transportProperties0");
-    QString strAll;
-    QStringList strList;
+    QFile fileOut("transportProperties");
+    QString strAll="";
+    QStringList strList=QStringList();
+    int count=0;
     switch (setFlag)
     {
     case 1://nu
@@ -199,14 +186,17 @@ void Parameter_setting::invokeSet()
         }
         else
         {
+
             QTextStream nu_streamIn(&fileIn);
             strAll=nu_streamIn.readAll();
             qDebug()<<strAll;
+            count++;
         }
         fileIn.close();
 
         //modify nu
         cout<<"setting nu: "<<endl;
+
         if(!fileOut.open(QIODevice::WriteOnly|QIODevice::Text))
         {
             qDebug()<<"Can't write the file!"<<endl;
@@ -218,8 +208,10 @@ void Parameter_setting::invokeSet()
             for(int i=0;i<strList.count();i++)
             {
                 QString Line=strList.at(i);
-                if(Line.contains("nu"))
+                QString cmp=Line.mid(0,3);
+                if(cmp=="nu "&&cmp!="num")
                 {
+
                     nu_streamOut<<"nu [0 2 -1 0 0 0 0] " << setValue << ";" << endl;
 
                 }
@@ -229,7 +221,15 @@ void Parameter_setting::invokeSet()
                 }
             }
             fileOut.close();
+            strAll="";
+            strList=QStringList();
             cout<<"set successful "<<endl;
+        }
+        bool rm = QFile::remove("D:/Qt_projects/RBCGUI/files/transportProperties");
+        bool replace=QFile::copy("D:/Qt_projects/build-RBCGUI-Desktop_Qt_5_10_1_MSVC2017_64bit-Release/transportProperties","D:/Qt_projects/RBCGUI/files/transportProperties");
+        if(rm==true&&replace==true)
+        {
+            cout<<"replace successful "<<endl;
         }
     }
         break;
@@ -248,7 +248,7 @@ void Parameter_setting::invokeSet()
         }
         fileIn.close();
 
-        //modify nu
+        //modify beta
         cout<<"setting beta: "<<endl;
         if(!fileOut.open(QIODevice::WriteOnly|QIODevice::Text))
         {
@@ -261,7 +261,7 @@ void Parameter_setting::invokeSet()
             for(int i=0;i<strList.count();i++)
             {
                 QString Line=strList.at(i);
-                if(Line.contains("beta"))
+                if(Line.contains("beta "))
                 {
                     beta_streamOut<<"beta [0 0 0 -1 0 0 0] " << setValue << ";" << endl;
 
@@ -272,13 +272,15 @@ void Parameter_setting::invokeSet()
                 }
             }
             fileOut.close();
+            strAll="";
+            strList=QStringList();
             cout<<"set successful "<<endl;
         }
     }
         break;
     case 3://TFloor
     {
-        QFile TFloorfileIn(":/files/T");
+        /*QFile TFloorfileIn(":/files/T");
         QFile TFloorfileOut("T0");
         //read all contexts
         if(!TFloorfileIn.open(QIODevice::ReadOnly|QIODevice::Text))
@@ -317,8 +319,10 @@ void Parameter_setting::invokeSet()
                 }
             }
             TFloorfileOut.close();
+            strAll="";
+            strList=QStringList();
             cout<<"set successful "<<endl;
-        }
+        }*/
     }
         break;
     case 4://Pr
@@ -336,8 +340,8 @@ void Parameter_setting::invokeSet()
         }
         fileIn.close();
 
-        //modify nu
-        cout<<"setting beta: "<<endl;
+        //modify Pr
+        cout<<"setting Pr: "<<endl;
         if(!fileOut.open(QIODevice::WriteOnly|QIODevice::Text))
         {
             qDebug()<<"Can't write the file!"<<endl;
@@ -346,10 +350,13 @@ void Parameter_setting::invokeSet()
         {
             QTextStream Pr_streamOut(&fileOut);
             strList=strAll.split("\n");
+
             for(int i=0;i<strList.count();i++)
             {
                 QString Line=strList.at(i);
-                if(Line.contains("Pr "))
+                QString cmp=Line.mid(0,3);
+                if(cmp=="Pr "&&cmp!="Prt")
+
                 {
                     Pr_streamOut<<"Pr [0 0 0 0 0 0 0] " << setValue << ";" << endl;
 
@@ -360,17 +367,12 @@ void Parameter_setting::invokeSet()
                 }
             }
             fileOut.close();
+            strAll="";
+            strList=QStringList();
             cout<<"set successful "<<endl;
         }
     }
         break;
-
     }
-
-
-
-
-
-
 }
 

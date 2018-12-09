@@ -4,7 +4,8 @@
 #
 #-------------------------------------------------
 
-QT       += core gui
+QT       += core gui \
+            opengl
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -26,17 +27,15 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += \
         main.cpp \
         rbcgui.cpp \
-    QVTKOpenGLWindow.cpp \
-    QVTKOpenGLWidget.cpp \
     parameter_setting.cpp
+
 
 
 HEADERS += \
         rbcgui.h \
-    QVTKOpenGLWidget.h \
-    QVTKOpenGLWindow.h \
     parameter_setting.h \
-    RBConvSim.h
+    parameter_setting.h
+
 
 
 
@@ -45,135 +44,136 @@ FORMS += \
 
 
 
-INCLUDEPATH += \
-    C:/Program Files (x86)/VTK/include/vtk-8.1
+INCLUDEPATH += $$quote(D:\VTK\VTK-8.1.2\VTK-install\include\vtk-8.1) \
+               $$quote(D:\VTK\VTK-8.1.2\VTK-install\include\vtk-8.1\vtkObjectFactory.h)
 
+
+LIBS += $$quote(D:\VTK\VTK-8.1.2\VTK-install\lib\vtkalglib-8.1.lib)
+LIBS += $$quote(D:\VTK\VTK-8.1.2\VTK-install\lib\vtkChartsCore-8.1.lib)
+LIBS += $$quote(D:\VTK\VTK-8.1.2\VTK-install\lib\vtkCommonColor-8.1.lib)
+LIBS += $$quote(D:\VTK\VTK-8.1.2\VTK-install\lib\vtkCommonComputationalGeometry-8.1.lib)
+LIBS += $$quote(D:\VTK\VTK-8.1.2\VTK-install\lib\vtkCommonCore-8.1.lib)
+LIBS += $$quote(D:\VTK\VTK-8.1.2\VTK-install\lib\vtkCommonDataModel-8.1.lib)
+LIBS += $$quote(D:\VTK\VTK-8.1.2\VTK-install\lib\vtkCommonExecutionModel-8.1.lib)
+LIBS += $$quote(D:\VTK\VTK-8.1.2\VTK-install\lib\vtkCommonMath-8.1.lib)
+LIBS += $$quote(D:\VTK\VTK-8.1.2\VTK-install\lib\vtkCommonMisc-8.1.lib)
+LIBS += $$quote(D:\VTK\VTK-8.1.2\VTK-install\lib\vtkCommonSystem-8.1.lib)
+LIBS += $$quote(D:\VTK\VTK-8.1.2\VTK-install\lib\vtkCommonTransforms-8.1.lib)
+LIBS += $$quote(D:\VTK\VTK-8.1.2\VTK-install\lib\vtkDICOMParser-8.1.lib)
+LIBS += $$quote(D:\VTK\VTK-8.1.2\VTK-install\lib\vtkDomainsChemistry-8.1.lib)
+LIBS += $$quote(D:\VTK\VTK-8.1.2\VTK-install\lib\vtkDomainsChemistryOpenGL2-8.1.lib)
+LIBS += $$quote(D:\VTK\VTK-8.1.2\VTK-install\lib\vtkexoIIc-8.1.lib)
+LIBS += $$quote(D:\VTK\VTK-8.1.2\VTK-install\lib\vtkexpat-8.1.lib)
+LIBS += $$quote(D:\VTK\VTK-8.1.2\VTK-install\lib\vtkFiltersAMR-8.1.lib)
+LIBS += $$quote(D:\VTK\VTK-8.1.2\VTK-install\lib\vtkFiltersCore-8.1.lib)
+LIBS += $$quote(D:\VTK\VTK-8.1.2\VTK-install\lib\vtkFiltersExtraction-8.1.lib)
+LIBS += $$quote(D:\VTK\VTK-8.1.2\VTK-install\lib\vtkFiltersFlowPaths-8.1.lib)
+LIBS += $$quote(D:\VTK\VTK-8.1.2\VTK-install\lib\vtkFiltersGeneral-8.1.lib)
+LIBS += $$quote(D:\VTK\VTK-8.1.2\VTK-install\lib\vtkFiltersGeneric-8.1.lib)
+LIBS += $$quote(D:\VTK\VTK-8.1.2\VTK-install\lib\vtkFiltersGeometry-8.1.lib)
+LIBS += $$quote(D:\VTK\VTK-8.1.2\VTK-install\lib\vtkFiltersHybrid-8.1.lib)
+LIBS += $$quote(D:\VTK\VTK-8.1.2\VTK-install\lib\vtkFiltersHyperTree-8.1.lib)
+LIBS += $$quote(D:\VTK\VTK-8.1.2\VTK-install\lib\vtkFiltersImaging-8.1.lib)
+LIBS += $$quote(D:\VTK\VTK-8.1.2\VTK-install\lib\vtkFiltersModeling-8.1.lib)
+LIBS += $$quote(D:\VTK\VTK-8.1.2\VTK-install\lib\vtkFiltersParallel-8.1.lib)
+LIBS += $$quote(D:\VTK\VTK-8.1.2\VTK-install\lib\vtkFiltersParallelImaging-8.1.lib)
+LIBS += $$quote(D:\VTK\VTK-8.1.2\VTK-install\lib\vtkFiltersPoints-8.1.lib)
+LIBS += $$quote(D:\VTK\VTK-8.1.2\VTK-install\lib\vtkFiltersProgrammable-8.1.lib)
+LIBS += $$quote(D:\VTK\VTK-8.1.2\VTK-install\lib\vtkFiltersSelection-8.1.lib)
+LIBS += $$quote(D:\VTK\VTK-8.1.2\VTK-install\lib\vtkFiltersSMP-8.1.lib)
+LIBS += $$quote(D:\VTK\VTK-8.1.2\VTK-install\lib\vtkFiltersSources-8.1.lib)
+LIBS += $$quote(D:\VTK\VTK-8.1.2\VTK-install\lib\vtkFiltersStatistics-8.1.lib)
+LIBS += $$quote(D:\VTK\VTK-8.1.2\VTK-install\lib\vtkFiltersTexture-8.1.lib)
+LIBS += $$quote(D:\VTK\VTK-8.1.2\VTK-install\lib\vtkFiltersTopology-8.1.lib)
+LIBS += $$quote(D:\VTK\VTK-8.1.2\VTK-install\lib\vtkFiltersVerdict-8.1.lib)
+LIBS += $$quote(D:\VTK\VTK-8.1.2\VTK-install\lib\vtkfreetype-8.1.lib)
+LIBS += $$quote(D:\VTK\VTK-8.1.2\VTK-install\lib\vtkGeovisCore-8.1.lib)
+LIBS += $$quote(D:\VTK\VTK-8.1.2\VTK-install\lib\vtkgl2ps-8.1.lib)
+LIBS += $$quote(D:\VTK\VTK-8.1.2\VTK-install\lib\vtkglew-8.1.lib)
+LIBS += $$quote(D:\VTK\VTK-8.1.2\VTK-install\lib\vtkGUISupportQt-8.1.lib)
+LIBS += $$quote(D:\VTK\VTK-8.1.2\VTK-install\lib\vtkGUISupportQtSQL-8.1.lib)
+LIBS += $$quote(D:\VTK\VTK-8.1.2\VTK-install\lib\vtkhdf5-8.1.lib)
+LIBS += $$quote(D:\VTK\VTK-8.1.2\VTK-install\lib\vtkhdf5_hl-8.1.lib)
+LIBS += $$quote(D:\VTK\VTK-8.1.2\VTK-install\lib\vtkImagingColor-8.1.lib)
+LIBS += $$quote(D:\VTK\VTK-8.1.2\VTK-install\lib\vtkImagingCore-8.1.lib)
+LIBS += $$quote(D:\VTK\VTK-8.1.2\VTK-install\lib\vtkImagingFourier-8.1.lib)
+LIBS += $$quote(D:\VTK\VTK-8.1.2\VTK-install\lib\vtkImagingGeneral-8.1.lib)
+LIBS += $$quote(D:\VTK\VTK-8.1.2\VTK-install\lib\vtkImagingHybrid-8.1.lib)
+LIBS += $$quote(D:\VTK\VTK-8.1.2\VTK-install\lib\vtkImagingMath-8.1.lib)
+LIBS += $$quote(D:\VTK\VTK-8.1.2\VTK-install\lib\vtkImagingMorphological-8.1.lib)
+LIBS += $$quote(D:\VTK\VTK-8.1.2\VTK-install\lib\vtkImagingSources-8.1.lib)
+LIBS += $$quote(D:\VTK\VTK-8.1.2\VTK-install\lib\vtkImagingStatistics-8.1.lib)
+LIBS += $$quote(D:\VTK\VTK-8.1.2\VTK-install\lib\vtkImagingStencil-8.1.lib)
+LIBS += $$quote(D:\VTK\VTK-8.1.2\VTK-install\lib\vtkInfovisCore-8.1.lib)
+LIBS += $$quote(D:\VTK\VTK-8.1.2\VTK-install\lib\vtkInfovisLayout-8.1.lib)
+LIBS += $$quote(D:\VTK\VTK-8.1.2\VTK-install\lib\vtkInteractionImage-8.1.lib)
+LIBS += $$quote(D:\VTK\VTK-8.1.2\VTK-install\lib\vtkInteractionStyle-8.1.lib)
+LIBS += $$quote(D:\VTK\VTK-8.1.2\VTK-install\lib\vtkInteractionWidgets-8.1.lib)
+LIBS += $$quote(D:\VTK\VTK-8.1.2\VTK-install\lib\vtkIOAMR-8.1.lib)
+LIBS += $$quote(D:\VTK\VTK-8.1.2\VTK-install\lib\vtkIOCore-8.1.lib)
+LIBS += $$quote(D:\VTK\VTK-8.1.2\VTK-install\lib\vtkIOEnSight-8.1.lib)
+LIBS += $$quote(D:\VTK\VTK-8.1.2\VTK-install\lib\vtkIOExodus-8.1.lib)
+LIBS += $$quote(D:\VTK\VTK-8.1.2\VTK-install\lib\vtkIOExport-8.1.lib)
+LIBS += $$quote(D:\VTK\VTK-8.1.2\VTK-install\lib\vtkIOExportOpenGL2-8.1.lib)
+LIBS += $$quote(D:\VTK\VTK-8.1.2\VTK-install\lib\vtkIOGeometry-8.1.lib)
+LIBS += $$quote(D:\VTK\VTK-8.1.2\VTK-install\lib\vtkIOImage-8.1.lib)
+LIBS += $$quote(D:\VTK\VTK-8.1.2\VTK-install\lib\vtkIOImport-8.1.lib)
+LIBS += $$quote(D:\VTK\VTK-8.1.2\VTK-install\lib\vtkIOInfovis-8.1.lib)
+LIBS += $$quote(D:\VTK\VTK-8.1.2\VTK-install\lib\vtkIOLegacy-8.1.lib)
+LIBS += $$quote(D:\VTK\VTK-8.1.2\VTK-install\lib\vtkIOLSDyna-8.1.lib)
+LIBS += $$quote(D:\VTK\VTK-8.1.2\VTK-install\lib\vtkIOMINC-8.1.lib)
+LIBS += $$quote(D:\VTK\VTK-8.1.2\VTK-install\lib\vtkIOMovie-8.1.lib)
+LIBS += $$quote(D:\VTK\VTK-8.1.2\VTK-install\lib\vtkIONetCDF-8.1.lib)
+LIBS += $$quote(D:\VTK\VTK-8.1.2\VTK-install\lib\vtkIOParallel-8.1.lib)
+LIBS += $$quote(D:\VTK\VTK-8.1.2\VTK-install\lib\vtkIOParallelXML-8.1.lib)
+LIBS += $$quote(D:\VTK\VTK-8.1.2\VTK-install\lib\vtkIOPLY-8.1.lib)
+LIBS += $$quote(D:\VTK\VTK-8.1.2\VTK-install\lib\vtkIOSQL-8.1.lib)
+LIBS += $$quote(D:\VTK\VTK-8.1.2\VTK-install\lib\vtkIOTecplotTable-8.1.lib)
+LIBS += $$quote(D:\VTK\VTK-8.1.2\VTK-install\lib\vtkIOVideo-8.1.lib)
+LIBS += $$quote(D:\VTK\VTK-8.1.2\VTK-install\lib\vtkIOXML-8.1.lib)
+LIBS += $$quote(D:\VTK\VTK-8.1.2\VTK-install\lib\vtkIOXMLParser-8.1.lib)
+LIBS += $$quote(D:\VTK\VTK-8.1.2\VTK-install\lib\vtkjpeg-8.1.lib)
+LIBS += $$quote(D:\VTK\VTK-8.1.2\VTK-install\lib\vtkjsoncpp-8.1.lib)
+LIBS += $$quote(D:\VTK\VTK-8.1.2\VTK-install\lib\vtklibharu-8.1.lib)
+LIBS += $$quote(D:\VTK\VTK-8.1.2\VTK-install\lib\vtklibxml2-8.1.lib)
+LIBS += $$quote(D:\VTK\VTK-8.1.2\VTK-install\lib\vtkLocalExample-8.1.lib)
+LIBS += $$quote(D:\VTK\VTK-8.1.2\VTK-install\lib\vtklz4-8.1.lib)
+LIBS += $$quote(D:\VTK\VTK-8.1.2\VTK-install\lib\vtkmetaio-8.1.lib)
+LIBS += $$quote(D:\VTK\VTK-8.1.2\VTK-install\lib\vtkNetCDF-8.1.lib)
+LIBS += $$quote(D:\VTK\VTK-8.1.2\VTK-install\lib\vtknetcdfcpp-8.1.lib)
+LIBS += $$quote(D:\VTK\VTK-8.1.2\VTK-install\lib\vtkoggtheora-8.1.lib)
+LIBS += $$quote(D:\VTK\VTK-8.1.2\VTK-install\lib\vtkParallelCore-8.1.lib)
+LIBS += $$quote(D:\VTK\VTK-8.1.2\VTK-install\lib\vtkpng-8.1.lib)
+LIBS += $$quote(D:\VTK\VTK-8.1.2\VTK-install\lib\vtkproj4-8.1.lib)
+LIBS += $$quote(D:\VTK\VTK-8.1.2\VTK-install\lib\vtkRenderingAnnotation-8.1.lib)
+LIBS += $$quote(D:\VTK\VTK-8.1.2\VTK-install\lib\vtkRenderingContext2D-8.1.lib)
+LIBS += $$quote(D:\VTK\VTK-8.1.2\VTK-install\lib\vtkRenderingContextOpenGL2-8.1.lib)
+LIBS += $$quote(D:\VTK\VTK-8.1.2\VTK-install\lib\vtkRenderingCore-8.1.lib)
+LIBS += $$quote(D:\VTK\VTK-8.1.2\VTK-install\lib\vtkRenderingFreeType-8.1.lib)
+LIBS += $$quote(D:\VTK\VTK-8.1.2\VTK-install\lib\vtkRenderingGL2PSOpenGL2-8.1.lib)
+LIBS += $$quote(D:\VTK\VTK-8.1.2\VTK-install\lib\vtkRenderingImage-8.1.lib)
+LIBS += $$quote(D:\VTK\VTK-8.1.2\VTK-install\lib\vtkRenderingLabel-8.1.lib)
+LIBS += $$quote(D:\VTK\VTK-8.1.2\VTK-install\lib\vtkRenderingLOD-8.1.lib)
+LIBS += $$quote(D:\VTK\VTK-8.1.2\VTK-install\lib\vtkRenderingOpenGL2-8.1.lib)
+LIBS += $$quote(D:\VTK\VTK-8.1.2\VTK-install\lib\vtkRenderingQt-8.1.lib)
+LIBS += $$quote(D:\VTK\VTK-8.1.2\VTK-install\lib\vtkRenderingVolume-8.1.lib)
+LIBS += $$quote(D:\VTK\VTK-8.1.2\VTK-install\lib\vtkRenderingVolumeOpenGL2-8.1.lib)
+LIBS += $$quote(D:\VTK\VTK-8.1.2\VTK-install\lib\vtksqlite-8.1.lib)
+LIBS += $$quote(D:\VTK\VTK-8.1.2\VTK-install\lib\vtksys-8.1.lib)
+LIBS += $$quote(D:\VTK\VTK-8.1.2\VTK-install\lib\vtkTestingGenericBridge-8.1.lib)
+LIBS += $$quote(D:\VTK\VTK-8.1.2\VTK-install\lib\vtkTestingIOSQL-8.1.lib)
+LIBS += $$quote(D:\VTK\VTK-8.1.2\VTK-install\lib\vtkTestingRendering-8.1.lib)
+LIBS += $$quote(D:\VTK\VTK-8.1.2\VTK-install\lib\vtktiff-8.1.lib)
+LIBS += $$quote(D:\VTK\VTK-8.1.2\VTK-install\lib\vtkverdict-8.1.lib)
+LIBS += $$quote(D:\VTK\VTK-8.1.2\VTK-install\lib\vtkViewsContext2D-8.1.lib)
+LIBS += $$quote(D:\VTK\VTK-8.1.2\VTK-install\lib\vtkViewsCore-8.1.lib)
+LIBS += $$quote(D:\VTK\VTK-8.1.2\VTK-install\lib\vtkViewsInfovis-8.1.lib)
+LIBS += $$quote(D:\VTK\VTK-8.1.2\VTK-install\lib\vtkViewsQt-8.1.lib)
+LIBS += $$quote(D:\VTK\VTK-8.1.2\VTK-install\lib\vtkzlib-8.1.lib)
 
 
 
 RESOURCES += \
     myresources.qrc
 
-LIBS+= -L/usr/local/lib \
--lvtkalglib-8.1 \
--lvtkChartsCore-8.1 \
--lvtkCommonColor-8.1 \
--lvtkCommonComputationalGeometry-8.1 \
--lvtkCommonCore-8.1 \
--lvtkCommonDataModel-8.1 \
--lvtkCommonExecutionModel-8.1 \
--lvtkCommonMath-8.1 \
--lvtkCommonMisc-8.1 \
--lvtkCommonSystem-8.1 \
--lvtkCommonTransforms-8.1 \
--lvtkDICOMParser-8.1 \
--lvtkDomainsChemistry-8.1 \
--lvtkDomainsChemistryOpenGL2-8.1 \
--lvtkexoIIc-8.1 \
--lvtkexpat-8.1 \
--lvtkFiltersAMR-8.1 \
--lvtkFiltersCore-8.1 \
--lvtkFiltersExtraction-8.1 \
--lvtkFiltersFlowPaths-8.1 \
--lvtkFiltersGeneral-8.1 \
--lvtkFiltersGeneric-8.1 \
--lvtkFiltersGeometry-8.1 \
--lvtkFiltersHybrid-8.1 \
--lvtkFiltersHyperTree-8.1 \
--lvtkFiltersImaging-8.1 \
--lvtkFiltersModeling-8.1 \
--lvtkFiltersParallel-8.1 \
--lvtkFiltersParallelImaging-8.1 \
--lvtkFiltersPoints-8.1 \
--lvtkFiltersProgrammable-8.1 \
--lvtkFiltersSelection-8.1 \
--lvtkFiltersSMP-8.1 \
--lvtkFiltersSources-8.1 \
--lvtkFiltersStatistics-8.1 \
--lvtkFiltersTexture-8.1 \
--lvtkFiltersTopology-8.1 \
--lvtkFiltersVerdict-8.1 \
--lvtkfreetype-8.1 \
--lvtkGeovisCore-8.1 \
--lvtkgl2ps-8.1 \
--lvtkglew-8.1 \
--lvtkGUISupportQt-8.1 \
--lvtkGUISupportQtSQL-8.1 \
--lvtkhdf5-8.1 \
--lvtkhdf5_hl-8.1 \
--lvtkImagingColor-8.1 \
--lvtkImagingCore-8.1 \
--lvtkImagingFourier-8.1 \
--lvtkImagingGeneral-8.1 \
--lvtkImagingHybrid-8.1 \
--lvtkImagingMath-8.1 \
--lvtkImagingMorphological-8.1 \
--lvtkImagingSources-8.1 \
--lvtkImagingStatistics-8.1 \
--lvtkImagingStencil-8.1 \
--lvtkInfovisCore-8.1 \
--lvtkInfovisLayout-8.1 \
--lvtkInteractionImage-8.1 \
--lvtkInteractionStyle-8.1 \
--lvtkInteractionWidgets-8.1 \
--lvtkIOAMR-8.1 \
--lvtkIOCore-8.1 \
--lvtkIOEnSight-8.1 \
--lvtkIOExodus-8.1 \
--lvtkIOExport-8.1 \
--lvtkIOExportOpenGL2-8.1 \
--lvtkIOGeometry-8.1 \
--lvtkIOImage-8.1 \
--lvtkIOImport-8.1 \
--lvtkIOInfovis-8.1 \
--lvtkIOLegacy-8.1 \
--lvtkIOLSDyna-8.1 \
--lvtkIOMINC-8.1 \
--lvtkIOMovie-8.1 \
--lvtkIONetCDF-8.1 \
--lvtkIOParallel-8.1 \
--lvtkIOParallelXML-8.1 \
--lvtkIOPLY-8.1 \
--lvtkIOSQL-8.1 \
--lvtkIOTecplotTable-8.1 \
--lvtkIOVideo-8.1 \
--lvtkIOXML-8.1 \
--lvtkIOXMLParser-8.1 \
--lvtkjpeg-8.1 \
--lvtkjsoncpp-8.1 \
--lvtklibharu-8.1 \
--lvtklibxml2-8.1 \
--lvtklz4-8.1 \
--lvtkmetaio-8.1 \
--lvtkNetCDF-8.1 \
--lvtknetcdfcpp-8.1 \
--lvtkoggtheora-8.1 \
--lvtkParallelCore-8.1 \
--lvtkpng-8.1 \
--lvtkproj4-8.1 \
--lvtkRenderingAnnotation-8.1 \
--lvtkRenderingContext2D-8.1 \
--lvtkRenderingContextOpenGL2-8.1 \
--lvtkRenderingCore-8.1 \
--lvtkRenderingFreeType-8.1 \
--lvtkRenderingGL2PSOpenGL2-8.1 \
--lvtkRenderingImage-8.1 \
--lvtkRenderingLabel-8.1 \
--lvtkRenderingLOD-8.1 \
--lvtkRenderingOpenGL2-8.1 \
--lvtkRenderingQt-8.1 \
--lvtkRenderingVolume-8.1 \
--lvtkRenderingVolumeOpenGL2-8.1 \
--lvtksqlite-8.1 \
--lvtksys-8.1 \
--lvtkTestingGenericBridge-8.1 \
--lvtkTestingIOSQL-8.1 \
--lvtkTestingRendering-8.1 \
--lvtktiff-8.1 \
--lvtkverdict-8.1 \
--lvtkViewsContext2D-8.1 \
--lvtkViewsCore-8.1 \
--lvtkViewsInfovis-8.1 \
--lvtkViewsQt-8.1 \
--lvtkzlib-8.1 \
 

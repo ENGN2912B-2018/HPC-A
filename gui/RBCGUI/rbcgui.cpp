@@ -3,7 +3,7 @@
 
 #include "rbcgui.h"
 #include "ui_rbcgui.h"
-#include "RBConvSim.h"
+
 #include "parameter_setting.h"
 
 #include<QtWidgets>
@@ -15,7 +15,7 @@
 
 #include <vtkRenderer.h>
 #include <vtkRenderWindow.h>
-//#include "vtkGenericOpenGLRenderWindow.h"
+#include "vtkGenericOpenGLRenderWindow.h"
 #include <vtkRenderWindowInteractor.h>
 
 #include <vtkNew.h>
@@ -40,7 +40,7 @@ RBCGUI::RBCGUI(QWidget *parent) :
     ui(new Ui::RBCGUI)
 {
     ui->setupUi(this);
-    QSurfaceFormat::setDefaultFormat(QVTKOpenGLWidget::defaultFormat());
+    //QSurfaceFormat::setDefaultFormat(QVTKOpenGLWidget::defaultFormat());
        //file menu
        QMenu *fileMenu = menuBar()->addMenu(tr("&File"));
        QMenu *editMenu = menuBar()->addMenu(tr("&Edit"));
@@ -94,8 +94,8 @@ RBCGUI::RBCGUI(QWidget *parent) :
 
        //widget window
 
-      /* vtkNew<vtkGenericOpenGLRenderWindow> renderWindow;//Allocate and hold a VTK object
-       this->qvtkWidget->SetRenderWindow(renderWindow);
+       vtkNew<vtkGenericOpenGLRenderWindow> renderWindow;//Allocate and hold a VTK object
+       ui->qvtkWidget->SetRenderWindow(renderWindow);
 
        vtkNew<vtkEventQtSlotConnect> slotConnector;
        this->Connections = slotConnector;
@@ -113,47 +113,13 @@ RBCGUI::RBCGUI(QWidget *parent) :
          vtkNew<vtkRenderer> renderer;
          renderer->AddActor(sphereActor);
 
-         this->qvtkWidget->GetRenderWindow()->AddRenderer(renderer);
+         ui->qvtkWidget->GetRenderWindow()->AddRenderer(renderer);
 
-         this->Connections->Connect(this->qvtkWidget->GetRenderWindow()->GetInteractor(),
+         this->Connections->Connect(ui->qvtkWidget->GetRenderWindow()->GetInteractor(),
          vtkCommand::LeftButtonPressEvent,
          this,
-         SLOT(slot_clicked(vtkObject*, unsigned long, void*, void*)));*/
+         SLOT(slot_clicked(vtkObject*, unsigned long, void*, void*)));
 
-
-
-
-
-
-
-
-
-
-       //[5]load vtk image
-       /*char* filename="/home/Qt_projects/RGCGUI/RBCexample.png";
-       vtkSmartPointer<vtkPNGReader> reader = vtkSmartPointer<vtkPNGReader>::New();
-       reader->SetFileName(filename);
-       //reader->Update();
-
-       vtkSmartPointer<vtkImageViewer2> viewer = vtkSmartPointer<vtkImageViewer2>::New();
-       viewer->SetInputConnection(reader->GetOutputPort());
-       //和ui文件中的 my_widget 对应
-       vtkSmartPointer<vtkRenderWindowInteractor>renderWindowInteractor = \
-               vtkSmartPointer<vtkRenderWindowInteractor>::New();
-       viewer->SetupInteractor(renderWindowInteractor);
-       viewer->SetRenderWindow(ui->qvtkWidget->GetRenderWindow());
-       viewer->Render();
-       viewer->GetRenderer()->ResetCamera();
-       viewer->Render();
-       renderWindowInteractor->Start();*/
-
-
-                                  //建立自己新建的类的对象xy1
-           /*if(this->paraWin.exec()==QDialog::Accepted)    //利用Accepted信号判断enterBtn是否被按下
-           {
-               paraWin.show();                        //如果被按下，显示主窗口
-                              //程序一直执行，直到主窗口关闭
-           }*/
 
 }
 
@@ -170,76 +136,60 @@ void RBCGUI::slot_clicked(vtkObject*, unsigned long, void*, void*)
   std::cout << "Clicked." << std::endl;
 }
 
-/*void RBCGUI::on_parameter_clicked()
-{
-
-    QDialog *dlg = new QDialog(this);
-    QWidget *paraSetting=new QWidget(this);
-        dlg->show();
-    //open a new window which contains all the parameters that can be modified.
-}*/
-
-
-
-/*void RBCGUI::loadFile(const QString &fileName)
-//! [42] //! [43]
-{
-    QFile file(fileName);
-    if (!file.open(QFile::ReadOnly | QFile::Text)) {
-        QMessageBox::warning(this, tr("Application"),
-                             tr("Cannot read file %1:\n%2.")
-                             .arg(QDir::toNativeSeparators(fileName), file.errorString()));
-        return;
-    }
-
-    QTextStream in(&file);
-#ifndef QT_NO_CURSOR
-    QApplication::setOverrideCursor(Qt::WaitCursor);
-#endif
-    textEdit->setPlainText(in.readAll());
-#ifndef QT_NO_CURSOR
-    QApplication::restoreOverrideCursor();
-#endif
-
-    //setCurQVTKOpenGLWidgetrentFile(fileName);
-    statusBar()->showMessage(tr("File loaded"), 2000);
-}*/
-
 
 void RBCGUI::on_para_setting_clicked()
-{
+{ 
+    bool REMOVE=QFile::remove("D:/Qt_projects/RBCGUI/files/transportProperties");
+    if(REMOVE==true)
+        cout<<"remove successful"<<endl;
+    else
+    {
+        cout<<"error"<<endl;
+    }
+    //initialize the parameter file
+    QFile FileIn("D:/Qt_projects/RBCGUI/transportProperties");
+    QFile FileOut("D:/Qt_projects/RBCGUI/files/transportProperties");
+    QString StrAll="";
+    QStringList StrList=QStringList();
 
-    paraWin=new Parameter_setting;
-    paraWin->show();
+    //read all contexts
+    if(!FileIn.open(QIODevice::ReadOnly|QIODevice::Text))
+    {
+        qDebug()<<"Can't open the file!"<<endl;
+    }
+    else
+    {
+
+        QTextStream StreamIn(&FileIn);
+        StrAll=StreamIn.readAll();
+        qDebug()<<StrAll;
+
+    }
+    FileIn.close();
+
+    if(!FileOut.open(QIODevice::WriteOnly|QIODevice::Text))
+    {
+        qDebug()<<"Can't write the file!"<<endl;
+    }
+    else
+    {
+        QTextStream StreamOut(&FileOut);
+        StrList=StrAll.split("\n");
+        for(int i=0;i<StrList.count();i++)
+        {
+            QString LINE=StrList.at(i);
+            StreamOut<<LINE<<endl;
+        }
+        FileOut.close();
+        StrAll="";
+        StrList=QStringList();
+        cout<<"load successful "<<endl;
+
+        paraWin=new Parameter_setting;
+        paraWin->show();
+    }
 }
 
-/*//VTK image data
-       // Create a green 50x50 imageData for demonstration purposes
-       vtkSmartPointer<vtkImageData> createDemoImageData()
-       {
-         vtkSmartPointer<vtkImageData> image = vtkSmartPointer<vtkImageData>::New();
-         image->SetDimensions( 50, 50, 1 );
 
-         int width = image->GetDimensions()[0];
-         int height = image->GetDimensions()[1];
-
-         for ( int y = 0; y < height; y++ )
-         {
-           for ( int x = 0; x < width; x++ )
-           {
-             unsigned char *pixel =
-               static_cast<unsigned char *>( image->GetScalarPointer( x, y, 0 ) );
-             pixel[0] = 0;
-             pixel[1] = 255;
-             pixel[2] = 0;
-           }
-         }
-
-         return image;
-       }*/
-
-
-
-//end
 
 
