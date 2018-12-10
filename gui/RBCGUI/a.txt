@@ -1,4 +1,0 @@
-hello
-my
-name
-is
