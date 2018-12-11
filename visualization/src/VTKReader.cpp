@@ -193,7 +193,7 @@ void RBVisualizer::mainVisualizer(){
         std::cout << "Range of current parameter: " << arrayParameterRange[0]
           << " " << arrayParameterRange[1] << endl;
         std::cout << "Range used in lut: " << parameterMin
-          << " " << parameterMin << endl;
+          << " " << parameterMax << endl;
         // std::cout << "Values of the float array: " << endl;
         // for(int i = 0; i < resolution*resolution; i++){
         //   std::cout << arrayTemperature->GetVariantValue(i) << " ";

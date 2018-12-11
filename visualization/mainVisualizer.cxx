@@ -2,11 +2,11 @@
 
 int main(int argc, char const *argv[]) {
   int colorScheme = 1;
-  int resolutionX = 40;
-  int resolutionY = 40;
+  int resolutionX = 100;
+  int resolutionY = 50;
   std::string filePath = "../../RBConvection/VTK";
   std::string parameterCode = "T";
-  int timeStep = 100;
+  int timeStep = 20;
   int timeMax = 2000;
   RBVisualizer testReader(colorScheme, resolutionX, resolutionY, filePath, parameterCode,
             timeStep, timeMax);
