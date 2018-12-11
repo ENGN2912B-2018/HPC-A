@@ -114,10 +114,59 @@ cd build
 ### Visualization: Generate the results
 In the `build/` directory, simply run `./mainVisualizer`.
 
+### GUI: Build a Qt project with Qt Creator: 
+We need to install Qt and VTK. The detailed installation guides are here: 
+[Qt Installation Guide](https://github.com/ENGN2912B-2018/HPC-A/blob/gui/Qt%20installation%20guide.md)
+[VTK Installation GUide](https://github.com/ENGN2912B-2018/HPC-A/blob/gui/VTK%20installation%20guide.md)
 
-## Usage documentation
+### GUI: Build a Qt project with CMake: 
+I use a simple "hello world" example to show the basic build instruction.
 
-Coming Soon!
+- **Create a directory for a Qt program and change into the directory:**
+```
+mkdir QtHelloWorld
+cd QtHelloWorld
+```
+
+- **Create a source code file:**
+
+```
+gedit main.cpp
+```
+- **Add your code, save the file and exit.**
+```
+#include <QApplication>
+#include <QLabel>
+#include <QWidget>
+int main(int argc, char *argv[ ])
+{
+QApplication app(argc, argv);
+QLabel hello("<center>Welcome to my first WikiHow Qt program</center>");
+hello.setWindowTitle("My First WikiHow Qt Program");
+hello.resize(400, 400);
+hello.show();
+return app.exec();
+}
+```
+
+
+- **Build and conpile the file:**
+
+**NOTE: you should in the QtHelloWorld directory to build and conpile the file.**
+
+```
+qmake -project
+qmake
+make
+```
+The first line will create the Qt project file.
+The second line will create the Qt make file.
+The last line will compile the Qt make file on your system into an executable program. At this point, providing that there are no errors the file should compile into an executable program.
+
+- **Run executable file:**
+
+ ./QtHelloWorld
+
 
 ## References
 https://openfoamwiki.net/index.php/FAQ/Installation_and_Running
@@ -138,4 +187,12 @@ https://github.com/UnnamedMoose/BasicOpenFOAMProgrammingTutorials
 [VTK Examples: Hawaii](https://lorensen.github.io/VTKExamples/site/Cxx/Visualization/Hawaii/)  
 [(PDF) VTK file formats](https://www.vtk.org/wp-content/uploads/2015/04/file-formats.pdf)  
 [(PDF) Simple Visualization of unstructured grids with VTK](https://hal.inria.fr/inria-00107738/document)
+
+Install Qt 5 on Ubuntu
+
+https://wiki.qt.io/Install_Qt_5_on_Ubuntu
+
+How to create your first qt program on Ubuntu Linux.
+
+https://www.wikihow.com/Create-Your-First-Qt-Program-on-Ubuntu-Linux
 
