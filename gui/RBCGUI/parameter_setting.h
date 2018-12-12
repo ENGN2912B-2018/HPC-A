@@ -21,22 +21,15 @@ private slots:
     void set_Beta();
     void set_TFloor();
     void set_Pr();
-    /*void set_alphat();
-    //physical constants
-    void set_g();
-    void set_transportProperties();
-    void set_turbulenceProperties();
-    //system directory
-    void set_blockMeshDict();
-    void set_controlDict();
-    void set_fvSolution();
-    void set_fvSchemes();
-    //warning and error*/
     void warningMessage();
     void errorMessage();
-    void invokeSet();
+    void invokeNuSet();
+    void invokeBetaSet();
+    void invokeTFloorSet();
+    void invokePrSet();
+    void applyChanges();
 signals:
-
+//void sendData(QString D1,QString D2,QString D3,QString D4);
 public slots:
 
 private:
@@ -46,18 +39,10 @@ private:
     QLabel *TFloor_label;
     QLabel *Pr_label;
     int setFlag=0;
-    double setValue=0;
-    /*QLabel *alphat_label;
-    //physical constants
-    QLabel *g_label;
-    QLabel *transportProperties_label;
-    QLabel *turbulenceProperties_label;
-    //system directory
-    QLabel *blockMeshDict_label;
-    QLabel *controlDict_label;
-    QLabel *fvSolution_label;
-    QLabel *fvSchemes_label;*/
-
+    QString setNuValue="0.000001";
+    QString setBetaValue="0.000214";
+    QString setTFloorValue="340.000000";
+    QString setPrValue="7.560000";
     //warning and error
     QLabel *warning_label;
     QLabel *error_label;

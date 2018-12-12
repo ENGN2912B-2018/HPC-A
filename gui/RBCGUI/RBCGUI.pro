@@ -27,14 +27,16 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += \
         main.cpp \
         rbcgui.cpp \
-    parameter_setting.cpp
+    parameter_setting.cpp \
+    VTKReader.cpp
 
 
 
 HEADERS += \
         rbcgui.h \
     parameter_setting.h \
-    parameter_setting.h
+    VTKReader.h
+
 
 
 
@@ -45,7 +47,7 @@ FORMS += \
 
 
 INCLUDEPATH += $$quote(D:\VTK\VTK-8.1.2\VTK-install\include\vtk-8.1) \
-               $$quote(D:\VTK\VTK-8.1.2\VTK-install\include\vtk-8.1\vtkObjectFactory.h)
+               $$quote(D:\VTK\VTK-8.1.2\VTK-install\include\vtk-8.1\vtkObjectFactory.h) \
 
 
 LIBS += $$quote(D:\VTK\VTK-8.1.2\VTK-install\lib\vtkalglib-8.1.lib)

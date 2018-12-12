@@ -21,9 +21,9 @@ internalField   uniform 280;
 boundaryField
 {
     floor
-    floor
-    floor
-        value           uniform 5
+    {
+        type            fixedValue;
+        value           uniform 340.000000;
     }
     ceiling
     {
@@ -41,9 +41,6 @@ boundaryField
 }
 
 // ************************************************************************* //
-
-
-
 
 
 

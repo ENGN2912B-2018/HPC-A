@@ -1,10 +1,10 @@
 #include "rbcgui.h"
 #include <QApplication>
 #include <QSurfaceFormat>
-
 #include <QVTKOpenGLWidget.h>
-
 #include"parameter_setting.h"
+
+
 int main(int argc, char *argv[])
 {
     QSurfaceFormat::setDefaultFormat(QVTKOpenGLWidget::defaultFormat());
