@@ -113,40 +113,7 @@ void RBVisualizer::readParameterMinMax(){
 
 RendererVector RBVisualizer::mainVisualizer(){
 
-  ///   Data Structres   ///
-  vtkSmartPointer<vtkPlaneSource> parameterPlane =
-    vtkSmartPointer<vtkPlaneSource>::New();
-
-  vtkSmartPointer<vtkUnstructuredGridReader> reader =
-    vtkSmartPointer<vtkUnstructuredGridReader>::New();
-
-  vtkSmartPointer<vtkCellData> cellData =
-    vtkSmartPointer<vtkCellData>::New();
-
-  // vtkSmartPointer<vtkIntArray> arrayID =
-  //   vtkSmartPointer<vtkIntArray>::New();
-
-  vtkSmartPointer<vtkFloatArray> arrayParameters =
-    vtkSmartPointer<vtkFloatArray>::New();
-
-  // vtkSmartPointer<vtkLookupTable> lutID =
-  //   vtkSmartPointer<vtkLookupTable>::New();
-
-  vtkSmartPointer<vtkLookupTable> lutParameter =
-    vtkSmartPointer<vtkLookupTable>::New();
-
-  vtkSmartPointer<vtkNamedColors> colors =
-    vtkSmartPointer<vtkNamedColors>::New();
-
-  vtkSmartPointer<vtkPolyDataMapper> mapper =
-    vtkSmartPointer<vtkPolyDataMapper>::New();
-
-  vtkSmartPointer<vtkActor> dataActor =
-    vtkSmartPointer<vtkActor>::New();
-
-  vtkSmartPointer<vtkRenderer> ren =
-    vtkSmartPointer<vtkRenderer>::New();
-
+ 
   vtkSmartPointer<vtkRenderWindow> renWin =
     vtkSmartPointer<vtkRenderWindow>::New();
 
@@ -154,6 +121,40 @@ RendererVector RBVisualizer::mainVisualizer(){
     vtkSmartPointer<vtkRenderWindowInteractor>::New();
 
   for(int fileIndex = timeStep; fileIndex <= timeMax; fileIndex += timeStep){
+	  ///   Data Structres   ///
+	  vtkSmartPointer<vtkPlaneSource> parameterPlane =
+		  vtkSmartPointer<vtkPlaneSource>::New();
+
+	  vtkSmartPointer<vtkUnstructuredGridReader> reader =
+		  vtkSmartPointer<vtkUnstructuredGridReader>::New();
+
+	  vtkSmartPointer<vtkCellData> cellData =
+		  vtkSmartPointer<vtkCellData>::New();
+
+	  // vtkSmartPointer<vtkIntArray> arrayID =
+	  //   vtkSmartPointer<vtkIntArray>::New();
+
+	  vtkSmartPointer<vtkFloatArray> arrayParameters =
+		  vtkSmartPointer<vtkFloatArray>::New();
+
+	  // vtkSmartPointer<vtkLookupTable> lutID =
+	  //   vtkSmartPointer<vtkLookupTable>::New();
+
+	  vtkSmartPointer<vtkLookupTable> lutParameter =
+		  vtkSmartPointer<vtkLookupTable>::New();
+
+	  vtkSmartPointer<vtkNamedColors> colors =
+		  vtkSmartPointer<vtkNamedColors>::New();
+
+	  vtkSmartPointer<vtkPolyDataMapper> mapper =
+		  vtkSmartPointer<vtkPolyDataMapper>::New();
+
+	  vtkSmartPointer<vtkActor> dataActor =
+		  vtkSmartPointer<vtkActor>::New();
+
+	  vtkSmartPointer<vtkRenderer> ren =
+		  vtkSmartPointer<vtkRenderer>::New();
+
       /////    Data manipulation    /////
       std::string fileName = filePath + "RBConvection_" +
         std::to_string(fileIndex) + ".vtk";

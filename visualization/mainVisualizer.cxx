@@ -14,9 +14,9 @@ int main(int argc, char const *argv[]) {
   testReader.setParameterMin(280);
   //testReader.mainVisualizer();
   RendererVector rendererOutput = testReader.mainVisualizer();
+  vtkSmartPointer<vtkRenderWindow> renWin =
+	  vtkSmartPointer<vtkRenderWindow>::New();
   for (auto it = rendererOutput.cbegin(); it != rendererOutput.cend(); it++) {
-	  vtkSmartPointer<vtkRenderWindow> renWin =
-		  vtkSmartPointer<vtkRenderWindow>::New();
 	  renWin->AddRenderer(*it);
 	  renWin->SetSize(400, 400);
 	  renWin->Render();
