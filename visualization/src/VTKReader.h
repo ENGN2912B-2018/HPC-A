@@ -35,7 +35,7 @@
 #include <chrono>
 #include <thread>
 
-
+typedef std::vector<vtkSmartPointer<vtkRenderer>> RendererVector;
 class RBVisualizer{
   public:
     // Constructors
@@ -64,21 +64,24 @@ class RBVisualizer{
 
     // Member methods
     void readParameterMinMax();
-    void mainVisualizer();
+    RendererVector mainVisualizer();
 
     // Methods for debugging
-    void coutDebugger(int debugMode);
+    //void coutDebugger(int debugMode);
 
   private:
-    int           colorScheme = 0;
-    int           resolutionX = 0;
-    int           resolutionY = 0;
-    int           timeStep = 0;
-    int           timeMax = 0;
-    std::string   filePath;
+    int				colorScheme = 0;
+    int				resolutionX = 0;
+    int				resolutionY = 0;
+    int				timeStep = 0;
+    int				timeMax = 0;
+    std::string		filePath;
     //double        parameterMinMax[2] = {0};
-    double        parameterMin;
-    double        parameterMax;
-    std::string   parameterCode;
+    double			parameterMin;
+    double			parameterMax;
+    std::string		parameterCode;
+	
+	RendererVector	rendererOutput;
+	
 
 };

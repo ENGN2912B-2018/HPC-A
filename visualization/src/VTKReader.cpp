@@ -111,7 +111,7 @@ void RBVisualizer::readParameterMinMax(){
     parameterMax = parameterMinMax[1];
 }
 
-void RBVisualizer::mainVisualizer(){
+RendererVector RBVisualizer::mainVisualizer(){
 
   ///   Data Structres   ///
   vtkSmartPointer<vtkPlaneSource> parameterPlane =
@@ -228,17 +228,18 @@ void RBVisualizer::mainVisualizer(){
 
       ren->AddActor(dataActor);
       ren->SetBackground(colors->GetColor3d("SlateGray").GetData());
+	  rendererOutput.push_back(ren);
 
-      renWin->AddRenderer(ren);
-      renWin->SetSize(800, 800);
+      //renWin->AddRenderer(ren);
+      //renWin->SetSize(400, 400);
 
-      iren->SetRenderWindow(renWin);
-      renWin->Render();
-      std::this_thread::sleep_for(std::chrono::milliseconds(500));
+      //iren->SetRenderWindow(renWin);
+      //renWin->Render();
+      //std::this_thread::sleep_for(std::chrono::milliseconds(16));
       //iren->Start();
 
   }
-
+  return rendererOutput;
 }
 
 
