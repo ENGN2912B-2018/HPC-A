@@ -85,9 +85,6 @@ RBCGUI::RBCGUI(QWidget *parent) :
     editMenu->addAction(moveAct);
     mainToolBar->addAction(moveAct);
 
-    //display the changed parameters
-    /*Parameter_setting *para=new Parameter_setting;
-    connect(para,SIGNAL(sendData(QString D1,QString D2,QString D3,QString D4)),this, SLOT(receiveData(QString data1, QString data2,QString data3,QString data4)));*/
 
 
     /*vtkNew<vtkGenericOpenGLRenderWindow> renderWindow;//Allocate and hold a VTK object
@@ -338,13 +335,48 @@ void RBCGUI::on_visualization_clicked()
     std::string parameterCode = "T";
     int timeStep = 20;
     int timeMax = 2000;
+    cout<<"done"<<endl;
     RBVisualizer visual(colorScheme, resolutionX, resolutionY, filePath, parameterCode,
                          timeStep, timeMax);
-    vtkNew<vtkGenericOpenGLRenderWindow> renderWindow;//Allocate and hold a VTK object
-    ui->qvtkWidget->SetRenderWindow(renderWindow);
+
+    cout<<"allocate done"<<endl;
+
+    cout<<"set render window done"<<endl;
     visual.readParameterMinMax();
+    cout<<"read done"<<endl;
     visual.setParameterMin(280);
-    visual.mainVisualizer();
-    vtkSmartPointer<vtkRenderer> renderer=visual.Get_Render();
-    ui->qvtkWidget->GetRenderWindow()->AddRenderer(renderer);
+    cout<<"set parameter done"<<endl;
+
+    vtkSmartPointer<vtkGenericOpenGLRenderWindow> renderWindow=
+            vtkSmartPointer<vtkGenericOpenGLRenderWindow>::New();//Allocate and hold a VTK object
+    vtkSmartPointer<vtkRenderWindow> renWin =
+            vtkSmartPointer<vtkRenderWindow>::New();
+
+    ui->qvtkWidget->SetRenderWindow(renderWindow);
+    RendererVector rendererOutput=visual.mainVisualizer();
+
+    cout<<"start to diaplay"<<endl;
+    int count=0;
+    vtkSmartPointer<vtkRenderer> ren=vtkSmartPointer<vtkRenderer>::New();
+    ren=rendererOutput.front();//it displays the last figure
+    /*for (auto it= rendererOutput.cbegin(); it != rendererOutput.cend(); it++)
+    {
+        count++;
+        //ui->qvtkWidget->GetRenderWindow()->AddRenderer(*it);
+        //ui->qvtkWidget->GetRenderWindow()->Render();
+        //cout<<"window is fine"<<endl;
+        //std::this_thread::sleep_for(std::chrono::milliseconds(16));
+        //cout<<"done"<<endl;
+        if(count==5)
+        {
+            vtkSmartPointer<vtkRenderer> ren=*it;
+            break;
+        }//when i try to break the loopl like this, it displays nothing.
+    }*/
+    ui->qvtkWidget->GetRenderWindow()->AddRenderer(ren);
+    ui->qvtkWidget->GetRenderWindow()->Render();
+    renWin->AddRenderer(ren);
+    renWin->Render();
+
+
 }

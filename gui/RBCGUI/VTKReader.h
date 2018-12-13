@@ -1,4 +1,4 @@
-#pragma once
+
 #include <vtkUnstructuredGridReader.h>
 #include <vtkUnstructuredGrid.h>
 
@@ -37,6 +37,7 @@
 #include <chrono>
 #include <thread>
 
+typedef std::vector<vtkSmartPointer<vtkRenderer>> RendererVector;
 
 class RBVisualizer {
 public:
@@ -56,7 +57,7 @@ public:
 	int getTimeMax() const;
 	double getParameterMin() const;
 	double getParameterMax() const;
-    vtkSmartPointer<vtkRenderer> Get_Render();
+
 
 	// Setters
 	void setColorScheme(int colors);
@@ -67,7 +68,7 @@ public:
 
 	// Member methods
 	void readParameterMinMax();
-	void mainVisualizer();
+    RendererVector mainVisualizer();
 
 	// Methods for debugging
 	void coutDebugger(int debugMode);
@@ -83,6 +84,6 @@ private:
 	double        parameterMin;
 	double        parameterMax;
 	std::string   parameterCode;
-    vtkSmartPointer<vtkRenderer> ren=vtkSmartPointer<vtkRenderer>::New();
-
+    //vtkSmartPointer<vtkRenderer> ren;
+    RendererVector	rendererOutput;
 };

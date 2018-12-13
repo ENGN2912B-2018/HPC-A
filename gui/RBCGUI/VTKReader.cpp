@@ -4,7 +4,7 @@
 #include <chrono>
 #include <thread>
 #include <iostream>
-
+using namespace std;
 #define DEBUG
 
 namespace
@@ -24,6 +24,8 @@ RBVisualizer::RBVisualizer() {
 	int           resolutionY = 0;
 	int           timeStep = 0;
     int           timeMax = 0;
+    //vtkSmartPointer<vtkRenderer> ren=vtkSmartPointer<vtkRenderer>::New();
+    //cout<<"default constructor"<<endl;
 }
 
 //default constructor
@@ -39,6 +41,7 @@ RBVisualizer::RBVisualizer(int colorScheme, int resolutionX, int resolutionY,
 	this->parameterCode = parameterCode;
 	this->timeStep = timeStep;
 	this->timeMax = timeMax;
+    cout<<"constructor done"<<endl;
 }
 
 RBVisualizer::~RBVisualizer() {}
@@ -71,10 +74,7 @@ double RBVisualizer::getParameterMin() const {
 	return parameterMin;
 }
 
-vtkSmartPointer<vtkRenderer> RBVisualizer::Get_Render()
-{
-    return ren;
-}
+
 
 void RBVisualizer::setColorScheme(int colors) {
 	colorScheme = colors;
@@ -117,7 +117,7 @@ void RBVisualizer::readParameterMinMax() {
 	parameterMax = parameterMinMax[1];
 }
 
-void RBVisualizer::mainVisualizer() {
+RendererVector RBVisualizer::mainVisualizer() {
 
 	///   Data Structres   ///
 	vtkSmartPointer<vtkPlaneSource> parameterPlane =
@@ -150,16 +150,17 @@ void RBVisualizer::mainVisualizer() {
 	vtkSmartPointer<vtkActor> dataActor =
 		vtkSmartPointer<vtkActor>::New();
 
-    /*vtkSmartPointer<vtkRenderer> ren =
-        vtkSmartPointer<vtkRenderer>::New();*/
+    vtkSmartPointer<vtkRenderer> ren =
+        vtkSmartPointer<vtkRenderer>::New();
 
     vtkSmartPointer<vtkRenderWindow> renWin =
         vtkSmartPointer<vtkRenderWindow>::New();
 
 	vtkSmartPointer<vtkRenderWindowInteractor> iren =
 		vtkSmartPointer<vtkRenderWindowInteractor>::New();
-
-	for (int fileIndex = timeStep; fileIndex <= timeMax; fileIndex += timeStep) {
+cout<<"renWin"<<endl;
+    for (int fileIndex = timeStep; fileIndex <= timeMax; fileIndex += timeStep)
+    {
 		/////    Data manipulation    /////
 		std::string fileName = filePath + "RBConvection_" +
 			std::to_string(fileIndex) + ".vtk";
@@ -167,7 +168,7 @@ void RBVisualizer::mainVisualizer() {
 		reader->SetFileName(fileName.c_str());
 		reader->SetFieldDataName("attributes");
 		reader->Update();
-
+cout<<"update done"<<endl;
 		// Achieve the Cell data
 		cellData = reader->GetOutput()->GetCellData();
 
@@ -177,7 +178,7 @@ void RBVisualizer::mainVisualizer() {
 		//arrayTemperature->SetName("Temperature");
 		double arrayParameterRange[2];
 		arrayParameters->GetRange(arrayParameterRange);
-
+cout<<"get range done"<<endl;
 		// Set up lookupTables
 		int tableSize = resolutionX * resolutionY + 1;
 		lutParameter->SetNumberOfTableValues(tableSize);
@@ -192,7 +193,7 @@ void RBVisualizer::mainVisualizer() {
 		parameterPlane->Update();
 		parameterPlane->GetOutput()->GetCellData()->SetScalars(arrayParameters);
 
-#ifdef DEBUG
+/*#ifdef DEBUG
 		std::cout << "Hello!" << endl;
 		// std::cout << "Range of arrayID: " << arrayIDRange[0]
 		//   << " " << arrayIDRange[1] << endl;
@@ -221,30 +222,33 @@ void RBVisualizer::mainVisualizer() {
 			tableColor[0] << " " << tableColor[1] << " " << tableColor[2] << std::endl;
 		lutParameter->GetColor(arrayParameterRange[1], tableColor);
 		std::cout << "The color of arrayParameterRange[1]: " <<
-			tableColor[0] << " " << tableColor[1] << " " << tableColor[2] << std::endl;
-#endif
+            tableColor[0] << " " << tableColor[1] << " " << tableColor[2] << std::endl;
+#endif*/
 
 		/////   Visualization Pipeline    /////
-
+cout<<"start pipeline"<<endl;
 		mapper->SetInputConnection(parameterPlane->GetOutputPort());
 		mapper->SetScalarRange(parameterMin, parameterMax);
 		mapper->SetLookupTable(lutParameter);
-
+cout<<"lookup table"<<endl;
 		dataActor->SetMapper(mapper);
-
+cout<<"set mapper"<<endl;
 		ren->AddActor(dataActor);
-		ren->SetBackground(colors->GetColor3d("SlateGray").GetData());
-
-		renWin->AddRenderer(ren);
-		renWin->SetSize(800, 800);
-
-		iren->SetRenderWindow(renWin);
-		renWin->Render();
-		std::this_thread::sleep_for(std::chrono::milliseconds(500));
+        rendererOutput.push_back(ren);
+        cout<<"add actor"<<endl;
+        //ren->SetBackground(colors->GetColor3d("SlateGray").GetData());
+//cout<<"set background"<<endl;
+       // renWin->AddRenderer(ren);
+//cout<<"add render "<<endl;
+        //renWin->SetSize(800, 800);
+//cout<<"set size"<<endl;
+        //iren->SetRenderWindow(renWin);
+        //renWin->Render();
+        //std::this_thread::sleep_for(std::chrono::milliseconds(500));
 		//iren->Start();
 
 	}
-
+return rendererOutput;
 }
 
 

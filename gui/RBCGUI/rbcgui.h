@@ -9,7 +9,7 @@
 #include "parameter_setting.h"
 
 
-
+typedef std::vector<vtkSmartPointer<vtkRenderer>> RendererVector;
 namespace Ui {
 class RBCGUI;
 }
@@ -22,6 +22,7 @@ public:
     explicit RBCGUI(QWidget *parent = 0);
     ~RBCGUI();
     void loadFile(const QString &fileName);
+
     //void slot_clicked(vtkObject*, unsigned long, void*, void*);
 private slots:
     void on_para_setting_clicked();
