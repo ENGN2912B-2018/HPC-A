@@ -4,9 +4,10 @@
 #include <chrono>
 #include <thread>
 #include <iostream>
+#include <omp.h>
 
-#define DEBUG
-
+//#define DEBUG
+#define CHRONO
 namespace
 {
 //! Create a lookup table.
@@ -38,6 +39,10 @@ RBVisualizer::RBVisualizer(int colorScheme, int resolutionX, int resolutionY,
     this->parameterCode = parameterCode;
     this->timeStep = timeStep;
     this->timeMax = timeMax;
+
+	// Initialize the vector with a fixed size
+	int vectorSize = (timeMax - timeStep) / timeStep + 1;
+	this->rendererOutput.resize(vectorSize);
 }
 
 RBVisualizer::~RBVisualizer(){}
@@ -113,14 +118,22 @@ void RBVisualizer::readParameterMinMax(){
 
 RendererVector RBVisualizer::mainVisualizer(){
 
- 
-  vtkSmartPointer<vtkRenderWindow> renWin =
-    vtkSmartPointer<vtkRenderWindow>::New();
+  #ifdef CHRONO
+	auto startTime = std::chrono::steady_clock::now();
+  #endif
 
-  vtkSmartPointer<vtkRenderWindowInteractor> iren =
-    vtkSmartPointer<vtkRenderWindowInteractor>::New();
+ // vtkSmartPointer<vtkRenderWindow> renWin =
+ //   vtkSmartPointer<vtkRenderWindow>::New();
 
+//  vtkSmartPointer<vtkRenderWindowInteractor> iren =
+ //   vtkSmartPointer<vtkRenderWindowInteractor>::New();
+
+ #pragma omp parallel for ordered schedule(static) num_threads(4)
   for(int fileIndex = timeStep; fileIndex <= timeMax; fileIndex += timeStep){
+	#ifdef CHRONO
+	  auto tic = std::chrono::steady_clock::now();
+	#endif
+
 	  ///   Data Structres   ///
 	  vtkSmartPointer<vtkPlaneSource> parameterPlane =
 		  vtkSmartPointer<vtkPlaneSource>::New();
@@ -187,7 +200,7 @@ RendererVector RBVisualizer::mainVisualizer(){
       parameterPlane->Update();
       parameterPlane->GetOutput()->GetCellData()->SetScalars(arrayParameters);
 
-      #ifdef DEBUG
+    	  #ifdef DEBUG
         std::cout << "Hello!" << endl;
         // std::cout << "Range of arrayID: " << arrayIDRange[0]
         //   << " " << arrayIDRange[1] << endl;
@@ -217,7 +230,7 @@ RendererVector RBVisualizer::mainVisualizer(){
         lutParameter->GetColor(arrayParameterRange[1], tableColor);
         std::cout << "The color of arrayParameterRange[1]: " <<
         tableColor[0] << " " << tableColor[1] << " " << tableColor[2] << std::endl;
-      #endif
+      #endif  
 
       /////   Visualization Pipeline    /////
 
@@ -229,8 +242,17 @@ RendererVector RBVisualizer::mainVisualizer(){
 
       ren->AddActor(dataActor);
       ren->SetBackground(colors->GetColor3d("SlateGray").GetData());
-	  rendererOutput.push_back(ren);
 
+	  #ifdef CHRONO
+		auto toc = std::chrono::steady_clock::now();
+		std::cout << "The runtime of executing chunk " << fileIndex << " is "
+			<< std::chrono::duration <double, std::milli>(toc - tic).count()
+			<< " ms" << std::endl;
+	  #endif
+
+	  //#pragma omp ordered
+		int currentVectorIndex = fileIndex / timeStep - 1;
+	  rendererOutput.at(currentVectorIndex) = ren;
       //renWin->AddRenderer(ren);
       //renWin->SetSize(400, 400);
 
@@ -238,14 +260,20 @@ RendererVector RBVisualizer::mainVisualizer(){
       //renWin->Render();
       //std::this_thread::sleep_for(std::chrono::milliseconds(16));
       //iren->Start();
-
+	  
   }
+  #ifdef CHRONO
+	auto endTime = std::chrono::steady_clock::now();
+	std::cout << "Total runtime is: "
+		<< std::chrono::duration <double, std::milli>(endTime - startTime).count()
+		<< " ms" << std::endl;
+  #endif	
   return rendererOutput;
 }
 
 
 
-// MakeLUT: Adopted from
+// MakeLUT: Adapted from
 // https://lorensen.github.io/VTKExamples/site/Cxx/Visualization/Hawaii/
 namespace
 {

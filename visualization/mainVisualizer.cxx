@@ -20,7 +20,7 @@ int main(int argc, char const *argv[]) {
 	  renWin->AddRenderer(*it);
 	  renWin->SetSize(400, 400);
 	  renWin->Render();
-	  std::this_thread::sleep_for(std::chrono::milliseconds(16));
+	  std::this_thread::sleep_for(std::chrono::milliseconds(40));
   }
   return EXIT_SUCCESS;
 }
