@@ -35,7 +35,17 @@
 #include <chrono>
 #include <thread>
 
-typedef std::vector<vtkSmartPointer<vtkRenderer>> RendererVector;
+
+typedef std::vector<vtkSmartPointer<vtkPlaneSource>>				PlaneSourceVector;
+typedef std::vector<vtkSmartPointer<vtkUnstructuredGridReader>>		UnstructuredGridReaderVector;
+typedef std::vector<vtkSmartPointer<vtkCellData>>					CellDataVector;
+typedef std::vector<vtkSmartPointer<vtkFloatArray>>					FloatArrayVector;
+typedef std::vector<vtkSmartPointer<vtkLookupTable>>				LookupTableVector;
+typedef std::vector<vtkSmartPointer<vtkNamedColors>>				NamedColorsVector;
+typedef std::vector<vtkSmartPointer<vtkPolyDataMapper>>				PolyDataMapperVector;
+typedef std::vector<vtkSmartPointer<vtkActor>>						ActorVector;
+typedef std::vector<vtkSmartPointer<vtkRenderer>>					RendererVector;
+
 class RBVisualizer{
   public:
     // Constructors
@@ -64,6 +74,8 @@ class RBVisualizer{
 
     // Member methods
     void readParameterMinMax();
+	template <typename T>
+	void vectorInitalizer(std::vector<vtkSmartPointer<T>>& pointerVector);
     RendererVector mainVisualizer();
 
     // Methods for debugging
@@ -75,13 +87,14 @@ class RBVisualizer{
     int				resolutionY = 0;
     int				timeStep = 0;
     int				timeMax = 0;
+	int				_vectorSize;
     std::string		filePath;
     //double        parameterMinMax[2] = {0};
     double			parameterMin;
     double			parameterMax;
     std::string		parameterCode;
 	
-	RendererVector	rendererOutput;
+	//RendererVector	rendererOutput;
 	
 
 };

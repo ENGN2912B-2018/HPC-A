@@ -1,5 +1,5 @@
 #include "VTKReader.h"
-
+//#define MULTI
 int main(int argc, char const *argv[]) {
   int colorScheme = 1;
   int resolutionX = 100;
@@ -17,6 +17,9 @@ int main(int argc, char const *argv[]) {
   vtkSmartPointer<vtkRenderWindow> renWin =
 	  vtkSmartPointer<vtkRenderWindow>::New();
   for (auto it = rendererOutput.cbegin(); it != rendererOutput.cend(); it++) {
+#ifdef MULTI
+	  std::cout << "Current ren: " << *it << std::endl;
+#endif
 	  renWin->AddRenderer(*it);
 	  renWin->SetSize(400, 400);
 	  renWin->Render();
