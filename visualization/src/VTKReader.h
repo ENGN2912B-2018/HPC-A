@@ -11,6 +11,7 @@
 #include <vtkIntArray.h>
 #include <vtkLookupTable.h>
 #include <vtkPlaneSource.h>
+#include <vtkScalarBarActor.h>
 #include <vtkScalarsToColors.h>
 #include <vtkVariant.h>
 #include <vtkVariantArray.h>
@@ -45,6 +46,7 @@ typedef std::vector<vtkSmartPointer<vtkNamedColors>>				NamedColorsVector;
 typedef std::vector<vtkSmartPointer<vtkPolyDataMapper>>				PolyDataMapperVector;
 typedef std::vector<vtkSmartPointer<vtkActor>>						ActorVector;
 typedef std::vector<vtkSmartPointer<vtkRenderer>>					RendererVector;
+typedef std::vector<vtkSmartPointer<vtkScalarBarActor>>				ScalarBarActorVector;
 
 class RBVisualizer{
   public:

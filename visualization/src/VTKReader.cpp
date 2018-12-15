@@ -138,6 +138,7 @@ RendererVector RBVisualizer::mainVisualizer(){
 	LookupTableVector				lutParameterVec(_vectorSize);
 	NamedColorsVector				colorsVec(_vectorSize);
 	PolyDataMapperVector			mapperVec(_vectorSize);
+	ScalarBarActorVector			scalarBarVec(_vectorSize);
 	ActorVector						dataActorVec(_vectorSize);
 	RendererVector					rendererOutput(_vectorSize);
 
@@ -148,6 +149,7 @@ RendererVector RBVisualizer::mainVisualizer(){
 	vectorInitalizer<vtkLookupTable>(lutParameterVec);
 	vectorInitalizer<vtkNamedColors>(colorsVec);
 	vectorInitalizer<vtkPolyDataMapper>(mapperVec);
+	vectorInitalizer<vtkScalarBarActor>(scalarBarVec);
 	vectorInitalizer<vtkActor>(dataActorVec);
 	vectorInitalizer<vtkRenderer>(rendererOutput);
 
@@ -157,7 +159,7 @@ RendererVector RBVisualizer::mainVisualizer(){
 //  vtkSmartPointer<vtkRenderWindowInteractor> iren =
  //   vtkSmartPointer<vtkRenderWindowInteractor>::New();
 
- #pragma omp parallel for ordered schedule(dynamic, 25) num_threads(4)
+ #pragma omp parallel for ordered schedule(guided) num_threads(2)
   for(int fileIndex = timeStep; fileIndex <= timeMax; fileIndex += timeStep){
 	#ifdef CHRONO
 	  auto tic = std::chrono::steady_clock::now();
@@ -207,9 +209,8 @@ RendererVector RBVisualizer::mainVisualizer(){
       readerVec.at(currentVectorIndex)->SetFieldDataName("attributes");
       readerVec.at(currentVectorIndex)->Update();
 #ifdef MULTI
-	  std::cout << "Current index: " << currentVectorIndex << std::endl;
-	  std::cout << "Current reader: " << readerVec.at(currentVectorIndex) << std::endl;
-	  std::cout << "Size of a reader: " << sizeof(*readerVec.at(currentVectorIndex)) << std::endl;
+	  int tid = omp_get_thread_num();
+	  std::cout << "Current thread: " << tid << endl;
 #endif
       // Achieve the Cell data
       cellDataVec.at(currentVectorIndex) = readerVec.at(currentVectorIndex)->GetOutput()->GetCellData();
@@ -231,7 +232,9 @@ RendererVector RBVisualizer::mainVisualizer(){
 
       parameterPlaneVec.at(currentVectorIndex)->SetXResolution(resolutionX);
       parameterPlaneVec.at(currentVectorIndex)->SetYResolution(resolutionY);
-
+	  parameterPlaneVec.at(currentVectorIndex)->SetOrigin(0, 0, 0);
+	  parameterPlaneVec.at(currentVectorIndex)->SetPoint1(resolutionX * 8, 0, 0);
+	  parameterPlaneVec.at(currentVectorIndex)->SetPoint2(0, resolutionY * 8, 0);
       parameterPlaneVec.at(currentVectorIndex)->Update();
       parameterPlaneVec.at(currentVectorIndex)->GetOutput()
 		  ->GetCellData()->SetScalars(arrayParametersVec.at(currentVectorIndex));
@@ -274,13 +277,23 @@ RendererVector RBVisualizer::mainVisualizer(){
       mapperVec.at(currentVectorIndex)->SetScalarRange(parameterMin, parameterMax);
       mapperVec.at(currentVectorIndex)->SetLookupTable(lutParameterVec.at(currentVectorIndex));
 
+	  scalarBarVec.at(currentVectorIndex)->SetLookupTable(mapperVec.at(currentVectorIndex)->GetLookupTable());
+	  scalarBarVec.at(currentVectorIndex)->SetTitle("Temperature");
+	  scalarBarVec.at(currentVectorIndex)->SetNumberOfLabels(4);
+	  //scalarBarVec.at(currentVectorIndex)->SetWidth(0.1);
+	  //scalarBarVec.at(currentVectorIndex)->SetHeight(0.6);
+	  //scalarBarVec.at(currentVectorIndex)->GetPositionCoordinate()->SetValue(resolutionX * 7, resolutionY * 1, 0);
+	  //scalarBarVec.at(currentVectorIndex)->GetPosition2Coordinate()->SetValue(resolutionX * 7.5, resolutionY * 7, 0);
+
+
       dataActorVec.at(currentVectorIndex)->SetMapper(mapperVec.at(currentVectorIndex));
 
 	  rendererOutput.at(currentVectorIndex)->AddActor(dataActorVec.at(currentVectorIndex));
+	  rendererOutput.at(currentVectorIndex)->AddActor2D(scalarBarVec.at(currentVectorIndex));
 	  rendererOutput.at(currentVectorIndex)->SetBackground(colorsVec.at(currentVectorIndex)->GetColor3d("SlateGray").GetData());
-#ifdef MULTI
-	  std::cout << "Current ren: " << rendererOutput.at(currentVectorIndex) << endl;
-#endif
+//#ifdef MULTI
+//	  std::cout << "Current ren: " << rendererOutput.at(currentVectorIndex) << endl;
+//#endif
 	  #ifdef CHRONO
 		auto toc = std::chrono::steady_clock::now();
 		std::cout << "The runtime of executing chunk " << fileIndex << " is "
@@ -349,18 +362,9 @@ void MakeLUT(int const& colorScheme, vtkLookupTable* lut)
       // Make the lookup table with a preset number of colours.
       vtkSmartPointer<vtkColorSeries> colorSeries =
         vtkSmartPointer<vtkColorSeries>::New();
-      colorSeries->SetNumberOfColors(8);
-      colorSeries->SetColorSchemeName("Hawaii");
-      colorSeries->SetColor(0, colors->GetColor3ub("turquoise_blue"));
-      colorSeries->SetColor(1, colors->GetColor3ub("sea_green_medium"));
-      colorSeries->SetColor(2, colors->GetColor3ub("sap_green"));
-      colorSeries->SetColor(3, colors->GetColor3ub("green_dark"));
-      colorSeries->SetColor(4, colors->GetColor3ub("tan"));
-      colorSeries->SetColor(5, colors->GetColor3ub("beige"));
-      colorSeries->SetColor(6, colors->GetColor3ub("light_beige"));
-      colorSeries->SetColor(7, colors->GetColor3ub("bisque"));
-      colorSeries->BuildLookupTable(lut, colorSeries->ORDINAL);
-      lut->SetNanColor(1, 0, 0, 1);
+	  lut->SetHueRange(0, 1);
+	  lut->SetSaturationRange(0, 1);
+	  lut->SetValueRange(0, 1.0);
   };
 }
 }
