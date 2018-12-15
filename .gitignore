@@ -2,6 +2,9 @@
 build*
 polyMesh
 
+# Data files
+data*
+
 # Deprecated files
 deprecated*
 
