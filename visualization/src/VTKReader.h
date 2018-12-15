@@ -11,6 +11,7 @@
 #include <vtkIntArray.h>
 #include <vtkLookupTable.h>
 #include <vtkPlaneSource.h>
+#include <vtkScalarBarActor.h>
 #include <vtkScalarsToColors.h>
 #include <vtkVariant.h>
 #include <vtkVariantArray.h>
@@ -35,6 +36,17 @@
 #include <chrono>
 #include <thread>
 
+
+typedef std::vector<vtkSmartPointer<vtkPlaneSource>>				PlaneSourceVector;
+typedef std::vector<vtkSmartPointer<vtkUnstructuredGridReader>>		UnstructuredGridReaderVector;
+typedef std::vector<vtkSmartPointer<vtkCellData>>					CellDataVector;
+typedef std::vector<vtkSmartPointer<vtkFloatArray>>					FloatArrayVector;
+typedef std::vector<vtkSmartPointer<vtkLookupTable>>				LookupTableVector;
+typedef std::vector<vtkSmartPointer<vtkNamedColors>>				NamedColorsVector;
+typedef std::vector<vtkSmartPointer<vtkPolyDataMapper>>				PolyDataMapperVector;
+typedef std::vector<vtkSmartPointer<vtkActor>>						ActorVector;
+typedef std::vector<vtkSmartPointer<vtkRenderer>>					RendererVector;
+typedef std::vector<vtkSmartPointer<vtkScalarBarActor>>				ScalarBarActorVector;
 
 class RBVisualizer{
   public:
@@ -64,21 +76,27 @@ class RBVisualizer{
 
     // Member methods
     void readParameterMinMax();
-    void mainVisualizer();
+	template <typename T>
+	void vectorInitalizer(std::vector<vtkSmartPointer<T>>& pointerVector);
+    RendererVector mainVisualizer();
 
     // Methods for debugging
-    void coutDebugger(int debugMode);
+    //void coutDebugger(int debugMode);
 
   private:
-    int           colorScheme = 0;
-    int           resolutionX = 0;
-    int           resolutionY = 0;
-    int           timeStep = 0;
-    int           timeMax = 0;
-    std::string   filePath;
+    int				colorScheme = 0;
+    int				resolutionX = 0;
+    int				resolutionY = 0;
+    int				timeStep = 0;
+    int				timeMax = 0;
+	int				_vectorSize;
+    std::string		filePath;
     //double        parameterMinMax[2] = {0};
-    double        parameterMin;
-    double        parameterMax;
-    std::string   parameterCode;
+    double			parameterMin;
+    double			parameterMax;
+    std::string		parameterCode;
+	
+	//RendererVector	rendererOutput;
+	
 
 };
