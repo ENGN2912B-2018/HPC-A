@@ -1,7 +1,7 @@
 
 # HPC-A
 ## Numerical Simulation and Visualization of 2D Rayleigh-Bénard Convection
-This project is a simulation software for 2D Rayleigh--Bénard Convection. The software takes the input
+This project is a simulation software for 2D Rayleigh-Bénard Convection. The software takes the input
 from user interface, uses numerical solver to compute the temperature and velocity field of fluids,
 simulates and visualizes the results of computation, and displays results in a graphical user interface.
 
@@ -38,6 +38,8 @@ We then copy the files from the tutorials directory in the openFOAM file set to 
 If you have already done this step, there is no need to repeat it.
 
 ### Simulation: Setting up the simulation
+
+#### 1. Create case directory
 In OpenFOAM, the details of a simulation are included in what is called a case directory. The version of openFOAM available on the Brown CCV, openFOAM 4.1, does not have a case directory for Rayleigh Benard convection, so we will create our own. First, navigate to the solver directory:
 
 `cd $FOAM_RUN/tutorials/heatTransfer/buoyantBoussinesqPimpleFoam/`
@@ -75,15 +77,6 @@ You can download the case directory from this Github repository, which is based 
 │   ├── uniform
 ```
 
-#### 1. Create Mesh
-Information regarding how to specify the geometry of a mesh can be found on the [OpenFOAM User Guide](https://cfd.direct/openfoam/user-guide/v4-mesh-description/).
-
-Once you are finished editing the file `blockMeshDict`, create the mesh by entering the following command in the case directory:
-
-`blockMesh`
-
-This will create the directory `polyMesh` in the `constant` directory. 
-
 #### 2. Enable file editing
 
 While in the `simulation` directory, create a build folder:
@@ -102,7 +95,7 @@ This should create the executable `set` in the `build` folder. Run the following
 
 `cp set $FOAM_RUN/tutorials/heatTransfer/buoyantBoussinesqPimpleFoam/RBConvection/constant`
 
-With this, the preparations to interface with OpenFOAM from C++ are finished. If you include the `RBConvSim.h` file in your C++ code, you can instantiate a simulation class, modify parameters, and run simulations from within C++.
+With this, the preparations to interface with OpenFOAM from C++ are finished. If you include the `RBConvSim.h` file in your C++ code, you can instantiate a simulation class, modify parameters, and run simulations from within C++. You can check that the simulation is functioning by running the `main` executable which was created by the `make` command.
 
 ### Visulization: Build instructions
 
@@ -121,10 +114,59 @@ cd build
 ### Visualization: Generate the results
 In the `build/` directory, simply run `./mainVisualizer`.
 
+### GUI: Build a Qt project with Qt Creator: 
+We need to install Qt and VTK. The detailed installation guides are here: 
+[Qt Installation Guide](https://github.com/ENGN2912B-2018/HPC-A/blob/gui/Qt%20installation%20guide.md)
+[VTK Installation GUide](https://github.com/ENGN2912B-2018/HPC-A/blob/gui/VTK%20installation%20guide.md)
 
-## Usage documentation
+### GUI: Build a Qt project with CMake: 
+I use a simple "hello world" example to show the basic build instruction.
 
-Coming Soon!
+- **Create a directory for a Qt program and change into the directory:**
+```
+mkdir QtHelloWorld
+cd QtHelloWorld
+```
+
+- **Create a source code file:**
+
+```
+gedit main.cpp
+```
+- **Add your code, save the file and exit.**
+```
+#include <QApplication>
+#include <QLabel>
+#include <QWidget>
+int main(int argc, char *argv[ ])
+{
+QApplication app(argc, argv);
+QLabel hello("<center>Welcome to my first WikiHow Qt program</center>");
+hello.setWindowTitle("My First WikiHow Qt Program");
+hello.resize(400, 400);
+hello.show();
+return app.exec();
+}
+```
+
+
+- **Build and conpile the file:**
+
+**NOTE: you should in the QtHelloWorld directory to build and conpile the file.**
+
+```
+qmake -project
+qmake
+make
+```
+The first line will create the Qt project file.
+The second line will create the Qt make file.
+The last line will compile the Qt make file on your system into an executable program. At this point, providing that there are no errors the file should compile into an executable program.
+
+- **Run executable file:**
+
+ ./QtHelloWorld
+
 
 ## References
 https://openfoamwiki.net/index.php/FAQ/Installation_and_Running
@@ -145,4 +187,12 @@ https://github.com/UnnamedMoose/BasicOpenFOAMProgrammingTutorials
 [VTK Examples: Hawaii](https://lorensen.github.io/VTKExamples/site/Cxx/Visualization/Hawaii/)  
 [(PDF) VTK file formats](https://www.vtk.org/wp-content/uploads/2015/04/file-formats.pdf)  
 [(PDF) Simple Visualization of unstructured grids with VTK](https://hal.inria.fr/inria-00107738/document)
+
+Install Qt 5 on Ubuntu
+
+https://wiki.qt.io/Install_Qt_5_on_Ubuntu
+
+How to create your first qt program on Ubuntu Linux.
+
+https://www.wikihow.com/Create-Your-First-Qt-Program-on-Ubuntu-Linux
 
