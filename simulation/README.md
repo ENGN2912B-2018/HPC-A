@@ -1,4 +1,4 @@
-#Simulation:
+# Simulation Set Up Instructions
 
 ## Getting started with openFOAM
 This section provides instructions for running openFOAM simulations on the Brown CCV Linux Redhat environment. First, the following commands should be entered into the terminal to load modules which are necessary for the project:
