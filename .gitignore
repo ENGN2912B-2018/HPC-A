@@ -8,6 +8,9 @@ data*
 # Deprecated files
 deprecated*
 
+# GUI files that belong to Yiming's branch
+gui/*
+
 # OpenFOAM ASCII files
 # RBConvection/*0/
 # !RBConvection/0/
