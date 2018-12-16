@@ -9,7 +9,7 @@ int main(int argc, char const *argv[]) {
   int colorScheme = 2;
   int resolutionX = 100;
   int resolutionY = 50;
-  std::string filePath = "C:\\Users\\Angio\\Documents\\Github-Repo\\RBC_Pr0.100000_Ra10000000.000000";
+  std::string filePath = "C:\\Users\\Angio\\Documents\\Github-Repo\\RBC_Pr0.100000_Ra100000000000.000000";
   //RBC_Pr0.100000_Ra10000000.000000
   std::string parameterCode = "T";
   int timeStep = 2;
@@ -36,7 +36,7 @@ int main(int argc, char const *argv[]) {
 }
 
 void visualizerScript(RBVisualizer& testReader, bool isViedoSave) {
-	if (isViedoSave = true) {
+	if (isViedoSave ==  true) {
 		RendererVector rendererOutput = testReader.mainVisualizer();
 		vtkSmartPointer<vtkRenderWindow> renWin =
 			vtkSmartPointer<vtkRenderWindow>::New();

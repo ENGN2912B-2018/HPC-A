@@ -1,3 +1,4 @@
+#pragma once
 #include <vtkUnstructuredGridReader.h>
 #include <vtkUnstructuredGrid.h>
 
@@ -58,8 +59,10 @@ class RBVisualizer{
     RBVisualizer(int colorScheme, int resolutionX, int resolutionY,
        std::string path, std::string parameter, int timeStep, int timeMax);
 
-    // Destrcutors
+    // Destrcutor
     ~RBVisualizer();
+
+
 
     // Getters
     int getColorScheme() const;
@@ -106,6 +109,21 @@ class RBVisualizer{
     double			_parameterMax;
     std::string		_parameterCode;
 	//RendererVector	rendererOutput;
+
+
 	
 
+};
+
+// Structs for error handling
+struct fileNotExistError : public std::exception {
+	const char * what() const throw() {
+		return "File not exist.";
+	}
+};
+
+struct pathNotExistError : public std::exception {
+	const char * what() const throw() {
+		return "Path not exist.";
+	}
 };

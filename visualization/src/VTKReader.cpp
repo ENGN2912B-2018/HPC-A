@@ -5,6 +5,9 @@
 #include <thread>
 #include <iostream>
 #include <omp.h>
+//#include <boost\filesystem.hpp>
+
+
 
 //#define DEBUG
 #define CHRONO
@@ -18,7 +21,10 @@ namespace
 void MakeLUT(int const& colorScheme, vtkLookupTable* lut);
 
 
-}
+} 
+
+//namespace fs = boost::filesystem;
+//boost::system::error_code ec;
 
 RBVisualizer::RBVisualizer(){
     int           colorScheme = 0;
@@ -35,7 +41,7 @@ RBVisualizer::RBVisualizer(int colorScheme, int resolutionX, int resolutionY,
     this->_resolutionY = resolutionY;
     this->_filePath    = filePath;
 	// The path of video saved is the same as the path of .vtk files at default
-	this->_savePath	  = filePath;
+	this->setSavePath(filePath);
     if(this->_filePath.back() != '/'){
       this->_filePath.push_back('/');
 	  this->_savePath.push_back('/');
@@ -51,7 +57,9 @@ RBVisualizer::RBVisualizer(int colorScheme, int resolutionX, int resolutionY,
 	this->_vectorSize = (timeMax - timeStep) / timeStep + 1;
 }
 
+// No need to define a destrctor because all variables in VTK are smartpointers
 RBVisualizer::~RBVisualizer(){}
+
 
 /////	Getters		/////
 
@@ -115,6 +123,11 @@ void RBVisualizer::setParameterMax(double max){
 
 void RBVisualizer::setSavePath(std::string savePath){
 	_savePath = savePath;
+	// Create the path if it does not exist
+	//fs::path boostPath(_savePath);
+	//if (!fs::exists(boostPath)) {
+	//	fs::create_directory(boostPath);
+	//}
 }
 
 void RBVisualizer::setSaveName(std::string saveName) {
@@ -149,6 +162,14 @@ void RBVisualizer::readParameterMinMax(){
       vtkSmartPointer<vtkUnstructuredGridReader>::New();
     std::string fileName = _filePath + "RBConvection_" +
       std::to_string(_timeMax) + ".vtk";
+	/*fs::path boostPath(_filePath);
+	fs::path boostFile(fileName);
+	if (!exists(boostPath)) {
+		throw pathNotExistError();
+	}
+	if (!exists(boostFile) || !fs::is_regular_file(boostFile)) {
+		throw fileNotExistError();
+	}*/
     reader->SetFileName(fileName.c_str());
     reader->SetFieldDataName("attributes");
     reader->Update();
@@ -314,9 +335,9 @@ RendererVector RBVisualizer::mainVisualizer(){
 	  // Set up a scalar bar(legend) on the render window
 	  scalarBarVec.at(currentVectorIndex)->SetLookupTable(mapperVec.at(currentVectorIndex)->GetLookupTable());
 	  if (_parameterCode == "T")
-		  scalarBarVec.at(currentVectorIndex)->SetTitle("Temperature");
+		  scalarBarVec.at(currentVectorIndex)->SetTitle("Temperature(K)");
 	  else if (_parameterCode == "mag(U)")
-		  scalarBarVec.at(currentVectorIndex)->SetTitle("Velocity");
+		  scalarBarVec.at(currentVectorIndex)->SetTitle("Velocity(m/s)");
 
 	  scalarBarVec.at(currentVectorIndex)->SetNumberOfLabels(4);
 	  scalarBarVec.at(currentVectorIndex)->SetWidth(0.1);
