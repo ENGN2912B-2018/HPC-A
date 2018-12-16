@@ -89,4 +89,4 @@ The controlDict file in the case directory included in this repository has alrea
 
 To make it easier to transfer the data files to a different location, we recommend zipping them first. A sample zip command is shown below.
 
-`zip -r myfile.zip myfile`
+`zip -r example.zip example`
