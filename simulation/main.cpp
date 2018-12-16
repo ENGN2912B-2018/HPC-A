@@ -17,7 +17,7 @@ int main() {
         double Rav [3] = {1e7, 1e9, 1e11};
 	double Beta, Nu, TFloor, Pr, Ra, deltaT;
 	double g = 9.81, h = .5, TCeil = 280;
-	string command;
+	string command, save_loc;
 
 	cout << "Instantiate Simulation Object (automatically checks setters)" << endl;
 	RBConvSim test;
@@ -46,7 +46,8 @@ int main() {
 	        test.runSimulation();
 	        cout << "Simulation Successful" << endl;
 		//save files
-	       	command = "cd $FOAM_RUN/tutorials/heatTransfer/buoyantBoussinesqPimpleFoam/RBConvection && cp -R -rf VTK ~/scratch/project/HPC-A/data/RBC_Pr"+to_string(Pr)+"_Ra"+ to_string(Ra);
+		save_loc = "~/scratch/project/HPC-A/data/";
+	       	command = "cd $FOAM_RUN/tutorials/heatTransfer/buoyantBoussinesqPimpleFoam/RBConvection && cp -R -rf VTK"+ save_loc + "RBC_Pr"+to_string(Pr)+"_Ra"+ to_string(Ra);
 		system(command.c_str());
 	    }
 	}
