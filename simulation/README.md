@@ -7,9 +7,11 @@ This section provides instructions for running openFOAM simulations on the Brown
 
 `module load openfoam/4.1`
 
-Then, the following command should be run. Please note that this needs to be run each time a new ccv session is started.
+Then, the following command should be run.
 
 `source $FOAM_INST_DIR/OpenFOAM-4.1/etc/bashrc`
+
+Please note that the previous three commands need to be run each time a new CCV session is started.
 
 If this is the first time you are using openFOAM, you must make a copy of the openFOAM tutorial files which you have permission to edit. To do this, we use the following command to create a destination directory to which we will copy the tutorial files:
 
@@ -19,7 +21,7 @@ We then copy the files from the tutorials directory in the openFOAM file set to 
 
 `cp -r $FOAM_TUTORIALS $FOAM_RUN`
 
-If you have already done this step, there is no need to repeat it.
+If you have already created the run directory and copied the tutorial files, there is no need to repeat it.
 
 ## Simulation: Setting up the simulation
 
@@ -81,4 +83,6 @@ This should create the executable `set` in the `build` folder. Run the following
 
 With this, the preparations to interface with OpenFOAM from C++ are finished. If you include the `RBConvSim.h` file in your C++ code, you can instantiate a simulation class, modify parameters, and run simulations from within C++.
 
-You can then run simulations for various cases using the `main` executable which was created by the `make` command.
+### 3. Creating data sets
+
+The controlsDict file in the case directory included in this repository has already been modified to create vtk-compatible data files. In order to generate data sets, first create a directory in the , You can then run simulations for various cases using the `main` executable which was created by the `make` command.
