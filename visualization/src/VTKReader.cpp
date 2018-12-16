@@ -30,77 +30,125 @@ RBVisualizer::RBVisualizer(){
 
 RBVisualizer::RBVisualizer(int colorScheme, int resolutionX, int resolutionY,
    std::string filePath, std::string parameterCode, int timeStep, int timeMax){
-    this->colorScheme = colorScheme;
-    this->resolutionX = resolutionX;
-    this->resolutionY = resolutionY;
-    this->filePath    = filePath;
-    if(this->filePath.back() != '/'){
-      this->filePath.push_back('/');
+    this->_colorScheme = colorScheme;
+    this->_resolutionX = resolutionX;
+    this->_resolutionY = resolutionY;
+    this->_filePath    = filePath;
+	// The path of video saved is the same as the path of .vtk files at default
+	this->_savePath	  = filePath;
+    if(this->_filePath.back() != '/'){
+      this->_filePath.push_back('/');
+	  this->_savePath.push_back('/');
     }
-    this->parameterCode = parameterCode;
-    this->timeStep = timeStep;
-    this->timeMax = timeMax;
+	// The parameterCode should be initialized before the name of video
+	this->_parameterCode = parameterCode;
+	this->setSaveNameDefault();
+    
+    this->_timeStep = timeStep;
+    this->_timeMax = timeMax;
 
 	// Initialize the vector with a fixed size
 	this->_vectorSize = (timeMax - timeStep) / timeStep + 1;
-	//this->rendererOutput.resize(_vectorSize);
 }
 
 RBVisualizer::~RBVisualizer(){}
 
+/////	Getters		/////
+
 int RBVisualizer::getColorScheme() const{
-    return colorScheme;
+    return _colorScheme;
 }
 
 int RBVisualizer::getResolutionX() const{
-    return resolutionX;
+    return _resolutionX;
 }
 
 int RBVisualizer::getResolutionY() const{
-    return resolutionY;
+    return _resolutionY;
 }
 
 int RBVisualizer::getTimeStep() const{
-    return timeStep;
+    return _timeStep;
 }
 
 int RBVisualizer::getTimeMax() const{
-    return timeMax;
+    return _timeMax;
 }
 
 double RBVisualizer::getParameterMax() const{
-    return parameterMax;
+    return _parameterMax;
 }
 
 double RBVisualizer::getParameterMin() const{
-    return parameterMin;
+    return _parameterMin;
 }
 
+std::string RBVisualizer::getSavePath() const {
+	return _savePath;
+}
+
+std::string RBVisualizer::getSaveName() const {
+	return _saveName;
+}
+
+/////	 Setters	/////
+
 void RBVisualizer::setColorScheme(int colors){
-    colorScheme = colors;
+    _colorScheme = colors;
 }
 
 void RBVisualizer::setResolutionX(int resoX){
-    resolutionX = resoX;
+    _resolutionX = resoX;
 }
 
 void RBVisualizer::setResolutionY(int resoY){
-    resolutionY = resoY;
+    _resolutionY = resoY;
 }
 
 void RBVisualizer::setParameterMin(double min){
-    parameterMin = min;
+    _parameterMin = min;
 }
 
 void RBVisualizer::setParameterMax(double max){
-    parameterMax = max;
+    _parameterMax = max;
 }
 
+void RBVisualizer::setSavePath(std::string savePath){
+	_savePath = savePath;
+}
+
+void RBVisualizer::setSaveName(std::string saveName) {
+	_saveName = saveName;
+}
+
+void RBVisualizer::setSaveNameDefault() {
+	// Setting the name of video by default: 
+	// "RBConvection_<attribute>(velocity/temperature)_localtime.avi"
+	time_t rawTime;
+	struct tm* timeInfo;
+	time(&rawTime);
+	timeInfo = localtime(&rawTime);
+	std::string year = std::to_string(1900 + timeInfo->tm_year);
+	std::string month = std::to_string(1 + timeInfo->tm_mon);
+	std::string day = std::to_string(timeInfo->tm_mday);
+	std::string hour = std::to_string(1 + timeInfo->tm_hour);
+	std::string minute = std::to_string(1 + timeInfo->tm_min);
+	//std::string second = std::to_string(1 + timeInfo->tm_sec);
+	std::string attributeName;
+	if (_parameterCode == "mag(U)")
+		attributeName = "Velocity_";
+	else
+		attributeName = "Temperature_";
+	_saveName = "RBConvection_" + attributeName + year + month + day + hour + minute + ".avi";
+}
+
+
 void RBVisualizer::readParameterMinMax(){
+
     vtkSmartPointer<vtkUnstructuredGridReader> reader =
       vtkSmartPointer<vtkUnstructuredGridReader>::New();
-    std::string fileName = filePath + "RBConvection_" +
-      std::to_string(timeMax) + ".vtk";
+    std::string fileName = _filePath + "RBConvection_" +
+      std::to_string(_timeMax) + ".vtk";
     reader->SetFileName(fileName.c_str());
     reader->SetFieldDataName("attributes");
     reader->Update();
@@ -110,11 +158,26 @@ void RBVisualizer::readParameterMinMax(){
     vtkSmartPointer<vtkFloatArray> arrayParameters =
       vtkSmartPointer<vtkFloatArray>::New();
     arrayParameters =
-      vtkFloatArray::SafeDownCast(cellData->GetAbstractArray(parameterCode.c_str()));
+      vtkFloatArray::SafeDownCast(cellData->GetAbstractArray(_parameterCode.c_str()));
     double parameterMinMax[2];
     arrayParameters->GetRange(parameterMinMax);
-    //parameterMin = parameterMinMax[0];
-    parameterMax = parameterMinMax[1];
+	_parameterMax = parameterMinMax[1];
+	if (_parameterCode == "mag(U)") {
+		_parameterMin = 0;
+	}
+	else if(_parameterCode == "T"){
+		std::string fileName = _filePath + "RBConvection_" +
+			std::to_string(_timeStep) + ".vtk";
+		reader->SetFileName(fileName.c_str());
+		reader->Update();
+		cellData = reader->GetOutput()->GetCellData();
+		arrayParameters =
+			vtkFloatArray::SafeDownCast(cellData->GetAbstractArray(_parameterCode.c_str()));
+		arrayParameters->GetRange(parameterMinMax);
+		_parameterMin = parameterMinMax[01];
+	}
+
+    
 }
 
 template <typename T>
@@ -123,6 +186,8 @@ void RBVisualizer::vectorInitalizer(std::vector<vtkSmartPointer<T>>& pointerVect
 		pointerVector.at(initializerIndex) = vtkSmartPointer<T>::New();
 	}
 }
+
+
 
 RendererVector RBVisualizer::mainVisualizer(){
 #ifdef CHRONO
@@ -160,48 +225,16 @@ RendererVector RBVisualizer::mainVisualizer(){
  //   vtkSmartPointer<vtkRenderWindowInteractor>::New();
 
  #pragma omp parallel for ordered schedule(guided) num_threads(2)
-  for(int fileIndex = timeStep; fileIndex <= timeMax; fileIndex += timeStep){
+  for(int fileIndex = _timeStep; fileIndex <= _timeMax; fileIndex += _timeStep){
 	#ifdef CHRONO
 	  auto tic = std::chrono::steady_clock::now();
 	#endif
-	  int currentVectorIndex = fileIndex / timeStep - 1;
+	  int currentVectorIndex = fileIndex / _timeStep - 1;
 
-	  ///   Data Structres   ///
-	  //vtkSmartPointer<vtkPlaneSource> parameterPlane =
-		 // vtkSmartPointer<vtkPlaneSource>::New();
-
-	  //vtkSmartPointer<vtkUnstructuredGridReader> reader =
-		 // vtkSmartPointer<vtkUnstructuredGridReader>::New();
-
-	  //vtkSmartPointer<vtkCellData> cellData =
-		 // vtkSmartPointer<vtkCellData>::New();
-
-	  //// vtkSmartPointer<vtkIntArray> arrayID =
-	  ////   vtkSmartPointer<vtkIntArray>::New();
-
-	  //vtkSmartPointer<vtkFloatArray> arrayParameters =
-		 // vtkSmartPointer<vtkFloatArray>::New();
-
-	  //// vtkSmartPointer<vtkLookupTable> lutID =
-	  ////   vtkSmartPointer<vtkLookupTable>::New();
-
-	  //vtkSmartPointer<vtkLookupTable> lutParameter =
-		 // vtkSmartPointer<vtkLookupTable>::New();
-
-	  //vtkSmartPointer<vtkNamedColors> colors =
-		 // vtkSmartPointer<vtkNamedColors>::New();
-
-	  //vtkSmartPointer<vtkPolyDataMapper> mapper =
-		 // vtkSmartPointer<vtkPolyDataMapper>::New();
-
-	  //vtkSmartPointer<vtkActor> dataActor =
-		 // vtkSmartPointer<vtkActor>::New();
-
-	  //vtkSmartPointer<vtkRenderer> ren =
-		 // vtkSmartPointer<vtkRenderer>::New();
+	  
 
       /////    Data manipulation    /////
-      std::string fileName = filePath + "RBConvection_" +
+      std::string fileName = _filePath + "RBConvection_" +
         std::to_string(fileIndex) + ".vtk";
       std::cout << "Loading " << fileName.c_str() << std::endl;
 
@@ -217,24 +250,24 @@ RendererVector RBVisualizer::mainVisualizer(){
 
       // Ge the array using SafeDownCast()
       arrayParametersVec.at(currentVectorIndex) =
-        vtkFloatArray::SafeDownCast(cellDataVec.at(currentVectorIndex)->GetAbstractArray(parameterCode.c_str()));
+        vtkFloatArray::SafeDownCast(cellDataVec.at(currentVectorIndex)->GetAbstractArray(_parameterCode.c_str()));
       //arrayTemperature->SetName("Temperature");
       double arrayParameterRange[2];
       arrayParametersVec.at(currentVectorIndex)->GetRange(arrayParameterRange);
 
       // Set up lookupTables
-      int tableSize = resolutionX*resolutionY + 1;
+      int tableSize = _resolutionX*_resolutionY + 1;
       lutParameterVec.at(currentVectorIndex)->SetNumberOfTableValues(tableSize);
       // Set up the color schemes
-      MakeLUT(colorScheme, lutParameterVec.at(currentVectorIndex));
-      lutParameterVec.at(currentVectorIndex)->SetTableRange(parameterMin, parameterMax);
+      MakeLUT(_colorScheme, lutParameterVec.at(currentVectorIndex));
+      lutParameterVec.at(currentVectorIndex)->SetTableRange(_parameterMin, _parameterMax);
       lutParameterVec.at(currentVectorIndex)->Build();
 
-      parameterPlaneVec.at(currentVectorIndex)->SetXResolution(resolutionX);
-      parameterPlaneVec.at(currentVectorIndex)->SetYResolution(resolutionY);
+      parameterPlaneVec.at(currentVectorIndex)->SetXResolution(_resolutionX);
+      parameterPlaneVec.at(currentVectorIndex)->SetYResolution(_resolutionY);
 	  parameterPlaneVec.at(currentVectorIndex)->SetOrigin(0, 0, 0);
-	  parameterPlaneVec.at(currentVectorIndex)->SetPoint1(resolutionX * 8, 0, 0);
-	  parameterPlaneVec.at(currentVectorIndex)->SetPoint2(0, resolutionY * 8, 0);
+	  parameterPlaneVec.at(currentVectorIndex)->SetPoint1(_resolutionX * 8, 0, 0);
+	  parameterPlaneVec.at(currentVectorIndex)->SetPoint2(0, _resolutionY * 8, 0);
       parameterPlaneVec.at(currentVectorIndex)->Update();
       parameterPlaneVec.at(currentVectorIndex)->GetOutput()
 		  ->GetCellData()->SetScalars(arrayParametersVec.at(currentVectorIndex));
@@ -274,14 +307,20 @@ RendererVector RBVisualizer::mainVisualizer(){
       /////   Visualization Pipeline    /////
 
       mapperVec.at(currentVectorIndex)->SetInputConnection(parameterPlaneVec.at(currentVectorIndex)->GetOutputPort());
-      mapperVec.at(currentVectorIndex)->SetScalarRange(parameterMin, parameterMax);
+      mapperVec.at(currentVectorIndex)->SetScalarRange(_parameterMin, _parameterMax);
       mapperVec.at(currentVectorIndex)->SetLookupTable(lutParameterVec.at(currentVectorIndex));
 
+
+	  // Set up a scalar bar(legend) on the render window
 	  scalarBarVec.at(currentVectorIndex)->SetLookupTable(mapperVec.at(currentVectorIndex)->GetLookupTable());
-	  scalarBarVec.at(currentVectorIndex)->SetTitle("Temperature");
+	  if (_parameterCode == "T")
+		  scalarBarVec.at(currentVectorIndex)->SetTitle("Temperature");
+	  else if (_parameterCode == "mag(U)")
+		  scalarBarVec.at(currentVectorIndex)->SetTitle("Velocity");
+
 	  scalarBarVec.at(currentVectorIndex)->SetNumberOfLabels(4);
-	  //scalarBarVec.at(currentVectorIndex)->SetWidth(0.1);
-	  //scalarBarVec.at(currentVectorIndex)->SetHeight(0.6);
+	  scalarBarVec.at(currentVectorIndex)->SetWidth(0.1);
+	  scalarBarVec.at(currentVectorIndex)->SetHeight(0.6);
 	  //scalarBarVec.at(currentVectorIndex)->GetPositionCoordinate()->SetValue(resolutionX * 7, resolutionY * 1, 0);
 	  //scalarBarVec.at(currentVectorIndex)->GetPosition2Coordinate()->SetValue(resolutionX * 7.5, resolutionY * 7, 0);
 
@@ -291,9 +330,6 @@ RendererVector RBVisualizer::mainVisualizer(){
 	  rendererOutput.at(currentVectorIndex)->AddActor(dataActorVec.at(currentVectorIndex));
 	  rendererOutput.at(currentVectorIndex)->AddActor2D(scalarBarVec.at(currentVectorIndex));
 	  rendererOutput.at(currentVectorIndex)->SetBackground(colorsVec.at(currentVectorIndex)->GetColor3d("SlateGray").GetData());
-//#ifdef MULTI
-//	  std::cout << "Current ren: " << rendererOutput.at(currentVectorIndex) << endl;
-//#endif
 	  #ifdef CHRONO
 		auto toc = std::chrono::steady_clock::now();
 		std::cout << "The runtime of executing chunk " << fileIndex << " is "
@@ -359,9 +395,6 @@ void MakeLUT(int const& colorScheme, vtkLookupTable* lut)
       break;
     }
     case 2:
-      // Make the lookup table with a preset number of colours.
-      vtkSmartPointer<vtkColorSeries> colorSeries =
-        vtkSmartPointer<vtkColorSeries>::New();
 	  lut->SetHueRange(0, 1);
 	  lut->SetSaturationRange(0, 1);
 	  lut->SetValueRange(0, 1.0);

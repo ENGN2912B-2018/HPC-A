@@ -18,6 +18,7 @@
 
 #include <vtkActor.h>
 #include <vtkActor2D.h>
+#include <vtkAVIWriter.h>
 #include <vtkCamera.h>
 #include <vtkColorSeries.h>
 #include <vtkDataSetMapper.h>
@@ -35,6 +36,7 @@
 #include <string>
 #include <chrono>
 #include <thread>
+#include <time.h> 
 
 
 typedef std::vector<vtkSmartPointer<vtkPlaneSource>>				PlaneSourceVector;
@@ -47,6 +49,7 @@ typedef std::vector<vtkSmartPointer<vtkPolyDataMapper>>				PolyDataMapperVector;
 typedef std::vector<vtkSmartPointer<vtkActor>>						ActorVector;
 typedef std::vector<vtkSmartPointer<vtkRenderer>>					RendererVector;
 typedef std::vector<vtkSmartPointer<vtkScalarBarActor>>				ScalarBarActorVector;
+typedef std::vector<vtkSmartPointer<vtkRenderWindow>>				RenderWindowVector;
 
 class RBVisualizer{
   public:
@@ -66,6 +69,8 @@ class RBVisualizer{
     int getTimeMax() const;
     double getParameterMin() const;
     double getParameterMax() const;
+	std::string getSavePath() const;
+	std::string getSaveName() const;
 
     // Setters
     void setColorScheme(int colors);
@@ -73,29 +78,33 @@ class RBVisualizer{
     void setResolutionY(int resoY);
     void setParameterMin(double min);
     void setParameterMax(double max);
+	void setSavePath(std::string savePath);
+	void setSaveName(std::string saveName);
+	void RBVisualizer::setSaveNameDefault();
 
     // Member methods
     void readParameterMinMax();
 	template <typename T>
 	void vectorInitalizer(std::vector<vtkSmartPointer<T>>& pointerVector);
     RendererVector mainVisualizer();
-
+	//void mainVideoSaver();
     // Methods for debugging
     //void coutDebugger(int debugMode);
 
   private:
-    int				colorScheme = 0;
-    int				resolutionX = 0;
-    int				resolutionY = 0;
-    int				timeStep = 0;
-    int				timeMax = 0;
+    int				_colorScheme = 0;
+    int				_resolutionX = 0;
+    int				_resolutionY = 0;
+    int				_timeStep = 0;
+    int				_timeMax = 0;
 	int				_vectorSize;
-    std::string		filePath;
+    std::string		_filePath;
+	std::string		_savePath;
+	std::string		_saveName;
     //double        parameterMinMax[2] = {0};
-    double			parameterMin;
-    double			parameterMax;
-    std::string		parameterCode;
-	
+    double			_parameterMin;
+    double			_parameterMax;
+    std::string		_parameterCode;
 	//RendererVector	rendererOutput;
 	
 
