@@ -62,7 +62,7 @@ functions{
         
         writeControl    writeTime;
         writeInterval   1;
-        objects         (mag(U) T phi alphat p p_rgh);
+        objects         (mag(U) T);
     }
 }
 
