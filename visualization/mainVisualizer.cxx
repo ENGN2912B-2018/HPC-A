@@ -6,37 +6,49 @@
 #define DEBUG
 void visualizerScript(RBVisualizer& testReader, bool isVideoSave);
 int main(int argc, char const *argv[]) {
-	//if (argc < 7) {
-	//	std::cout << "Usage: ./mainVisualizer <path>"
-	//		" <parameterCode> <timeStep> <timeMax> <colorScheme> <isVideoSave>"
-	//		<< std::endl;
-	//	std::cout << "The deafult parameter sets will be used." << std::endl;
-	//	int colorScheme = 2;
-	//	std::string filePath = "C:\\Users\\Angio\\Documents\\Github-Repo\\RBC_Pr0.100000_Ra100000000000.000000";
-	//	std::string parameterCode = "T";
-	//	int timeStep = 2;
-	//	int timeMax = 2000;
-	//	bool isVideoSave = true;
-	//	//RBC_Pr0.100000_Ra10000000.000000
-	//}
-	//else {
 
-	//}
-	//std::cout << "=====		2D Rayleigh-B¨¦nard Convection Visualizer	=====" << std::endl;
-	//std::cout << "Developed by Yang Jiao, Yiming Li and Kit Sum Wu" << std::endl;
-	//std::cout << "\n\n Enter 0 to use the default "
-	//std::cout << "Enter the path of your .vtk files";
-	//std::string filePath;
-	//std::cin >> filePath;
-  int colorScheme = 2;
-  std::string filePath = "C:\\Users\\Angio\\Documents\\Github-Repo\\RBC_Pr0.100000_Ra100000000000.000000";
-  std::string parameterCode = "T";
-  int timeStep = 2;
-  int timeMax = 2000;
-  bool isVideoSave = true;
-  int resolutionX = 100;
-  int resolutionY = 50;
-  
+	int colorScheme = 2;
+	std::string filePath = "C:\\Users\\Angio\\Documents\\Github-Repo\\RBC_Pr0.100000_Ra100000000000.000000";
+	std::string parameterCode = "T";
+	int timeStep = 2;
+	int timeMax = 2000;
+	bool isVideoSave = true;
+	std::cout << "=====		2D Rayleigh-B¨¦nard Convection Visualizer	=====" << std::endl;
+	std::cout << "Developed by Yang Jiao, Yiming Li and Kit Sum Wu" << std::endl;
+	std::cout << "\n\nEnter 0 to use the default parameter set:";
+	int parameterSet;
+	std::cin >> parameterSet;
+	if (parameterSet == 0) {
+		// Do nothing
+	}
+	else {
+		std::cout << "Enter the path of your .vtk files: ";
+		std::cin >> filePath;
+		std::cout << "Enter the parameter code. " << std::endl;
+		std::cout << "0 for temperature, and others for velocity magnitude: ";
+		int paraCode = 0;
+		std::cin >> paraCode;
+		if (paraCode == 0)
+			parameterCode = "T";
+		else
+			parameterCode = "mag(U)";
+		std::cout << "Enter the time step: ";
+		std::cin >> timeStep;
+		std::cout << "Enter the maximal time of simulation: ";
+		std::cin >> timeMax;
+		std::cout << "Do you want to save the video?" << std::endl;
+		std::cout << "Enter 0 to save, others not to save : ";
+		int isSave;
+		std::cin >> isSave;
+		if (isSave == 0)
+			isVideoSave = true;
+		else
+			isVideoSave = false;
+	}
+
+
+	int resolutionX = 100;
+	int resolutionY = 50;
  
   
   try {

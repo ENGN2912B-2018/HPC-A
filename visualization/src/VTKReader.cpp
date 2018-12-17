@@ -386,7 +386,7 @@ RendererVector RBVisualizer::mainVisualizer(){
 
 	  rendererOutput.at(currentVectorIndex)->AddActor(dataActorVec.at(currentVectorIndex));
 	  rendererOutput.at(currentVectorIndex)->AddActor2D(scalarBarVec.at(currentVectorIndex));
-	  //rendererOutput.at(currentVectorIndex)->SetBackground(colorsVec.at(currentVectorIndex)->GetColor3d("SlateGray").GetData());
+	  rendererOutput.at(currentVectorIndex)->SetBackground(0.44, 0.502, 0.565);
 	  #ifdef CHRONO
 		auto toc = std::chrono::steady_clock::now();
 		std::cout << "The runtime of executing chunk " << fileIndex << " is "
