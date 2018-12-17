@@ -34,6 +34,9 @@
 #include <vtkCellIterator.h>
 #include <vtkCellTypes.h>
 
+#include <vtkDirectory.h>
+#include <vtkPSystemTools.h>
+
 #include <string>
 #include <chrono>
 #include <thread>
