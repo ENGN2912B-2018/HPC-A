@@ -178,8 +178,10 @@ void RBVisualizer::readParameterMinMax(){
 
     vtkSmartPointer<vtkUnstructuredGridReader> reader =
       vtkSmartPointer<vtkUnstructuredGridReader>::New();
-    std::string fileName = _filePath + "RBConvection_" +
+    std::string fileNameMax = _filePath + "RBConvection_" +
       std::to_string(_timeMax) + ".vtk";
+	std::string fileNameMin = _filePath + "RBConvection_" +
+		std::to_string(_timeStep) + ".vtk";
 
 	vtkSmartPointer<vtkDirectory> currentPath =
 		vtkSmartPointer<vtkDirectory>::New();
@@ -193,11 +195,15 @@ void RBVisualizer::readParameterMinMax(){
 	if (!openIndicator) {
 		throw pathNotExistError();
 	}
-	ifstream currentFile(fileName.c_str());
-	if (!currentFile.good()) {
+	ifstream currentFileMin(fileNameMin.c_str());
+	if (!currentFileMin.good()) {
 		throw fileNotExistError();
 	}
-    reader->SetFileName(fileName.c_str());
+	ifstream currentFileMax(fileNameMax.c_str());
+	if (!currentFileMax.good()) {
+		throw fileNotExistError();
+	}
+    reader->SetFileName(fileNameMax.c_str());
     reader->SetFieldDataName("attributes");
     reader->Update();
     vtkSmartPointer<vtkCellData> cellData =
@@ -210,13 +216,14 @@ void RBVisualizer::readParameterMinMax(){
     double parameterMinMax[2];
     arrayParameters->GetRange(parameterMinMax);
 	_parameterMax = parameterMinMax[1];
+
+
 	if (_parameterCode == "mag(U)") {
 		_parameterMin = 0;
 	}
 	else if(_parameterCode == "T"){
-		std::string fileName = _filePath + "RBConvection_" +
-			std::to_string(_timeStep) + ".vtk";
-		reader->SetFileName(fileName.c_str());
+
+		reader->SetFileName(fileNameMin.c_str());
 		reader->Update();
 		cellData = reader->GetOutput()->GetCellData();
 		arrayParameters =
@@ -273,6 +280,8 @@ RendererVector RBVisualizer::mainVisualizer(){
 
 //  vtkSmartPointer<vtkRenderWindowInteractor> iren =
  //   vtkSmartPointer<vtkRenderWindowInteractor>::New();
+	
+
 
  #pragma omp parallel for ordered schedule(guided) num_threads(2)
   for(int fileIndex = _timeStep; fileIndex <= _timeMax; fileIndex += _timeStep){
@@ -286,8 +295,6 @@ RendererVector RBVisualizer::mainVisualizer(){
       /////    Data manipulation    /////
       std::string fileName = _filePath + "RBConvection_" +
         std::to_string(fileIndex) + ".vtk";
-      std::cout << "Loading " << fileName.c_str() << std::endl;
-
       readerVec.at(currentVectorIndex)->SetFileName(fileName.c_str());
       readerVec.at(currentVectorIndex)->SetFieldDataName("attributes");
       readerVec.at(currentVectorIndex)->Update();
@@ -379,7 +386,7 @@ RendererVector RBVisualizer::mainVisualizer(){
 
 	  rendererOutput.at(currentVectorIndex)->AddActor(dataActorVec.at(currentVectorIndex));
 	  rendererOutput.at(currentVectorIndex)->AddActor2D(scalarBarVec.at(currentVectorIndex));
-	  rendererOutput.at(currentVectorIndex)->SetBackground(colorsVec.at(currentVectorIndex)->GetColor3d("SlateGray").GetData());
+	  rendererOutput.at(currentVectorIndex)->SetBackground(0.44, 0.502, 0.565);
 	  #ifdef CHRONO
 		auto toc = std::chrono::steady_clock::now();
 		std::cout << "The runtime of executing chunk " << fileIndex << " is "
