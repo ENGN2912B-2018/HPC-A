@@ -30,7 +30,7 @@ deltaT          .5;
 writeControl    timeStep;
 
 
-writeInterval   40;
+writeInterval   4;
 
 
 purgeWrite      0;
@@ -62,7 +62,7 @@ functions{
         
         writeControl    writeTime;
         writeInterval   1;
-        objects         (U T phi alphat p p_rgh);
+        objects         (mag(U) T);
     }
 }
 

@@ -38,7 +38,7 @@ boundaryField
         value           $internalField;
     }
 
-    fixedWalls
+    frontAndBack
     {
         type            empty;
     }

@@ -4,9 +4,14 @@
 #include <chrono>
 #include <thread>
 #include <iostream>
+#include <omp.h>
+#include <fstream>
 
-#define DEBUG
 
+//#define DEBUG
+#define CHRONO
+#define MULTI
+#define ERROR
 namespace
 {
 //! Create a lookup table.
@@ -16,7 +21,9 @@ namespace
 void MakeLUT(int const& colorScheme, vtkLookupTable* lut);
 
 
-}
+} 
+
+
 
 RBVisualizer::RBVisualizer(){
     int           colorScheme = 0;
@@ -28,74 +35,182 @@ RBVisualizer::RBVisualizer(){
 
 RBVisualizer::RBVisualizer(int colorScheme, int resolutionX, int resolutionY,
    std::string filePath, std::string parameterCode, int timeStep, int timeMax){
-    this->colorScheme = colorScheme;
-    this->resolutionX = resolutionX;
-    this->resolutionY = resolutionY;
-    this->filePath    = filePath;
-    if(this->filePath.back() != '/'){
-      this->filePath.push_back('/');
+    this->_colorScheme = colorScheme;
+    this->_resolutionX = resolutionX;
+    this->_resolutionY = resolutionY;
+    this->_filePath    = filePath;
+	// The path of video saved is the same as the path of .vtk files at default
+#ifdef ERROR
+	std::cout << "Calling the constructor..." << std::endl;
+#endif
+#ifdef _WIN32
+	this->setSavePath(filePath);
+#endif
+    if(this->_filePath.back() != '/'){
+      this->_filePath.push_back('/');
+#ifdef _WIN32
+	  this->_savePath.push_back('/');
+#endif
     }
-    this->parameterCode = parameterCode;
-    this->timeStep = timeStep;
-    this->timeMax = timeMax;
+	// The parameterCode should be initialized before the name of video
+	this->_parameterCode = parameterCode;
+#ifdef _WIN32
+	this->setSaveNameDefault();
+#endif
+
+    this->_timeStep = timeStep;
+    this->_timeMax = timeMax;
+
+	// Initialize the vector with a fixed size
+	this->_vectorSize = (timeMax - timeStep) / timeStep + 1;
 }
 
+// No need to define a destrctor because all variables in VTK are smartpointers
 RBVisualizer::~RBVisualizer(){}
 
+
+/////	Getters		/////
+
 int RBVisualizer::getColorScheme() const{
-    return colorScheme;
+    return _colorScheme;
 }
 
 int RBVisualizer::getResolutionX() const{
-    return resolutionX;
+    return _resolutionX;
 }
 
 int RBVisualizer::getResolutionY() const{
-    return resolutionY;
+    return _resolutionY;
 }
 
 int RBVisualizer::getTimeStep() const{
-    return timeStep;
+    return _timeStep;
 }
 
 int RBVisualizer::getTimeMax() const{
-    return timeMax;
+    return _timeMax;
 }
 
 double RBVisualizer::getParameterMax() const{
-    return parameterMax;
+    return _parameterMax;
 }
 
 double RBVisualizer::getParameterMin() const{
-    return parameterMin;
+    return _parameterMin;
+}
+#ifdef _WIN32
+std::string RBVisualizer::getSavePath() const {
+	return _savePath;
 }
 
+std::string RBVisualizer::getSaveName() const {
+	return _saveName;
+}
+#endif
+
+/////	 Setters	/////
+
 void RBVisualizer::setColorScheme(int colors){
-    colorScheme = colors;
+    _colorScheme = colors;
 }
 
 void RBVisualizer::setResolutionX(int resoX){
-    resolutionX = resoX;
+    _resolutionX = resoX;
 }
 
 void RBVisualizer::setResolutionY(int resoY){
-    resolutionY = resoY;
+    _resolutionY = resoY;
 }
 
 void RBVisualizer::setParameterMin(double min){
-    parameterMin = min;
+    _parameterMin = min;
 }
 
 void RBVisualizer::setParameterMax(double max){
-    parameterMax = max;
+    _parameterMax = max;
+}
+#ifdef _WIN32
+void RBVisualizer::setSavePath(std::string savePath){
+#ifdef ERROR
+	std::cout << "Calling the setSavePath()..." << std::endl;
+#endif
+	_savePath = savePath;
+	// Create the path if it does not exist
+	vtkSmartPointer<vtkDirectory> currentPath =
+		vtkSmartPointer<vtkDirectory>::New();
+
+	int openIndicator = currentPath->Open(_savePath.c_str());
+	if (!openIndicator && _savePath == _filePath) {
+		std::cout << "Hey! Exception!" << std::endl;
+		throw pathNotExistError();
+	}
+	else {
+		currentPath->MakeDirectory(_savePath.c_str());
+	}
+#ifdef ERROR
+	std::cout << "Done calling the setSavePath()..." << std::endl;
+#endif
 }
 
+void RBVisualizer::setSaveName(std::string saveName) {
+	_saveName = saveName;
+}
+
+void RBVisualizer::setSaveNameDefault() {
+	// Setting the name of video by default: 
+	// "RBConvection_<attribute>(velocity/temperature)_localtime.avi"
+	time_t rawTime;
+	struct tm* timeInfo;
+	time(&rawTime);
+	timeInfo = localtime(&rawTime);
+	std::string year = std::to_string(1900 + timeInfo->tm_year);
+	std::string month = std::to_string(1 + timeInfo->tm_mon);
+	std::string day = std::to_string(timeInfo->tm_mday);
+	std::string hour = std::to_string(1 + timeInfo->tm_hour);
+	std::string minute = std::to_string(1 + timeInfo->tm_min);
+	//std::string second = std::to_string(1 + timeInfo->tm_sec);
+	std::string attributeName;
+	if (_parameterCode == "mag(U)")
+		attributeName = "Velocity_";
+	else
+		attributeName = "Temperature_";
+	_saveName = "RBConvection_" + attributeName + year + month + day + hour + minute + ".avi";
+}
+#endif
+
 void RBVisualizer::readParameterMinMax(){
+#ifdef ERROR
+	std::cout << "Calling the readParameterMinMax()..." << std::endl;
+#endif
+
     vtkSmartPointer<vtkUnstructuredGridReader> reader =
       vtkSmartPointer<vtkUnstructuredGridReader>::New();
-    std::string fileName = filePath + "RBConvection_" +
-      std::to_string(timeMax) + ".vtk";
-    reader->SetFileName(fileName.c_str());
+    std::string fileNameMax = _filePath + "RBConvection_" +
+      std::to_string(_timeMax) + ".vtk";
+	std::string fileNameMin = _filePath + "RBConvection_" +
+		std::to_string(_timeStep) + ".vtk";
+
+	vtkSmartPointer<vtkDirectory> currentPath =
+		vtkSmartPointer<vtkDirectory>::New();
+#ifdef ERROR
+	std::cout << "Calling the vtkDirectory->Open()..." << std::endl;
+#endif
+	int openIndicator = currentPath->Open(_filePath.c_str());
+#ifdef ERROR
+	std::cout << "Done calling the vtkDirectory->Open()..." << std::endl;
+#endif
+	if (!openIndicator) {
+		throw pathNotExistError();
+	}
+	ifstream currentFileMin(fileNameMin.c_str());
+	if (!currentFileMin.good()) {
+		throw fileNotExistError();
+	}
+	ifstream currentFileMax(fileNameMax.c_str());
+	if (!currentFileMax.good()) {
+		throw fileNotExistError();
+	}
+    reader->SetFileName(fileNameMax.c_str());
     reader->SetFieldDataName("attributes");
     reader->Update();
     vtkSmartPointer<vtkCellData> cellData =
@@ -104,96 +219,131 @@ void RBVisualizer::readParameterMinMax(){
     vtkSmartPointer<vtkFloatArray> arrayParameters =
       vtkSmartPointer<vtkFloatArray>::New();
     arrayParameters =
-      vtkFloatArray::SafeDownCast(cellData->GetAbstractArray(parameterCode.c_str()));
+      vtkFloatArray::SafeDownCast(cellData->GetAbstractArray(_parameterCode.c_str()));
     double parameterMinMax[2];
     arrayParameters->GetRange(parameterMinMax);
-    //parameterMin = parameterMinMax[0];
-    parameterMax = parameterMinMax[1];
+	_parameterMax = parameterMinMax[1];
+
+
+	if (_parameterCode == "mag(U)") {
+		_parameterMin = 0;
+	}
+	else if(_parameterCode == "T"){
+
+		reader->SetFileName(fileNameMin.c_str());
+		reader->Update();
+		cellData = reader->GetOutput()->GetCellData();
+		arrayParameters =
+			vtkFloatArray::SafeDownCast(cellData->GetAbstractArray(_parameterCode.c_str()));
+		arrayParameters->GetRange(parameterMinMax);
+		_parameterMin = parameterMinMax[0];
+	}
+
+#ifdef ERROR
+	std::cout << "Done calling the readParameterMinMax()..." << std::endl;
+#endif
 }
 
-void RBVisualizer::mainVisualizer(){
+template <typename T>
+void RBVisualizer::vectorInitalizer(std::vector<vtkSmartPointer<T>>& pointerVector) {
+	for (int initializerIndex = 0; initializerIndex < _vectorSize; initializerIndex ++){
+		pointerVector.at(initializerIndex) = vtkSmartPointer<T>::New();
+	}
+}
 
-  ///   Data Structres   ///
-  vtkSmartPointer<vtkPlaneSource> parameterPlane =
-    vtkSmartPointer<vtkPlaneSource>::New();
 
-  vtkSmartPointer<vtkUnstructuredGridReader> reader =
-    vtkSmartPointer<vtkUnstructuredGridReader>::New();
 
-  vtkSmartPointer<vtkCellData> cellData =
-    vtkSmartPointer<vtkCellData>::New();
+RendererVector RBVisualizer::mainVisualizer(){
+#ifdef CHRONO
+	auto startTime = std::chrono::steady_clock::now();
+	cout << "Hello!" << endl;
+#endif
+  
+	///		Data Structures (Vector Version)	///
+	PlaneSourceVector				parameterPlaneVec(_vectorSize);
+	UnstructuredGridReaderVector	readerVec(_vectorSize);
+	CellDataVector					cellDataVec(_vectorSize);
+	FloatArrayVector				arrayParametersVec(_vectorSize);
+	LookupTableVector				lutParameterVec(_vectorSize);
+	NamedColorsVector				colorsVec(_vectorSize);
+	PolyDataMapperVector			mapperVec(_vectorSize);
+	ScalarBarActorVector			scalarBarVec(_vectorSize);
+	ActorVector						dataActorVec(_vectorSize);
+	RendererVector					rendererOutput(_vectorSize);
 
-  // vtkSmartPointer<vtkIntArray> arrayID =
-  //   vtkSmartPointer<vtkIntArray>::New();
+	vectorInitalizer<vtkPlaneSource>(parameterPlaneVec);
+	vectorInitalizer<vtkUnstructuredGridReader>(readerVec);
+	vectorInitalizer<vtkCellData>(cellDataVec);
+	vectorInitalizer<vtkFloatArray>(arrayParametersVec);
+	vectorInitalizer<vtkLookupTable>(lutParameterVec);
+	vectorInitalizer<vtkNamedColors>(colorsVec);
+	vectorInitalizer<vtkPolyDataMapper>(mapperVec);
+	vectorInitalizer<vtkScalarBarActor>(scalarBarVec);
+	vectorInitalizer<vtkActor>(dataActorVec);
+	vectorInitalizer<vtkRenderer>(rendererOutput);
 
-  vtkSmartPointer<vtkFloatArray> arrayParameters =
-    vtkSmartPointer<vtkFloatArray>::New();
+ // vtkSmartPointer<vtkRenderWindow> renWin =
+ //   vtkSmartPointer<vtkRenderWindow>::New();
 
-  // vtkSmartPointer<vtkLookupTable> lutID =
-  //   vtkSmartPointer<vtkLookupTable>::New();
+//  vtkSmartPointer<vtkRenderWindowInteractor> iren =
+ //   vtkSmartPointer<vtkRenderWindowInteractor>::New();
+	
 
-  vtkSmartPointer<vtkLookupTable> lutParameter =
-    vtkSmartPointer<vtkLookupTable>::New();
 
-  vtkSmartPointer<vtkNamedColors> colors =
-    vtkSmartPointer<vtkNamedColors>::New();
+ #pragma omp parallel for ordered schedule(guided) num_threads(2)
+  for(int fileIndex = _timeStep; fileIndex <= _timeMax; fileIndex += _timeStep){
+	#ifdef CHRONO
+	  auto tic = std::chrono::steady_clock::now();
+	#endif
+	  int currentVectorIndex = fileIndex / _timeStep - 1;
 
-  vtkSmartPointer<vtkPolyDataMapper> mapper =
-    vtkSmartPointer<vtkPolyDataMapper>::New();
+	  
 
-  vtkSmartPointer<vtkActor> dataActor =
-    vtkSmartPointer<vtkActor>::New();
-
-  vtkSmartPointer<vtkRenderer> ren =
-    vtkSmartPointer<vtkRenderer>::New();
-
-  vtkSmartPointer<vtkRenderWindow> renWin =
-    vtkSmartPointer<vtkRenderWindow>::New();
-
-  vtkSmartPointer<vtkRenderWindowInteractor> iren =
-    vtkSmartPointer<vtkRenderWindowInteractor>::New();
-
-  for(int fileIndex = timeStep; fileIndex <= timeMax; fileIndex += timeStep){
       /////    Data manipulation    /////
-      std::string fileName = filePath + "RBConvection_" +
+      std::string fileName = _filePath + "RBConvection_" +
         std::to_string(fileIndex) + ".vtk";
-      std::cout << "Loading " << fileName.c_str() << std::endl;
-      reader->SetFileName(fileName.c_str());
-      reader->SetFieldDataName("attributes");
-      reader->Update();
-
+      readerVec.at(currentVectorIndex)->SetFileName(fileName.c_str());
+      readerVec.at(currentVectorIndex)->SetFieldDataName("attributes");
+      readerVec.at(currentVectorIndex)->Update();
+#ifdef MULTI
+	  int tid = omp_get_thread_num();
+	  std::cout << "Current thread: " << tid << endl;
+#endif
       // Achieve the Cell data
-      cellData = reader->GetOutput()->GetCellData();
+      cellDataVec.at(currentVectorIndex) = readerVec.at(currentVectorIndex)->GetOutput()->GetCellData();
 
       // Ge the array using SafeDownCast()
-      arrayParameters =
-        vtkFloatArray::SafeDownCast(cellData->GetAbstractArray(parameterCode.c_str()));
+      arrayParametersVec.at(currentVectorIndex) =
+        vtkFloatArray::SafeDownCast(cellDataVec.at(currentVectorIndex)->GetAbstractArray(_parameterCode.c_str()));
       //arrayTemperature->SetName("Temperature");
       double arrayParameterRange[2];
-      arrayParameters->GetRange(arrayParameterRange);
+      arrayParametersVec.at(currentVectorIndex)->GetRange(arrayParameterRange);
 
       // Set up lookupTables
-      int tableSize = resolutionX*resolutionY + 1;
-      lutParameter->SetNumberOfTableValues(tableSize);
+      int tableSize = _resolutionX*_resolutionY + 1;
+      lutParameterVec.at(currentVectorIndex)->SetNumberOfTableValues(tableSize);
       // Set up the color schemes
-      MakeLUT(colorScheme, lutParameter);
-      lutParameter->SetTableRange(parameterMin, parameterMax);
-      lutParameter->Build();
+      MakeLUT(_colorScheme, lutParameterVec.at(currentVectorIndex));
+      lutParameterVec.at(currentVectorIndex)->SetTableRange(_parameterMin, _parameterMax);
+      lutParameterVec.at(currentVectorIndex)->Build();
 
-      parameterPlane->SetXResolution(resolutionX);
-      parameterPlane->SetYResolution(resolutionY);
+      parameterPlaneVec.at(currentVectorIndex)->SetXResolution(_resolutionX);
+      parameterPlaneVec.at(currentVectorIndex)->SetYResolution(_resolutionY);
+	  parameterPlaneVec.at(currentVectorIndex)->SetOrigin(0, 0, 0);
+	  parameterPlaneVec.at(currentVectorIndex)->SetPoint1(_resolutionX * 8, 0, 0);
+	  parameterPlaneVec.at(currentVectorIndex)->SetPoint2(0, _resolutionY * 8, 0);
+      parameterPlaneVec.at(currentVectorIndex)->Update();
+      parameterPlaneVec.at(currentVectorIndex)->GetOutput()
+		  ->GetCellData()->SetScalars(arrayParametersVec.at(currentVectorIndex));
 
-      parameterPlane->Update();
-      parameterPlane->GetOutput()->GetCellData()->SetScalars(arrayParameters);
-
-      #ifdef DEBUG
+    	  #ifdef DEBUG
         std::cout << "Hello!" << endl;
         // std::cout << "Range of arrayID: " << arrayIDRange[0]
         //   << " " << arrayIDRange[1] << endl;
         std::cout << "Range of current parameter: " << arrayParameterRange[0]
           << " " << arrayParameterRange[1] << endl;
         std::cout << "Range used in lut: " << parameterMin
-          << " " << parameterMin << endl;
+          << " " << parameterMax << endl;
         // std::cout << "Values of the float array: " << endl;
         // for(int i = 0; i < resolution*resolution; i++){
         //   std::cout << arrayTemperature->GetVariantValue(i) << " ";
@@ -210,40 +360,71 @@ void RBVisualizer::mainVisualizer(){
         // }
 
         double tableColor[3];
-        lutParameter->GetColor(arrayParameterRange[0], tableColor);
+        lutParameterVec.at(currentVectorIndex)->GetColor(arrayParameterRange[0], tableColor);
         std::cout << "The color of arrayParameterRange[0]: " <<
         tableColor[0] << " " << tableColor[1] << " " << tableColor[2] << std::endl;
-        lutParameter->GetColor(arrayParameterRange[1], tableColor);
+        lutParameterVec.at(currentVectorIndex)->GetColor(arrayParameterRange[1], tableColor);
         std::cout << "The color of arrayParameterRange[1]: " <<
         tableColor[0] << " " << tableColor[1] << " " << tableColor[2] << std::endl;
-      #endif
+      #endif  
 
       /////   Visualization Pipeline    /////
 
-      mapper->SetInputConnection(parameterPlane->GetOutputPort());
-      mapper->SetScalarRange(parameterMin, parameterMax);
-      mapper->SetLookupTable(lutParameter);
+      mapperVec.at(currentVectorIndex)->SetInputConnection(parameterPlaneVec.at(currentVectorIndex)->GetOutputPort());
+      mapperVec.at(currentVectorIndex)->SetScalarRange(_parameterMin, _parameterMax);
+      mapperVec.at(currentVectorIndex)->SetLookupTable(lutParameterVec.at(currentVectorIndex));
 
-      dataActor->SetMapper(mapper);
 
-      ren->AddActor(dataActor);
-      ren->SetBackground(colors->GetColor3d("SlateGray").GetData());
+	  // Set up a scalar bar(legend) on the render window
+	  scalarBarVec.at(currentVectorIndex)->SetLookupTable(mapperVec.at(currentVectorIndex)->GetLookupTable());
+	  if (_parameterCode == "T")
+		  scalarBarVec.at(currentVectorIndex)->SetTitle("Temperature(K)");
+	  else if (_parameterCode == "mag(U)")
+		  scalarBarVec.at(currentVectorIndex)->SetTitle("Velocity(m/s)");
 
-      renWin->AddRenderer(ren);
-      renWin->SetSize(800, 800);
+	  scalarBarVec.at(currentVectorIndex)->SetNumberOfLabels(4);
+	  scalarBarVec.at(currentVectorIndex)->SetWidth(0.1);
+	  scalarBarVec.at(currentVectorIndex)->SetHeight(0.6);
+	  //scalarBarVec.at(currentVectorIndex)->GetPositionCoordinate()->SetValue(resolutionX * 7, resolutionY * 1, 0);
+	  //scalarBarVec.at(currentVectorIndex)->GetPosition2Coordinate()->SetValue(resolutionX * 7.5, resolutionY * 7, 0);
 
-      iren->SetRenderWindow(renWin);
-      renWin->Render();
-      std::this_thread::sleep_for(std::chrono::milliseconds(500));
+
+      dataActorVec.at(currentVectorIndex)->SetMapper(mapperVec.at(currentVectorIndex));
+
+	  rendererOutput.at(currentVectorIndex)->AddActor(dataActorVec.at(currentVectorIndex));
+	  rendererOutput.at(currentVectorIndex)->AddActor2D(scalarBarVec.at(currentVectorIndex));
+	  rendererOutput.at(currentVectorIndex)->SetBackground(0.44, 0.502, 0.565);
+	  #ifdef CHRONO
+		auto toc = std::chrono::steady_clock::now();
+		std::cout << "The runtime of executing chunk " << fileIndex << " is "
+			<< std::chrono::duration <double, std::milli>(toc - tic).count()
+			<< " ms" << std::endl;
+	  #endif
+
+	  //#pragma omp ordered
+		
+	  //rendererOutput.at(currentVectorIndex) = ren;
+      //renWin->AddRenderer(ren);
+      //renWin->SetSize(400, 400);
+
+      //iren->SetRenderWindow(renWin);
+      //renWin->Render();
+      //std::this_thread::sleep_for(std::chrono::milliseconds(16));
       //iren->Start();
-
+	  
   }
-
+  #ifdef CHRONO
+	auto endTime = std::chrono::steady_clock::now();
+	std::cout << "Total runtime is: "
+		<< std::chrono::duration <double, std::milli>(endTime - startTime).count()
+		<< " ms" << std::endl;
+  #endif	
+  return rendererOutput;
 }
 
 
 
-// MakeLUT: Adopted from
+// MakeLUT: Adapted from
 // https://lorensen.github.io/VTKExamples/site/Cxx/Visualization/Hawaii/
 namespace
 {
@@ -278,21 +459,9 @@ void MakeLUT(int const& colorScheme, vtkLookupTable* lut)
       break;
     }
     case 2:
-      // Make the lookup table with a preset number of colours.
-      vtkSmartPointer<vtkColorSeries> colorSeries =
-        vtkSmartPointer<vtkColorSeries>::New();
-      colorSeries->SetNumberOfColors(8);
-      colorSeries->SetColorSchemeName("Hawaii");
-      colorSeries->SetColor(0, colors->GetColor3ub("turquoise_blue"));
-      colorSeries->SetColor(1, colors->GetColor3ub("sea_green_medium"));
-      colorSeries->SetColor(2, colors->GetColor3ub("sap_green"));
-      colorSeries->SetColor(3, colors->GetColor3ub("green_dark"));
-      colorSeries->SetColor(4, colors->GetColor3ub("tan"));
-      colorSeries->SetColor(5, colors->GetColor3ub("beige"));
-      colorSeries->SetColor(6, colors->GetColor3ub("light_beige"));
-      colorSeries->SetColor(7, colors->GetColor3ub("bisque"));
-      colorSeries->BuildLookupTable(lut, colorSeries->ORDINAL);
-      lut->SetNanColor(1, 0, 0, 1);
+	  lut->SetHueRange(0, 1);
+	  lut->SetSaturationRange(0, 1);
+	  lut->SetValueRange(0, 1.0);
   };
 }
 }

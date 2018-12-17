@@ -107,7 +107,7 @@ class RBConvSim {
 
     void runSimulation()
         {
-	    system("cd $FOAM_RUN/tutorials/heatTransfer/buoyantBoussinesqPimpleFoam/RBConvection && blockMesh");
+	    //system("cd $FOAM_RUN/tutorials/heatTransfer/buoyantBoussinesqPimpleFoam/RBConvection && blockMesh");
 	    system("cd $FOAM_RUN/tutorials/heatTransfer/buoyantBoussinesqPimpleFoam/RBConvection && buoyantBoussinesqPimpleFoam");
 	    simRun_ = true;
         }	
@@ -121,7 +121,7 @@ class RBConvSim {
     double vertmesh_ = 50;
     double meshsize_ = 5000;
     double tend_ = 2000; //simulation end time
-    double deltat_ = 20; // simulation time step
+    double deltat_ = 2; // simulation time step
     double g = 9.81; // acceleration of gravity
 
     //CHANGED BY PROGRAM
@@ -137,9 +137,10 @@ class RBConvSim {
 
     void update()
 	{
-	    Ra_ = Pr_*beta_*g*deltaT_*pow(h_,3)/pow(nu_,2);
 	    deltaT_ = TFloor_ - TCeil_;
+	    Ra_ = Pr_*beta_*g*deltaT_*pow(h_,3)/pow(nu_,2);
 	    system("cd $FOAM_RUN/tutorials/heatTransfer/buoyantBoussinesqPimpleFoam/RBConvection && foamListTimes -rm");
+	    system("cd $FOAM_RUN/tutorials/heatTransfer/buoyantBoussinesqPimpleFoam/RBConvection && rm -rf VTK");
 	    simRun_ = false;
 	}
 };
