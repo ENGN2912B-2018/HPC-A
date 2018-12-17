@@ -86,7 +86,7 @@ class RBVisualizer{
     void setParameterMax(double max);
 	void setSavePath(std::string savePath);
 	void setSaveName(std::string saveName);
-	void RBVisualizer::setSaveNameDefault();
+	void  setSaveNameDefault();
 
     // Member methods
     void readParameterMinMax();

@@ -6,15 +6,38 @@
 #define DEBUG
 void visualizerScript(RBVisualizer& testReader, bool isVideoSave);
 int main(int argc, char const *argv[]) {
+	//if (argc < 7) {
+	//	std::cout << "Usage: ./mainVisualizer <path>"
+	//		" <parameterCode> <timeStep> <timeMax> <colorScheme> <isVideoSave>"
+	//		<< std::endl;
+	//	std::cout << "The deafult parameter sets will be used." << std::endl;
+	//	int colorScheme = 2;
+	//	std::string filePath = "C:\\Users\\Angio\\Documents\\Github-Repo\\RBC_Pr0.100000_Ra100000000000.000000";
+	//	std::string parameterCode = "T";
+	//	int timeStep = 2;
+	//	int timeMax = 2000;
+	//	bool isVideoSave = true;
+	//	//RBC_Pr0.100000_Ra10000000.000000
+	//}
+	//else {
+
+	//}
+	//std::cout << "=====		2D Rayleigh-B¨¦nard Convection Visualizer	=====" << std::endl;
+	//std::cout << "Developed by Yang Jiao, Yiming Li and Kit Sum Wu" << std::endl;
+	//std::cout << "\n\n Enter 0 to use the default "
+	//std::cout << "Enter the path of your .vtk files";
+	//std::string filePath;
+	//std::cin >> filePath;
   int colorScheme = 2;
-  int resolutionX = 100;
-  int resolutionY = 50;
   std::string filePath = "C:\\Users\\Angio\\Documents\\Github-Repo\\RBC_Pr0.100000_Ra100000000000.000000";
-  //RBC_Pr0.100000_Ra10000000.000000
   std::string parameterCode = "T";
-  int timeStep = 2;	
+  int timeStep = 2;
   int timeMax = 2000;
   bool isVideoSave = true;
+  int resolutionX = 100;
+  int resolutionY = 50;
+  
+ 
   
   try {
 	  RBVisualizer testReader(colorScheme, resolutionX, resolutionY, filePath, parameterCode,
@@ -26,8 +49,10 @@ int main(int argc, char const *argv[]) {
 	  std::cerr << "fileNotExistError caught in " << filePath << " : "
 		  << eFNE.what() << std::endl;
 	  std::cerr << "The file we tried to access does not exist. "
-		  "This may happen when you entered a wrong timeStep. " << std::endl;
+		  "This may happen when you entered a wrong timeStep or timeMax. " << std::endl;
 	  std::cerr << "The timeStep could be the multiple of the actual time step." << std::endl;
+	  std::cerr << "Current timeStep: " << timeStep << std::endl;
+	  std::cerr << "Current timeMax: " << timeMax << std::endl;
 	  return EXIT_FAILURE;
   }
   catch (const pathNotExistError &ePNE) {
