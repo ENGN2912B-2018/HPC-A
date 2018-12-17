@@ -134,30 +134,13 @@ void RBCGUI::on_visualization_clicked()
     int colorScheme = scheme;//0,1,2
     int resolutionX = 100;
     int resolutionY = 50;
-    std::string filePath = "D:/Qt_projects/RBCGUI/RBConvection/";
+    std::string filePath = "D:/Qt_projects/vtk-data/";
     std::string parameterCode =code;//mag(U)
     int timeStep = step;
     int timeMax = 2000;
-    cout<<"done"<<endl;
-    RBVisualizer visual(colorScheme, resolutionX, resolutionY, filePath, parameterCode,
-                         timeStep, timeMax);
-    visual.readParameterMinMax();
+
 extern int loadFlag;
 
-    vtkSmartPointer<vtkRenderWindow> renWin =
-            vtkSmartPointer<vtkRenderWindow>::New();
-   RendererVector rendererOutput=visual.mainVisualizer();
-
-   int index = 1;
-    for (auto it= rendererOutput.cbegin(); it != rendererOutput.cend(); it++)
-    {
-       renWin->AddRenderer(*it);
-        renWin->SetSize(resolutionX*8, resolutionY*8);
-        renWin->Render();
-        cout<<"2: "<<*it<<endl;
-        cout<<"Rendering the " << index << "th window..." << endl;
-        std::this_thread::sleep_for(std::chrono::milliseconds(50));
-    }
 
     bool isVideoSave = true;
 
