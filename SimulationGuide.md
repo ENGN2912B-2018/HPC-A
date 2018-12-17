@@ -85,7 +85,7 @@ With this, the preparations to interface with OpenFOAM from C++ are finished. If
 
 ### 3. Creating data sets
 
-The controlDict file in the case directory included in this repository has already been modified to create vtk-compatible data files. In order to generate data sets, first designate a location to save the vtk data sets in line 49 of the main.cpp file. You can then perform simulations for various cases using the `main` executable created by running the `make` command in the build folder.
+The controlDict file in the case directory included in this repository has already been modified to create vtk-compatible data files. In order to generate data sets, first designate a location to save the vtk data sets in line 196 of the main.cpp file. You can then perform simulations for various cases using the `main` executable created by running the `make` command in the build folder.
 
 To make it easier to transfer the data files to a different location, we recommend zipping them first. A sample zip command is shown below.
 
