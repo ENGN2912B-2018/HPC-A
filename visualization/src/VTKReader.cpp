@@ -10,8 +10,8 @@
 
 //#define DEBUG
 #define CHRONO
-#define MULTI
-#define ERROR
+//#define MULTI
+//#define ERROR
 namespace
 {
 //! Create a lookup table.

@@ -5,7 +5,7 @@
 #endif
 
 //#define MULTI
-#define DEBUG
+//#define DEBUG
 #ifdef _WIN32
 void visualizerScript(RBVisualizer& testReader, bool isVideoSave);
 #else
