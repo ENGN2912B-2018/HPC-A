@@ -50,6 +50,7 @@ You can download the case directory from this Github repository, which is based 
 │   ├── blockMeshDict
 │   ├── controlDict
 │   ├── setFieldsDict
+│   ├── decomposeParDict
 │   ├── fvSolution
 │   ├── fvSchemes
 ├── Time Directories
@@ -90,3 +91,19 @@ The controlDict file in the case directory included in this repository has alrea
 To make it easier to transfer the data files to a different location, we recommend zipping them first. A sample zip command is shown below.
 
 `zip -r example.zip example`
+
+## Parallelization
+
+It is possible to use openmpi to parallelize the OpenFOAM simulation. To enable this, we must first decompose the simulation problem to smaller parts to assign to each processor. We do this by running the following command in the case directory.
+
+`decomposePar`
+
+This creates a number of directories called `processor[n]` in the case directory, for n = 0 to n = np - 1, where  np is the number of processors specified in the `decomposeParDict` file in the `system` directory. Then, the following command is run to perform the parallelized computing task. The `> log` part of the command sends the output to a text file `log`, and the `&` has the task run in the background.
+
+`mpirun -np 16 buoyantBoussinesqPimpleFoam -parallel > log &`
+
+Once the simulation has finished, the data from all of the processors mmust be reunited. This is done using the following command:
+
+`reconstructPar`
+
+Note: The simulation data must be reconstructed at each time step, and the reconstruction for each time step requires several seconds. This may be useful if only few time steps (e.g. only the final time) were of interest. However, since we are visualizing the entire process with 1000 time steps, we would not see any improvements in total computation time. Therefore, we did not implement the parallelization in our project.
