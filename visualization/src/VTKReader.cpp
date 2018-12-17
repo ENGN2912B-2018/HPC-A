@@ -5,13 +5,13 @@
 #include <thread>
 #include <iostream>
 #include <omp.h>
-//#include <boost\filesystem.hpp>
-
+#include <fstream>
 
 
 //#define DEBUG
 #define CHRONO
 #define MULTI
+#define ERROR
 namespace
 {
 //! Create a lookup table.
@@ -23,8 +23,7 @@ void MakeLUT(int const& colorScheme, vtkLookupTable* lut);
 
 } 
 
-//namespace fs = boost::filesystem;
-//boost::system::error_code ec;
+
 
 RBVisualizer::RBVisualizer(){
     int           colorScheme = 0;
@@ -41,6 +40,9 @@ RBVisualizer::RBVisualizer(int colorScheme, int resolutionX, int resolutionY,
     this->_resolutionY = resolutionY;
     this->_filePath    = filePath;
 	// The path of video saved is the same as the path of .vtk files at default
+#ifdef ERROR
+	std::cout << "Calling the constructor..." << std::endl;
+#endif
 	this->setSavePath(filePath);
     if(this->_filePath.back() != '/'){
       this->_filePath.push_back('/');
@@ -122,12 +124,25 @@ void RBVisualizer::setParameterMax(double max){
 }
 
 void RBVisualizer::setSavePath(std::string savePath){
+#ifdef ERROR
+	std::cout << "Calling the setSavePath()..." << std::endl;
+#endif
 	_savePath = savePath;
 	// Create the path if it does not exist
-	//fs::path boostPath(_savePath);
-	//if (!fs::exists(boostPath)) {
-	//	fs::create_directory(boostPath);
-	//}
+	vtkSmartPointer<vtkDirectory> currentPath =
+		vtkSmartPointer<vtkDirectory>::New();
+
+	int openIndicator = currentPath->Open(_savePath.c_str());
+	if (!openIndicator && _savePath == _filePath) {
+		std::cout << "Hey! Exception!" << std::endl;
+		throw pathNotExistError();
+	}
+	else {
+		currentPath->MakeDirectory(_savePath.c_str());
+	}
+#ifdef ERROR
+	std::cout << "Done calling the setSavePath()..." << std::endl;
+#endif
 }
 
 void RBVisualizer::setSaveName(std::string saveName) {
@@ -157,20 +172,38 @@ void RBVisualizer::setSaveNameDefault() {
 
 
 void RBVisualizer::readParameterMinMax(){
+#ifdef ERROR
+	std::cout << "Calling the readParameterMinMax()..." << std::endl;
+#endif
 
     vtkSmartPointer<vtkUnstructuredGridReader> reader =
       vtkSmartPointer<vtkUnstructuredGridReader>::New();
-    std::string fileName = _filePath + "RBConvection_" +
+    std::string fileNameMax = _filePath + "RBConvection_" +
       std::to_string(_timeMax) + ".vtk";
-	/*fs::path boostPath(_filePath);
-	fs::path boostFile(fileName);
-	if (!exists(boostPath)) {
+	std::string fileNameMin = _filePath + "RBConvection_" +
+		std::to_string(_timeStep) + ".vtk";
+
+	vtkSmartPointer<vtkDirectory> currentPath =
+		vtkSmartPointer<vtkDirectory>::New();
+#ifdef ERROR
+	std::cout << "Calling the vtkDirectory->Open()..." << std::endl;
+#endif
+	int openIndicator = currentPath->Open(_filePath.c_str());
+#ifdef ERROR
+	std::cout << "Done calling the vtkDirectory->Open()..." << std::endl;
+#endif
+	if (!openIndicator) {
 		throw pathNotExistError();
 	}
-	if (!exists(boostFile) || !fs::is_regular_file(boostFile)) {
+	ifstream currentFileMin(fileNameMin.c_str());
+	if (!currentFileMin.good()) {
 		throw fileNotExistError();
-	}*/
-    reader->SetFileName(fileName.c_str());
+	}
+	ifstream currentFileMax(fileNameMax.c_str());
+	if (!currentFileMax.good()) {
+		throw fileNotExistError();
+	}
+    reader->SetFileName(fileNameMax.c_str());
     reader->SetFieldDataName("attributes");
     reader->Update();
     vtkSmartPointer<vtkCellData> cellData =
@@ -183,22 +216,25 @@ void RBVisualizer::readParameterMinMax(){
     double parameterMinMax[2];
     arrayParameters->GetRange(parameterMinMax);
 	_parameterMax = parameterMinMax[1];
+
+
 	if (_parameterCode == "mag(U)") {
 		_parameterMin = 0;
 	}
 	else if(_parameterCode == "T"){
-		std::string fileName = _filePath + "RBConvection_" +
-			std::to_string(_timeStep) + ".vtk";
-		reader->SetFileName(fileName.c_str());
+
+		reader->SetFileName(fileNameMin.c_str());
 		reader->Update();
 		cellData = reader->GetOutput()->GetCellData();
 		arrayParameters =
 			vtkFloatArray::SafeDownCast(cellData->GetAbstractArray(_parameterCode.c_str()));
 		arrayParameters->GetRange(parameterMinMax);
-		_parameterMin = parameterMinMax[01];
+		_parameterMin = parameterMinMax[0];
 	}
 
-    
+#ifdef ERROR
+	std::cout << "Done calling the readParameterMinMax()..." << std::endl;
+#endif
 }
 
 template <typename T>
@@ -244,6 +280,8 @@ RendererVector RBVisualizer::mainVisualizer(){
 
 //  vtkSmartPointer<vtkRenderWindowInteractor> iren =
  //   vtkSmartPointer<vtkRenderWindowInteractor>::New();
+	
+
 
  #pragma omp parallel for ordered schedule(guided) num_threads(2)
   for(int fileIndex = _timeStep; fileIndex <= _timeMax; fileIndex += _timeStep){
@@ -257,8 +295,6 @@ RendererVector RBVisualizer::mainVisualizer(){
       /////    Data manipulation    /////
       std::string fileName = _filePath + "RBConvection_" +
         std::to_string(fileIndex) + ".vtk";
-      std::cout << "Loading " << fileName.c_str() << std::endl;
-
       readerVec.at(currentVectorIndex)->SetFileName(fileName.c_str());
       readerVec.at(currentVectorIndex)->SetFieldDataName("attributes");
       readerVec.at(currentVectorIndex)->Update();
@@ -350,7 +386,7 @@ RendererVector RBVisualizer::mainVisualizer(){
 
 	  rendererOutput.at(currentVectorIndex)->AddActor(dataActorVec.at(currentVectorIndex));
 	  rendererOutput.at(currentVectorIndex)->AddActor2D(scalarBarVec.at(currentVectorIndex));
-	  rendererOutput.at(currentVectorIndex)->SetBackground(colorsVec.at(currentVectorIndex)->GetColor3d("SlateGray").GetData());
+	  rendererOutput.at(currentVectorIndex)->SetBackground(0.44, 0.502, 0.565);
 	  #ifdef CHRONO
 		auto toc = std::chrono::steady_clock::now();
 		std::cout << "The runtime of executing chunk " << fileIndex << " is "

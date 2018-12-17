@@ -21,6 +21,12 @@ Kit Sum Wu  (kitsum_wu@brown.edu)
 This project is a visualization tool for 2D Rayleigh-Bénard Convection. The software receives input from user interface then displays a corresponding data set generated using numerical simulation.
 
 ## Goals and Objectives
+The goal of this project is to create a user interface to interactively set simulation parameters and view the results of the simulation. The example we use for the project is Rayleigh-Benard convection, although this idea could easily be extended to other numerical simulations of other phenomena. 
+
+Our objectives are as follows:
+- accept simulation and visualization parameters from the user via a graphical user interface, and display the results
+- numerically simulate Rayleigh--Bénard convection based on input parameters
+- visualize the data from the simulation, and pass the results to the gui for display
 
 # Software Architectural Design
 Our project is divided as three parts: numerical simulation of 2D Rayleigh-Bénard Convection, data visualization of simulation and GUI design. The simulation will produce data for fluid velocity and temperature for each mesh node for data visualization.
@@ -29,15 +35,32 @@ The input of data visualization is the result of Rayleigh-Bénard Convection sim
  
 The graphical user interface (GUI) is like the conductor of the project. The GUI will receive simulation and visualization parameters from the user and show the the visualization of the corresponding simulation case.
 
-# Build instructions
+A block diagram representation of our program is below:
+
+![alt text](https://github.com/ENGN2912B-2018/HPC-A/blob/master/images/softwarearchitecture.png)
+
+# Interface Descriptions
+## Graphical Interface
+## Data Visualization
+## Communications Protocols
+## Threading and Concurrency
+## Exception Handling
+
+# Testing and Evaluation
+
+## Operating system(s) and software compiler/library version(s) tested
+
+## Description of functional testing to date
+
+## Build instructions
 
 Please refer to the following files for installation instructions.
 
 [Simulation Set Up Guide](https://github.com/ENGN2912B-2018/HPC-A/blob/master/SimulationGuide.md)
-[Visualization Set Up Guide](https://github.com/ENGN2912B-2018/HPC-A/blob/master/VisualizationGuide.md)
-[GUI Set Up Guide](https://github.com/ENGN2912B-2018/HPC-A/blob/master/GUIGuide.md)
 
-# Testing and Evaluation
+[Visualization Set Up Guide](https://github.com/ENGN2912B-2018/HPC-A/blob/master/VisualizationGuide.md)
+
+[GUI Set Up Guide](https://github.com/ENGN2912B-2018/HPC-A/blob/master/GUIGuide.md)
 
 # Conclusions
 
