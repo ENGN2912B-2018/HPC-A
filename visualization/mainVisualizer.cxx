@@ -13,7 +13,7 @@ int main(int argc, char const *argv[]) {
   //RBC_Pr0.100000_Ra10000000.000000
   std::string parameterCode = "T";
   int timeStep = 2;	
-  int timeMax = 3000;
+  int timeMax = 2000;
   bool isVideoSave = true;
   
   try {
