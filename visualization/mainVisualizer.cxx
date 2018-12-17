@@ -107,13 +107,18 @@ void visualizerScript(RBVisualizer& testReader, bool isViedoSave) {
 		RendererVector rendererOutput = testReader.mainVisualizer();
 		vtkSmartPointer<vtkRenderWindow> renWin =
 			vtkSmartPointer<vtkRenderWindow>::New();
+		// Set up the filter
 		vtkSmartPointer<vtkWindowToImageFilter> w2i =
 			vtkSmartPointer<vtkWindowToImageFilter>::New();
+		// The AVI writer to make a video from the render window
+		// Note that the AVI writer is not supported by Linux
 		vtkSmartPointer<vtkAVIWriter> writer =
 			vtkSmartPointer<vtkAVIWriter>::New();
 		renWin->AddRenderer(*rendererOutput.cbegin());
 		renWin->SetSize(testReader.getResolutionX() * 8, 
 			testReader.getResolutionY() * 8);
+		// Render the first frame before the for loop
+		// Or the AVI writer cannot acquire a compressor for the data
 		renWin->Render();
 		w2i->SetInput(renWin);
 		w2i->Update();
@@ -163,6 +168,7 @@ void visualizerScript(RBVisualizer& testReader, bool isViedoSave) {
 	}
 }
 #else
+// Linux version
 void visualizerScript(RBVisualizer& testReader) {
 	RendererVector rendererOutput = testReader.mainVisualizer();
 	vtkSmartPointer<vtkRenderWindow> renWin =

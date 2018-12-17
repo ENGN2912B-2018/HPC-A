@@ -179,12 +179,14 @@ void RBVisualizer::setSaveNameDefault() {
 #endif
 
 void RBVisualizer::readParameterMinMax(){
+	// Reading the scales for the parameters
 #ifdef ERROR
 	std::cout << "Calling the readParameterMinMax()..." << std::endl;
 #endif
 
     vtkSmartPointer<vtkUnstructuredGridReader> reader =
       vtkSmartPointer<vtkUnstructuredGridReader>::New();
+	// Setting two two filename (for error handling)
     std::string fileNameMax = _filePath + "RBConvection_" +
       std::to_string(_timeMax) + ".vtk";
 	std::string fileNameMin = _filePath + "RBConvection_" +
@@ -199,6 +201,7 @@ void RBVisualizer::readParameterMinMax(){
 #ifdef ERROR
 	std::cout << "Done calling the vtkDirectory->Open()..." << std::endl;
 #endif
+	// Check whether the file exists
 	if (!openIndicator) {
 		throw pathNotExistError();
 	}
@@ -210,6 +213,7 @@ void RBVisualizer::readParameterMinMax(){
 	if (!currentFileMax.good()) {
 		throw fileNotExistError();
 	}
+	// Read the files
     reader->SetFileName(fileNameMax.c_str());
     reader->SetFieldDataName("attributes");
     reader->Update();
@@ -221,13 +225,17 @@ void RBVisualizer::readParameterMinMax(){
     arrayParameters =
       vtkFloatArray::SafeDownCast(cellData->GetAbstractArray(_parameterCode.c_str()));
     double parameterMinMax[2];
+	// For both types of the attributes, the maximum value is set
+	// as the highest value in the last file
     arrayParameters->GetRange(parameterMinMax);
 	_parameterMax = parameterMinMax[1];
 
-
+	// For velocity, the minimum value is set as 0
 	if (_parameterCode == "mag(U)") {
 		_parameterMin = 0;
 	}
+	// For temperature, the minimum value is set as the 
+	// lowest value in the first file(initial state)
 	else if(_parameterCode == "T"){
 
 		reader->SetFileName(fileNameMin.c_str());
@@ -246,6 +254,9 @@ void RBVisualizer::readParameterMinMax(){
 
 template <typename T>
 void RBVisualizer::vectorInitalizer(std::vector<vtkSmartPointer<T>>& pointerVector) {
+	// Initalize the vector of Smart Pointers so that they will point to  different
+	// addresses.
+	// This is essential to conduct multithreading.
 	for (int initializerIndex = 0; initializerIndex < _vectorSize; initializerIndex ++){
 		pointerVector.at(initializerIndex) = vtkSmartPointer<T>::New();
 	}
@@ -289,7 +300,9 @@ RendererVector RBVisualizer::mainVisualizer(){
  //   vtkSmartPointer<vtkRenderWindowInteractor>::New();
 	
 
-
+// Multithreading using OpenMP
+// For Windows(with Visual Studio), the optimal number of threads should be 2
+// For Linux, the optiaml number need further testing. 4 or 8 are recommended
  #pragma omp parallel for ordered schedule(guided) num_threads(2)
   for(int fileIndex = _timeStep; fileIndex <= _timeMax; fileIndex += _timeStep){
 	#ifdef CHRONO
@@ -327,6 +340,8 @@ RendererVector RBVisualizer::mainVisualizer(){
       lutParameterVec.at(currentVectorIndex)->SetTableRange(_parameterMin, _parameterMax);
       lutParameterVec.at(currentVectorIndex)->Build();
 
+	  // Set up the atttributes of parameterPlane
+	  // The parameter plane is the object on which we cast the simulation data
       parameterPlaneVec.at(currentVectorIndex)->SetXResolution(_resolutionX);
       parameterPlaneVec.at(currentVectorIndex)->SetYResolution(_resolutionY);
 	  parameterPlaneVec.at(currentVectorIndex)->SetOrigin(0, 0, 0);
