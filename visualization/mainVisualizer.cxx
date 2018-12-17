@@ -15,7 +15,7 @@ int main(int argc, char const *argv[]) {
 	bool isVideoSave = true;
 	std::cout << "=====		2D Rayleigh-B¨¦nard Convection Visualizer	=====" << std::endl;
 	std::cout << "Developed by Yang Jiao, Yiming Li and Kit Sum Wu" << std::endl;
-	std::cout << "\n\nEnter 0 to use the default parameter set:";
+	std::cout << "\n\nEnter 0 to use the default parameter set: ";
 	int parameterSet;
 	std::cin >> parameterSet;
 	if (parameterSet == 0) {
