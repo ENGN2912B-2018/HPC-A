@@ -13,5 +13,6 @@
         <file>files/copy.png</file>
         <file>files/T</file>
         <file>../build-RBCGUI-Desktop_Qt_5_10_1_MSVC2017_64bit-Release/transportProperties</file>
+        <file>files/background.png</file>
     </qresource>
 </RCC>

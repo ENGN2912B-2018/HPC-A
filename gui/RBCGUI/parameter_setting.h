@@ -2,11 +2,13 @@
 #define PARAMETER_SETTING_H
 
 #include <QWidget>
+#include <QDir>
 
 QT_BEGIN_NAMESPACE
 class QCheckBox;
 class QLabel;
 class QErrorMessage;
+class QComboBox;
 QT_END_NAMESPACE
 
 class Parameter_setting : public QWidget
@@ -16,37 +18,30 @@ public:
     explicit Parameter_setting(QWidget *parent = nullptr);
 
 private slots:
-    //initial condition
-    void set_Nu();
-    void set_Beta();
-    void set_TFloor();
-    void set_Pr();
-    void warningMessage();
-    void errorMessage();
-    void invokeNuSet();
-    void invokeBetaSet();
-    void invokeTFloorSet();
-    void invokePrSet();
-    void applyChanges();
+    //simulation setters
+    void setPr();
+    void setRa();
+    //visiualization setters
+    void setColorScheme();
+    void setParameterCode();
+    void setTimeStep();
+    //void browse();
+    //apply changes
+    void applySimulationChanges();
+    void applyVisualizationChanges();
+    //QComboBox *createComboBox(const QString &text = QString());
+    //void animateFindClick();
 signals:
-//void sendData(QString D1,QString D2,QString D3,QString D4);
 public slots:
 
 private:
-    //initial condition
-    QLabel *Nu_label;
-    QLabel *Beta_label;
-    QLabel *TFloor_label;
-    QLabel *Pr_label;
-    int setFlag=0;
-    QString setNuValue="0.000001";
-    QString setBetaValue="0.000214";
-    QString setTFloorValue="340.000000";
-    QString setPrValue="7.560000";
-    //warning and error
-    QLabel *warning_label;
-    QLabel *error_label;
-    QErrorMessage *errorMessageDialog;
+    //simulation parameters
+    QLabel *PrLabel;
+    QLabel *RaLabel;
+    //visualization parameters
+    QLabel *colorSchemeLabel;
+    QLabel *parameterCodeLabel;
+    QLabel *timeStepLabel;
 
 };
 

@@ -1,11 +1,10 @@
-//#define vtkRenderingCore_AUTOINIT 4(vtkInteractionStyle,vtkRenderingFreeType,vtkRenderingFreeTypeOpenGL,vtkRenderingOpenGL)
-//#define vtkRenderingVolume_AUTOINIT 1(vtkRenderingVolumeOpenGL)
+
 
 #include "rbcgui.h"
 #include "ui_rbcgui.h"
 #include "parameter_setting.h"
 #include "VTKReader.h"
-
+#include <vtkWindowToImageFilter.h>
 #include<QtWidgets>
 #include<QApplication>
 #include<QVTKOpenGLWidget.h>
@@ -22,264 +21,47 @@
 #include <vtkImageViewer2.h>
 #include <vtkEventQtSlotConnect.h>
 #include <vtkInteractorStyleTrackballActor.h>
+#include "vtkOpenGLRenderer.h"
 
 #include <vtkPolyDataMapper.h>
 #include <vtkSphereSource.h>
 
 #include <vtkAutoInit.h>
 VTK_MODULE_INIT(vtkRenderingOpenGL2); // VTK was built with vtkRenderingOpenGL2
-VTK_MODULE_INIT(vtkInteractionStyle);
+#define DEBUG
+extern QString global_Pr, global_Ra;
+extern int scheme,step;
+extern std::string code;
+extern bool prFlag, raFlag,colorFlag,codeFlag,stepFlag;
 
 RBCGUI::RBCGUI(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::RBCGUI)
 {
     ui->setupUi(this);
-    //file menu
-    QMenu *fileMenu = menuBar()->addMenu(tr("&File"));
-    QMenu *editMenu = menuBar()->addMenu(tr("&Edit"));
-    QToolBar *mainToolBar = addToolBar(tr("Main"));
 
-    //[0] open:fileMenu
-    const QIcon openIcon = QIcon(":/files/open.png");
-    QAction *openAct = new QAction(openIcon, tr("&Open"), this);
-    openAct->setShortcuts(QKeySequence::Open);
-    openAct->setStatusTip(tr("Open a file"));
-    //connect(saveAct, &QAction::triggered, this, &MainWindow::newFile);
-    fileMenu->addAction(openAct);
-    mainToolBar->addAction(openAct);
+    ui->Pr_display->setText(global_Pr);
 
-    //[1]save:fileMenu
-    const QIcon saveIcon = QIcon(":/files/save.png");
-    QAction *saveAct = new QAction(saveIcon, tr("&Save"), this);
-    saveAct->setShortcuts(QKeySequence::Save);
-    saveAct->setStatusTip(tr("Save a file"));
-    //connect(saveAct, &QAction::triggered, this, &MainWindow::newFile);
-    fileMenu->addAction(saveAct);
-    mainToolBar->addAction(saveAct);
-
-    //[2] zoom-in:editMenu
-    const QIcon zoominIcon = QIcon(":/files/zoom-in.png");
-    QAction *zoominAct = new QAction(zoominIcon, tr("&Zoom-in"), this);
-    //zoominAct->setShortcuts(QKeySequence::Zoomin);
-    zoominAct->setStatusTip(tr("Zoom in the graph"));
-    //connect(saveAct, &QAction::triggered, this, &MainWindow::newFile);
-    editMenu->addAction(zoominAct);
-    mainToolBar->addAction(zoominAct);
-
-    //[3] zoom-out:editMenu
-    const QIcon zoomoutIcon = QIcon(":/files/zoom-out.png");
-    QAction *zoomoutAct = new QAction(zoomoutIcon, tr("&Zoom-out"), this);
-    //zoominAct->setShortcuts(QKeySequence::Zoomin);
-    zoomoutAct->setStatusTip(tr("Zoom out the graph"));
-    //connect(saveAct, &QAction::triggered, this, &MainWindow::newFile);
-    editMenu->addAction(zoomoutAct);
-    mainToolBar->addAction(zoomoutAct);
-
-    //[4] move:editMenu
-    const QIcon moveIcon = QIcon(":/files/move.png");
-    QAction *moveAct = new QAction(moveIcon, tr("&Move"), this);
-    //zoominAct->setShortcuts(QKeySequence::Zoomin);
-    moveAct->setStatusTip(tr("Move the graph"));
-    //connect(saveAct, &QAction::triggered, this, &MainWindow::newFile);
-    editMenu->addAction(moveAct);
-    mainToolBar->addAction(moveAct);
-
-
-
-    /*vtkNew<vtkGenericOpenGLRenderWindow> renderWindow;//Allocate and hold a VTK object
-    ui->qvtkWidget->SetRenderWindow(renderWindow);
-    //vtkNew<vtkEventQtSlotConnect> slotConnector;
-    //this->Connections = slotConnector;
-    // Sphere
-    vtkNew<vtkSphereSource> sphereSource;
-   // sphereSource->Update();
-    vtkNew<vtkPolyDataMapper> sphereMapper;
-    sphereMapper->SetInputConnection(sphereSource->GetOutputPort());
-    vtkNew<vtkActor> sphereActor;
-    sphereActor->SetMapper(sphereMapper);
-    // VTK Renderer
-    vtkNew<vtkRenderer> renderer;
-    renderer->AddActor(sphereActor);
-    ui->qvtkWidget->GetRenderWindow()->AddRenderer(renderer);*/
-    /*this->Connections->Connect(ui->qvtkWidget->GetRenderWindow()->GetInteractor(),
-                               vtkCommand::LeftButtonPressEvent,
-                               this,
-                               SLOT(slot_clicked(vtkObject*, unsigned long, void*, void*)));*/
-
-
-    /*initialize all the files*/
-
-
-    bool REMOVE1=QFile::remove("D:/Qt_projects/RBCGUI/files/transportProperties");
-    //bool REMOVE2=QFile::remove("D:/Qt_projects/tmp_-RBCGUI-Desktop_Qt_5_10_1_MSVC2017_64bit-Release/transportProperties");
-    //bool CP=QFile::copy("D:/Qt_projects/RBCGUI/transportProperties","D:/Qt_projects/RBCGUI/files/transportProperties");
-    if(REMOVE1==true)
-        qDebug()<<"remove files successful"<<endl;
-    else
+    if(global_Ra.toDouble()==10000000.000000)
     {
-        qDebug()<<"error"<<endl;
+        ui->Ra_display->setText("1e7");//the number is very large, so we display it in a scientific way
+    }
+    if(global_Ra.toDouble()==1000000000.000000)
+    {
+        ui->Ra_display->setText("1e9");
+    }
+    if(global_Ra.toDouble()==100000000000.000000)
+    {
+        ui->Ra_display->setText("1e11");
     }
 
+    QString colorScheme=QString::number(scheme);//convert from int to QString
+    ui->ColorScheme_display->setText(colorScheme);
+    QString CODE=QString::fromStdString(code);//convert from std::string to QString
+    ui->ParemeterCode_display->setText(CODE);
+    QString timeStep=QString::number(step);//convert from std::string to QString
+    ui->TimeStep_display->setText(timeStep);
 
-    //initialize the parameter file
-    QFile FileIn_tran("D:/Qt_projects/RBCGUI/transportProperties");
-    QFile FileOut_tran("D:/Qt_projects/RBCGUI/files/transportProperties");
-    QString StrAll_tran="";
-    QStringList StrList_tran=QStringList();
-    //read all contexts
-    if(!FileIn_tran.open(QIODevice::ReadOnly|QIODevice::Text))
-    {
-        qDebug()<<"Can't open the file!"<<endl;
-    }
-    else
-    {
-        QTextStream StreamIn_tran(&FileIn_tran);
-        StrAll_tran=StreamIn_tran.readAll();
-        //qDebug()<<StrAll_tran;
-    }
-    FileIn_tran.close();
-
-    if(!FileOut_tran.open(QIODevice::WriteOnly|QIODevice::Text))
-    {
-        qDebug()<<"Can't write the file!"<<endl;
-    }
-    else
-    {
-        QTextStream StreamOut_tran(&FileOut_tran);
-        StrList_tran=StrAll_tran.split("\n");
-        for(int i=0;i<StrList_tran.count();i++)
-        {
-            QString LINE=StrList_tran.at(i);
-            StreamOut_tran<<LINE<<endl;
-        }
-        FileOut_tran.close();
-        StrAll_tran="";
-        StrList_tran=QStringList();
-        qDebug()<<"initialize files successful "<<endl;
-    }
-
-
-    //initialize the tmp transportProperties
-    QFile tmp_FileIn_tran("D:/Qt_projects/RBCGUI/transportProperties");
-    QFile tmp_FileOut_tran("D:/Qt_projects/RBCGUI/tmp/transportProperties");
-    QString tmp_StrAll_tran="";
-    QStringList tmp_StrList_tran=QStringList();
-
-    //read all contexts
-    if(!tmp_FileIn_tran.open(QIODevice::ReadOnly|QIODevice::Text))
-    {
-        qDebug()<<"Can't open the file!"<<endl;
-    }
-    else
-    {
-
-        QTextStream tmp_StreamIn_tran(&tmp_FileIn_tran);
-        tmp_StrAll_tran=tmp_StreamIn_tran.readAll();
-        //qDebug()<<tmp_StrAll_tran;
-
-    }
-    tmp_FileIn_tran.close();
-
-    if(!tmp_FileOut_tran.open(QIODevice::WriteOnly|QIODevice::Text))
-    {
-        qDebug()<<"Can't write the file!"<<endl;
-    }
-    else
-    {
-        QTextStream tmp_StreamOut_tran(&tmp_FileOut_tran);
-        tmp_StrList_tran=tmp_StrAll_tran.split("\n");
-        for(int i=0;i<tmp_StrList_tran.count();i++)
-        {
-            QString tmp_LINE=tmp_StrList_tran.at(i);
-            tmp_StreamOut_tran<<tmp_LINE<<endl;
-        }
-        tmp_FileOut_tran.close();
-        tmp_StrAll_tran="";
-        tmp_StrList_tran=QStringList();
-        qDebug()<<"initialize tmp_ successful "<<endl;
-    }
-
-    //
-    //initialize the T
-    QFile FileIn_T("D:/Qt_projects/RBCGUI/T");
-    QFile FileOut_T("D:/Qt_projects/RBCGUI/files/T");
-    QString StrAll_T="";
-    QStringList StrList_T=QStringList();
-
-    //read all contexts
-    if(!FileIn_T.open(QIODevice::ReadOnly|QIODevice::Text))
-    {
-        qDebug()<<"Can't open the file!"<<endl;
-    }
-    else
-    {
-
-        QTextStream StreamIn_T(&FileIn_T);
-        StrAll_T=StreamIn_T.readAll();
-        //qDebug()<<StrAll_T;
-
-    }
-    FileIn_T.close();
-
-    if(!FileOut_T.open(QIODevice::WriteOnly|QIODevice::Text))
-    {
-        qDebug()<<"Can't write the file!"<<endl;
-    }
-    else
-    {
-        QTextStream StreamOut_T(&FileOut_T);
-        StrList_T=StrAll_T.split("\n");
-        for(int i=0;i<StrList_T.count();i++)
-        {
-            QString tmp_LINE=StrList_T.at(i);
-            StreamOut_T<<tmp_LINE<<endl;
-        }
-        FileOut_T.close();
-        StrAll_T="";
-        StrList_T=QStringList();
-        qDebug()<<"initialize tmp_ successful "<<endl;
-    }
-
-    //initialize the tmp T
-    QFile tmp_FileIn_T("D:/Qt_projects/RBCGUI/T");
-    QFile tmp_FileOut_T("D:/Qt_projects/RBCGUI/tmp/T");
-    QString tmp_StrAll_T="";
-    QStringList tmp_StrList_T=QStringList();
-
-    //read all contexts
-    if(!tmp_FileIn_T.open(QIODevice::ReadOnly|QIODevice::Text))
-    {
-        qDebug()<<"Can't open the file!"<<endl;
-    }
-    else
-    {
-
-        QTextStream tmp_StreamIn_T(&tmp_FileIn_T);
-        tmp_StrAll_T=tmp_StreamIn_T.readAll();
-        //qDebug()<<tmp_StrAll_T;
-
-    }
-    tmp_FileIn_T.close();
-
-    if(!tmp_FileOut_T.open(QIODevice::WriteOnly|QIODevice::Text))
-    {
-        qDebug()<<"Can't write the file!"<<endl;
-    }
-    else
-    {
-        QTextStream tmp_StreamOut_T(&tmp_FileOut_T);
-        tmp_StrList_T=tmp_StrAll_T.split("\n");
-        for(int i=0;i<tmp_StrList_T.count();i++)
-        {
-            QString tmp_LINE=tmp_StrList_T.at(i);
-            tmp_StreamOut_T<<tmp_LINE<<endl;
-        }
-        tmp_FileOut_T.close();
-        tmp_StrAll_T="";
-        tmp_StrList_T=QStringList();
-        qDebug()<<"initialize tmp_ successful "<<endl;
-    }
 }
 
 
@@ -290,15 +72,8 @@ RBCGUI::~RBCGUI()
 
 }
 
-
-/*void RBCGUI::slot_clicked(vtkObject*, unsigned long, void*, void*)
-{
-    std::cout << "Clicked." << std::endl;
-}*/
-
-
 void RBCGUI::on_para_setting_clicked()
-{ 
+{
 
 
     paraWin=new Parameter_setting;
@@ -307,76 +82,213 @@ void RBCGUI::on_para_setting_clicked()
 
 }
 
-/*void RBCGUI::receiveData(QString data1,QString data2,QString data3,QString data4)
-{
-    ui->nu_display->setText(data1);
-    ui->beta_display->setText(data2);
-    ui->TFloor_display->setText(data3);
-    ui->Pr_display->setText(data4);
-}*/
-
-
-
 void RBCGUI::on_apply_changes_clicked()
 {
-    extern QString global_nu, global_beta,global_TFloor, global_Pr;
-    ui->nu_display->setText(global_nu);
-    ui->beta_display->setText(global_beta);
-    ui->TFloor_display->setText(global_TFloor);
-    ui->Pr_display->setText(global_Pr);
-}
 
+    ui->Pr_display->setText(global_Pr);
+
+    if(global_Ra.toDouble()==10000000.000000)
+    {
+        ui->Ra_display->setText("1e7");//the number is very large, so we display it in a scientific way
+    }
+    if(global_Ra.toDouble()==1000000000.000000)
+    {
+        ui->Ra_display->setText("1e9");
+    }
+    if(global_Ra.toDouble()==100000000000.000000)
+    {
+        ui->Ra_display->setText("1e11");
+    }
+
+    QString colorScheme=QString::number(scheme);//convert from int to QString
+    ui->ColorScheme_display->setText(colorScheme);
+    QString CODE=QString::fromStdString(code);//convert from std::string to QString
+    ui->ParemeterCode_display->setText(CODE);
+    QString timeStep=QString::number(step);//convert from std::string to QString
+    ui->TimeStep_display->setText(timeStep);
+}
+void visualizerScript(RBVisualizer& testReader, bool isVideoSave);
 void RBCGUI::on_visualization_clicked()
 {
-    int colorScheme = 1;
+    extern QString global_Pr, global_Ra;
+    extern int scheme,step;
+    extern std::string code;
+    extern bool prFlag, raFlag,colorFlag,codeFlag,stepFlag;
+
+    if(prFlag==false||raFlag==false||colorFlag==false||codeFlag==false||stepFlag==false)
+    {
+        QMessageBox msgBox(QMessageBox::Warning, tr("QMessageBox::warning()"),
+                               tr("Parameter setting reminder: You haven't made any change to parameters. "
+                                  "Do you want to start your program with default parameters?"), 0, this);
+        msgBox.setWindowTitle("Reminder");
+        msgBox.addButton(tr("&No, I want to go back."), QMessageBox::AcceptRole);
+        msgBox.addButton(tr("&Yes, I want to continue"), QMessageBox::RejectRole);
+        if(msgBox.exec() ==  QMessageBox::AcceptRole)
+        {
+            return;
+        }
+
+    }
+    extern int scheme;
+    extern std::string code;
+    int colorScheme = scheme;//0,1,2
     int resolutionX = 100;
     int resolutionY = 50;
     std::string filePath = "D:/Qt_projects/RBCGUI/RBConvection/";
-    std::string parameterCode = "T";
-    int timeStep = 20;
+    std::string parameterCode =code;//mag(U)
+    int timeStep = step;
     int timeMax = 2000;
     cout<<"done"<<endl;
     RBVisualizer visual(colorScheme, resolutionX, resolutionY, filePath, parameterCode,
                          timeStep, timeMax);
-
-    cout<<"allocate done"<<endl;
-
-    cout<<"set render window done"<<endl;
     visual.readParameterMinMax();
-    cout<<"read done"<<endl;
-    visual.setParameterMin(280);
-    cout<<"set parameter done"<<endl;
+extern int loadFlag;
 
-    vtkSmartPointer<vtkGenericOpenGLRenderWindow> renderWindow=
-            vtkSmartPointer<vtkGenericOpenGLRenderWindow>::New();//Allocate and hold a VTK object
     vtkSmartPointer<vtkRenderWindow> renWin =
             vtkSmartPointer<vtkRenderWindow>::New();
+   RendererVector rendererOutput=visual.mainVisualizer();
 
-    ui->qvtkWidget->SetRenderWindow(renderWindow);
-    RendererVector rendererOutput=visual.mainVisualizer();
-
-    cout<<"start to diaplay"<<endl;
-    int count=0;
-    vtkSmartPointer<vtkRenderer> ren=vtkSmartPointer<vtkRenderer>::New();
-    ren=rendererOutput.front();//it displays the last figure
-    /*for (auto it= rendererOutput.cbegin(); it != rendererOutput.cend(); it++)
+   int index = 1;
+    for (auto it= rendererOutput.cbegin(); it != rendererOutput.cend(); it++)
     {
-        count++;
-        //ui->qvtkWidget->GetRenderWindow()->AddRenderer(*it);
-        //ui->qvtkWidget->GetRenderWindow()->Render();
-        //cout<<"window is fine"<<endl;
-        //std::this_thread::sleep_for(std::chrono::milliseconds(16));
-        //cout<<"done"<<endl;
-        if(count==5)
-        {
-            vtkSmartPointer<vtkRenderer> ren=*it;
-            break;
-        }//when i try to break the loopl like this, it displays nothing.
-    }*/
-    ui->qvtkWidget->GetRenderWindow()->AddRenderer(ren);
-    ui->qvtkWidget->GetRenderWindow()->Render();
-    renWin->AddRenderer(ren);
-    renWin->Render();
+       renWin->AddRenderer(*it);
+        renWin->SetSize(resolutionX*8, resolutionY*8);
+        renWin->Render();
+        cout<<"2: "<<*it<<endl;
+        cout<<"Rendering the " << index << "th window..." << endl;
+        std::this_thread::sleep_for(std::chrono::milliseconds(50));
+    }
 
+    bool isVideoSave = true;
+
+      try {
+          RBVisualizer testReader(colorScheme, resolutionX, resolutionY, filePath, parameterCode,
+              timeStep, timeMax);
+          testReader.readParameterMinMax();
+          visualizerScript(testReader, isVideoSave);
+      }
+      catch(const fileNotExistError &eFNE){
+        cout << "Hey!" << endl;
+        //QString msg="The file we tried to access does not exist.This may happen when you entered a wrong timeStep. "
+                    //"The timeStep could be the multiple of the actual time step.";
+        QMessageBox msgBox1(QMessageBox::Warning, tr("QMessageBox::warning()"),
+                           tr("The file we tried to access does not exist.This may happen when you entered a wrong timeStep. "
+                              "The timeStep could be the multiple of the actual time step."), 0, this);
+        msgBox1.setWindowTitle("warning");
+        msgBox1.addButton(tr("&Ok"), QMessageBox::AcceptRole);
+        msgBox1.addButton(tr("&cancel"), QMessageBox::RejectRole);
+            //return;
+          std::cerr << "fileNotExistError caught in " << filePath << " : "
+              << eFNE.what() << std::endl;
+          std::cerr << "The file we tried to access does not exist. "
+              "This may happen when you entered a wrong timeStep. " << std::endl;
+          std::cerr << "The timeStep could be the multiple of the actual time step." << std::endl;
+          return ;
+      }
+      catch (const pathNotExistError &ePNE) {
+        QString msg="The path you entered does not exist. "
+                    "Make sure you have downloaded and unzipped the results." ;
+        QMessageBox msgBox(QMessageBox::Warning, tr("QMessageBox::warning()"),
+                           msg, 0, this);
+        msgBox.setWindowTitle("warning");
+        msgBox.addButton(tr("&Ok"), QMessageBox::AcceptRole);
+        //return;
+
+
+        std::cerr << "pathNotExistError caught in " << filePath << " : "
+              << ePNE.what() << std::endl;
+          std::cerr << "The path you entered does not exist. "
+              "Make sure you have downloaded and unzipped the results." << std::endl;
+          return ;
+      }
+      catch (...) {
+        QString msg="This may happen when your computation resources are "
+                    "exhausted, or system platform is incompatible.\n"
+                    "Try it again later, or contact us at our Github Issues page:\n"
+                "https://github.com/ENGN2912B-2018/HPC-A/issues";
+        QMessageBox msgBox(QMessageBox::Warning, tr("QMessageBox::warning()"),
+                           msg, 0, this);
+        msgBox.setWindowTitle("warning");
+        msgBox.addButton(tr("&Ok"), QMessageBox::AcceptRole);
+        return;
+
+
+          /*std::cerr << "Execption thrown while visualizing the results." << std::endl;
+          std::cerr << "This may happen when your computation resources are "
+              "exhausted, or system platform is incompatible." << std::endl;
+          std::cerr << "Try it again later, or contact us at our Github Issues page: "
+              << std::endl;
+          std::cerr << "https://github.com/ENGN2912B-2018/HPC-A/issues" << std::endl;
+          return ;*/
+      }
+
+      return ;
+    }
+
+    void visualizerScript(RBVisualizer& testReader, bool isViedoSave) {
+        if (isViedoSave ==  true) {
+            RendererVector rendererOutput = testReader.mainVisualizer();
+            vtkSmartPointer<vtkRenderWindow> renWin =
+                vtkSmartPointer<vtkRenderWindow>::New();
+            vtkSmartPointer<vtkWindowToImageFilter> w2i =
+                vtkSmartPointer<vtkWindowToImageFilter>::New();
+            vtkSmartPointer<vtkAVIWriter> writer =
+                vtkSmartPointer<vtkAVIWriter>::New();
+            renWin->AddRenderer(*rendererOutput.cbegin());
+            renWin->SetSize(testReader.getResolutionX() * 8,
+                testReader.getResolutionY() * 8);
+            renWin->Render();
+            w2i->SetInput(renWin);
+            w2i->Update();
+            std::string saveName = testReader.getSavePath() + testReader.getSaveName();
+            writer->SetFileName(saveName.c_str());
+            writer->SetInputConnection(w2i->GetOutputPort());
+            writer->SetRate(50);
+            writer->SetQuality(2);
+            writer->SetCompressorFourCC("MSVC");
+            writer->Start();
+            int frameCounter = 2;
+            for (auto it = rendererOutput.cbegin() + 1; it != rendererOutput.cend(); it++) {
+                renWin->AddRenderer(*it);
+                renWin->SetSize(testReader.getResolutionX() * 8,
+                    testReader.getResolutionY() * 8);
+    #ifdef DEBUG
+                std::cout << "Attempting to write the video frame: "
+                    << frameCounter << std::endl;
+    #endif
+                renWin->Render();
+                w2i->Modified();
+                writer->Write();
+
+
+                std::this_thread::sleep_for(std::chrono::milliseconds(20));
+                frameCounter++;
+            }
+        }
+        else {
+            RendererVector rendererOutput = testReader.mainVisualizer();
+            vtkSmartPointer<vtkRenderWindow> renWin =
+                vtkSmartPointer<vtkRenderWindow>::New();
+            int frameCounter = 1;
+            for (auto it = rendererOutput.cbegin() + 1; it != rendererOutput.cend(); it++) {
+                renWin->AddRenderer(*it);
+                renWin->SetSize(testReader.getResolutionX() * 8,
+                    testReader.getResolutionY() * 8);
+    #ifdef DEBUG
+                std::cout << "Rendering the frame: "
+                    << frameCounter << std::endl;
+    #endif
+                renWin->Render();
+
+                std::this_thread::sleep_for(std::chrono::milliseconds(20));
+                frameCounter++;
+            }
+        }
 
 }
+
+void RBCGUI::setStatusText(QString status)
+{
+    ui->statusLabel->setText(status);
+}
+

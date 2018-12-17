@@ -178,4 +178,6 @@ LIBS += $$quote(D:\VTK\VTK-8.1.2\VTK-install\lib\vtkzlib-8.1.lib)
 RESOURCES += \
     myresources.qrc
 
+DISTFILES +=
+
 
