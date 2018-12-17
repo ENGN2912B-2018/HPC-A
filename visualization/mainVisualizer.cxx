@@ -15,7 +15,8 @@ int main(int argc, char const *argv[]) {
 	bool isVideoSave = true;
 	std::cout << "=====		2D Rayleigh-B¨¦nard Convection Visualizer	=====" << std::endl;
 	std::cout << "Developed by Yang Jiao, Yiming Li and Kit Sum Wu" << std::endl;
-	std::cout << "\n\nEnter 0 to use the default parameter set: ";
+	std::cout << "\n\nEnter 0 to use the default parameter set." << std::endl;
+	std::cout << "(The default set is only used in debugging, will NOT work on other systems): ";
 	int parameterSet;
 	std::cin >> parameterSet;
 	if (parameterSet == 0) {
@@ -37,7 +38,7 @@ int main(int argc, char const *argv[]) {
 		std::cout << "Enter the maximal time of simulation: ";
 		std::cin >> timeMax;
 		std::cout << "Do you want to save the video?" << std::endl;
-		std::cout << "Enter 0 to save, others not to save : ";
+		std::cout << "Enter 0 to save, others not to save:(DO NOT save the video in Linux!) ";
 		int isSave;
 		std::cin >> isSave;
 		if (isSave == 0)
