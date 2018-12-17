@@ -34,8 +34,20 @@ Our project is divided as three parts: numerical simulation of 2D Rayleigh-Béna
 The input of data visualization is the result of Rayleigh-Bénard Convection simulation and the resulting graphics should be exported to GUI section. It gives users a direct view of their calculation and help them to better understand Rayleigh--B\'enard Convection or the errors occurred in their calculation. The configurations should include output map layer, dimensions of output, color schemes and result export format.
  
 The graphical user interface (GUI) is like the conductor of the project. The GUI will receive simulation and visualization parameters from the user and show the the visualization of the corresponding simulation case.
+# Interface Descriptions
+## Graphical Interface
+## Data Visualization
+## Communications Protocols
+## Threading and Concurrency
+## Exception Handling
 
-# Build instructions
+# Testing and Evaluation
+
+## Operating system(s) and software compiler/library version(s) tested
+
+## Description of functional testing to date
+
+## Build instructions
 
 Please refer to the following files for installation instructions.
 
@@ -44,8 +56,6 @@ Please refer to the following files for installation instructions.
 [Visualization Set Up Guide](https://github.com/ENGN2912B-2018/HPC-A/blob/master/VisualizationGuide.md)
 
 [GUI Set Up Guide](https://github.com/ENGN2912B-2018/HPC-A/blob/master/GUIGuide.md)
-
-# Testing and Evaluation
 
 # Conclusions
 
