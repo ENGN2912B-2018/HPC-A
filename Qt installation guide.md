@@ -1,6 +1,6 @@
 ## Linux (Ubuntu) Qt Installation Guide
 
-This is a Qt installation guide for Linux machines. The following steps are the installation of Qt 5.10.1. It is a detailed installation guide based on [Qt official tutorial website](https://wiki.qt.io/Install_Qt_5_on_Ubuntu). You can choose any version available on [Qt official release website](http://download.qt.io/official_releases/qt/). The installation steps for different versions of Qt are the same. **However, if you want to install a different version to ours, you should CHECK and CHANGE the number of version in the command before every step.**
+This is a Qt installation guide for Linux machines. The following steps are the installation of Qt 5.10.1. It is a detailed installation guide based on [Qt official tutorial website](https://wiki.qt.io/Install_Qt_5_on_Ubuntu). You can choose any version available on [Qt official release website](http://download.qt.io/official_releases/qt/). The installation steps for different versions of Qt are the same. **However, if you want to install a different version to ours, you should CHECK and CHANGE the number of version in the command in every step.**
 
 - **Download:**
 
@@ -21,11 +21,11 @@ Then run the installer:
 ```
 ./qt-opensource-linux-x64-5.10.1.run
 ```
-Now you can see a Qt installation window. Sign in or sign up first, and **make sure your installation directory can be read and written freely**. Then you can continue to install Qt with default settings.
+Now you can see a Qt installation window. Sign in or sign up first, and **MAKE SURE your installation directory is where you can read and write files freely**. Then you can continue to install Qt with default settings.
 
 - **Install necessary tools and libraries:**
 
-You need to make sure that you have essential building tools and libraries in your machine. Execute the following command to install **g++**:
+Make sure that you have essential build tools and libraries in your machine. Execute the following command to install **g++**:
 ```
 sudo apt-get install build-essential
 ```
@@ -48,12 +48,14 @@ Tested with Qt5.3.1 and Ubuntu 14.04 and it solved the problem with missing -lGL
 
 Now you have completed the installation steps.
 
-- **Check your compiler: **
-You need to check whether g++ has been successfully intalled and can be detected by Qt, so launch Qt Creator. Go to Tools > Options and select tab Kits. You can see a computer icon in front of gcc, showing that gcc now works on your machine and in Qt.
+- **Check your compiler:**
+
+Check whether g++ has been successfully intalled and can be detected by Qt. Launch Qt Creator, go to Tools > Options and select Kits. You will see a computer icon in front of gcc, showing that gcc now works in your machine and in Qt.
 
 
 - **Associate the third party libraries with Qt:**
-If you want to use the third party libraries in Qt, you need to add the include path and the lib path of the thrid in Qt .pro file. For example, here we use VTK in Qt, so in the .pro file, we add these following lines:
+
+If you want to use the third party libraries in Qt, you need to add the include path and the lib path of the thrid party in Qt pro file. For example, in our project we want to use VTK in Qt, so in the pro file, we add these following lines:
 ```
 INCLUDEPATH += \
     /usr/local/include/vtk-8.1 \
@@ -183,7 +185,7 @@ LIBS+= -L/usr/local/lib \
 -lvtkzlib-8.1     
 ```
 
-Now, Qt can use all the VTK classes and libraries.
+Now, all the VTK classes and libraries can work in Qt.
 
 
 ## Troubleshooting
