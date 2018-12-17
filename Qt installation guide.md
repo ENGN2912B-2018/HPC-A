@@ -1,6 +1,6 @@
 ## Linux (Ubuntu) Qt Installation Guide
 
-This is a Qt installation guide for Linux machines. The following steps are the installation of Qt 5.10.1. It is a detailed installation guide based on [Qt official tutorial website](https://wiki.qt.io/Install_Qt_5_on_Ubuntu). You can choose any version available on [Qt official release website](http://download.qt.io/official_releases/qt/). The installation steps for different versions of Qt are the same. **However, you should CHECK and CHANGE the version number before every step.**
+This is a Qt installation guide for Linux machines. The following steps are the installation of Qt 5.10.1. It is a detailed installation guide based on [Qt official tutorial website](https://wiki.qt.io/Install_Qt_5_on_Ubuntu). You can choose any version available on [Qt official release website](http://download.qt.io/official_releases/qt/). The installation steps for different versions of Qt are the same. **However, if you want to install a different version to ours, you should CHECK and CHANGE the number of version in the command before every step.**
 
 - **Download:**
 
