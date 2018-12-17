@@ -43,15 +43,21 @@ RBVisualizer::RBVisualizer(int colorScheme, int resolutionX, int resolutionY,
 #ifdef ERROR
 	std::cout << "Calling the constructor..." << std::endl;
 #endif
+#ifdef _WIN32
 	this->setSavePath(filePath);
+#endif
     if(this->_filePath.back() != '/'){
       this->_filePath.push_back('/');
+#ifdef _WIN32
 	  this->_savePath.push_back('/');
+#endif
     }
 	// The parameterCode should be initialized before the name of video
 	this->_parameterCode = parameterCode;
+#ifdef _WIN32
 	this->setSaveNameDefault();
-    
+#endif
+
     this->_timeStep = timeStep;
     this->_timeMax = timeMax;
 
@@ -92,7 +98,7 @@ double RBVisualizer::getParameterMax() const{
 double RBVisualizer::getParameterMin() const{
     return _parameterMin;
 }
-
+#ifdef _WIN32
 std::string RBVisualizer::getSavePath() const {
 	return _savePath;
 }
@@ -100,6 +106,7 @@ std::string RBVisualizer::getSavePath() const {
 std::string RBVisualizer::getSaveName() const {
 	return _saveName;
 }
+#endif
 
 /////	 Setters	/////
 
@@ -122,7 +129,7 @@ void RBVisualizer::setParameterMin(double min){
 void RBVisualizer::setParameterMax(double max){
     _parameterMax = max;
 }
-
+#ifdef _WIN32
 void RBVisualizer::setSavePath(std::string savePath){
 #ifdef ERROR
 	std::cout << "Calling the setSavePath()..." << std::endl;
@@ -169,7 +176,7 @@ void RBVisualizer::setSaveNameDefault() {
 		attributeName = "Temperature_";
 	_saveName = "RBConvection_" + attributeName + year + month + day + hour + minute + ".avi";
 }
-
+#endif
 
 void RBVisualizer::readParameterMinMax(){
 #ifdef ERROR

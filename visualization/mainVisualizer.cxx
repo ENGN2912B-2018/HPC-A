@@ -1,10 +1,16 @@
 #include "VTKReader.h"
+#ifdef _WIN32
 #include <vtkWindowToImageFilter.h>
 #include <vtkPNGWriter.h>
+#endif
 
 //#define MULTI
 #define DEBUG
+#ifdef _WIN32
 void visualizerScript(RBVisualizer& testReader, bool isVideoSave);
+#else
+void visualizerScript(RBVisualizer& testReader);
+#endif
 int main(int argc, char const *argv[]) {
 
 	int colorScheme = 2;
@@ -12,7 +18,9 @@ int main(int argc, char const *argv[]) {
 	std::string parameterCode = "T";
 	int timeStep = 2;
 	int timeMax = 2000;
+#ifdef _WIN32
 	bool isVideoSave = true;
+#endif
 	std::cout << "=====		2D Rayleigh-B¨¦nard Convection Visualizer	=====" << std::endl;
 	std::cout << "Developed by Yang Jiao, Yiming Li and Kit Sum Wu" << std::endl;
 	std::cout << "\n\nEnter 0 to use the default parameter set." << std::endl;
@@ -37,14 +45,16 @@ int main(int argc, char const *argv[]) {
 		std::cin >> timeStep;
 		std::cout << "Enter the maximal time of simulation: ";
 		std::cin >> timeMax;
+#ifdef _WIN32
 		std::cout << "Do you want to save the video?" << std::endl;
-		std::cout << "Enter 0 to save, others not to save:(DO NOT save the video in Linux!) ";
+		std::cout << "Enter 0 to save, others not to save: ";
 		int isSave;
 		std::cin >> isSave;
 		if (isSave == 0)
 			isVideoSave = true;
 		else
 			isVideoSave = false;
+#endif
 	}
 
 
@@ -56,7 +66,11 @@ int main(int argc, char const *argv[]) {
 	  RBVisualizer testReader(colorScheme, resolutionX, resolutionY, filePath, parameterCode,
 		  timeStep, timeMax);
 	  testReader.readParameterMinMax();
+#ifdef _WIN32
 	  visualizerScript(testReader, isVideoSave);
+#else
+	  visualizerScript(testReader);
+#endif
   }
   catch(const fileNotExistError &eFNE){
 	  std::cerr << "fileNotExistError caught in " << filePath << " : "
@@ -87,7 +101,7 @@ int main(int argc, char const *argv[]) {
  
   return EXIT_SUCCESS;
 }
-
+#ifdef _WIN32
 void visualizerScript(RBVisualizer& testReader, bool isViedoSave) {
 	if (isViedoSave ==  true) {
 		RendererVector rendererOutput = testReader.mainVisualizer();
@@ -148,4 +162,24 @@ void visualizerScript(RBVisualizer& testReader, bool isViedoSave) {
 		}
 	}
 }
+#else
+void visualizerScript(RBVisualizer& testReader) {
+	RendererVector rendererOutput = testReader.mainVisualizer();
+	vtkSmartPointer<vtkRenderWindow> renWin =
+		vtkSmartPointer<vtkRenderWindow>::New();
+	int frameCounter = 1;
+	for (auto it = rendererOutput.cbegin() + 1; it != rendererOutput.cend(); it++) {
+		renWin->AddRenderer(*it);
+		renWin->SetSize(testReader.getResolutionX() * 8,
+			testReader.getResolutionY() * 8);
+#ifdef DEBUG
+		std::cout << "Rendering the frame: "
+			<< frameCounter << std::endl;
+#endif
+		renWin->Render();
 
+		std::this_thread::sleep_for(std::chrono::milliseconds(20));
+		frameCounter++;
+	}
+}
+#endif

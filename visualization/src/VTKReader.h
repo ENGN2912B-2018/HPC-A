@@ -19,7 +19,9 @@
 
 #include <vtkActor.h>
 #include <vtkActor2D.h>
+#ifdef _WIN32
 #include <vtkAVIWriter.h>
+#endif
 #include <vtkCamera.h>
 #include <vtkColorSeries.h>
 #include <vtkDataSetMapper.h>
@@ -75,8 +77,10 @@ class RBVisualizer{
     int getTimeMax() const;
     double getParameterMin() const;
     double getParameterMax() const;
+#ifdef _WIN32
 	std::string getSavePath() const;
 	std::string getSaveName() const;
+#endif
 
     // Setters
     void setColorScheme(int colors);
@@ -84,9 +88,11 @@ class RBVisualizer{
     void setResolutionY(int resoY);
     void setParameterMin(double min);
     void setParameterMax(double max);
+#ifdef _WIN32
 	void setSavePath(std::string savePath);
 	void setSaveName(std::string saveName);
 	void  setSaveNameDefault();
+#endif
 
     // Member methods
     void readParameterMinMax();
@@ -105,8 +111,10 @@ class RBVisualizer{
     int				_timeMax = 0;
 	int				_vectorSize;
     std::string		_filePath;
+#ifdef _WIN32
 	std::string		_savePath;
 	std::string		_saveName;
+#endif
     //double        parameterMinMax[2] = {0};
     double			_parameterMin;
     double			_parameterMax;
