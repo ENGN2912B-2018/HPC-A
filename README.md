@@ -139,6 +139,8 @@ Please refer to the following files for installation instructions.
 # Conclusions
 
 # Future Work
+### Support for change of input path
+For now GUI hasn't implement the select of the working path, so before the program is built, users have to change the vtk data path in code. Also, after pressing the visualization button, the GUI window does not response. That may lead to  the QVTKOpenGLWidget can only display the last figure of the visualization. Therefore, muilt-threads in GUI may be necessary.
 ### Supports for Multi-Platform
 Our main application can only work on Windows 10 operating system. Linux-based operating systems(including the Brown CCV environment) are not supported due to an incompatible OpenGL version. For the users who want to simulate the -Bénard Convection on Linux systems, we offer a [command-lind based solution](https://github.com/ENGN2912B-2018/HPC-A/blob/master/VisualizationGuide.md) that can work on both Windows and Linux. One possible future work for our project is to provide supports for multi-platform development.
 
