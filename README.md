@@ -41,7 +41,7 @@ A block diagram representation of our program is below:
 
 # Interface Descriptions
 ## Graphical Interface
-Our GUI has two windows. The main window contains three buttons for users to control the project and a parameter display table, which cannot be edited by users. The first time user start our project, all the parameters are of default values. 
+Our GUI has two windows. The main window contains three buttons for users to control the project and a parameter display table, which cannot be edited by users. The first time user start our project, all the parameters are of default values.
 
 ![main window](https://github.com/ENGN2912B-2018/HPC-A/blob/master/images/GUI-MainWindow.png)
 
@@ -53,8 +53,8 @@ For the simulation setting part, user can choose the value of Pr and Ra. When th
 For the visualization part, users can choose different color scheme and time steps. They can choose to visualize convection temperature T or fluid velocity mag(U). Then click "apply visualization changes" to assign new values to the visualization parameters.
 
    ![visualization](https://github.com/ENGN2912B-2018/HPC-A/blob/master/images/visParameter.png)
-   
-When users have made changes to parameters of interest, they can press "apply changes" to display the latest parameter value in the main window. Then press "visualization" button to start visualization. If some parameters remain unchanged, a message box will jump out to tell users whether they want to continue visualization with default values. 
+
+When users have made changes to parameters of interest, they can press "apply changes" to display the latest parameter value in the main window. Then press "visualization" button to start visualization. If some parameters remain unchanged, a message box will jump out to tell users whether they want to continue visualization with default values.
 
 Our project cannot be real time, so after users press "visualization", they have to wait for a while because the project has to read vtk data first. When the time step is 2, it takes the longest time to read data and visualize them. Therefore, if users want to see the whole progress in much shorter time, they need to choose 20 to be the time step.
 
@@ -85,7 +85,6 @@ In all of those situations, the program will terminate, and pop up different mes
 #### Windows 10
 MSVC2017 64bit , Qt 5.10.1, VTK 8.1.2
 
-### Command-line tools:
 ### Visualization Module:
 **Windows 10:** CMake 3.13.2, Visual Studio 2017, VTK 8.1.2  
 **Ubuntu 18.04:** CMake 3.10.2, gcc 7.3.0, VTK 8.1.2    
@@ -101,12 +100,22 @@ For conducting functional tests for visualization components, we implemented a d
 The inputs of `mainVisualizer` are commands from user input which specify visualization parameters, and `.vtk` files that generated from the simulation components. The `.vtk` files can also be downloaded from [this Google Drive Page](https://drive.google.com/open?id=1uOd3skYjSeGgKKKBibIzqVxK3MpL1rfd).
 The expected output of `mainVisualizer` should be a OpenGL render window showing the visualization results in an animation. In Windows 10, an optional Windows AVI video can also be saved in the same directory as the `.vtk` files.
 #### Execution, actual outputs and evaluation
-**Linux:** 
-Under the terminal, we rAn `./mainVisualizer` file and enter the parameters as instruction.
+**Linux:**   
+Under the terminal, we ran the `./mainVisualizer` file and enter the parameters as the instructions.
 
 ![Linux Command-line tool](https://upload-images.jianshu.io/upload_images/315072-8ab196915da0c1cc.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 Then the results were generated in an Open GL render window.
-![Execution results](https://upload-images.jianshu.io/upload_images/315072-864cbb3d6d7e6356.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+![Execution results](https://upload-images.jianshu.io/upload_images/315072-864cbb3d6d7e6356.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)  
+
+**Windows:**   
+We directly double clicked the `mainVisualizer` executable and enter the parameters as the instructions.
+![Windows Command-line tool](https://upload-images.jianshu.io/upload_images/315072-a6dd5569c8ec2a20.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+Then the results were generated in an OpenGL render window.
+![Execution results](https://upload-images.jianshu.io/upload_images/315072-f191266d7938752d.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+A video was also generated in the same path as the `.vtk` files, and the results are the same as shown in the OpenGL render window.
+![Saved video file](https://upload-images.jianshu.io/upload_images/315072-31016b8b59ccc209.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+
+We can say that the visualization module passed the functional tests according to the results.
 
 ### Graphical User Interface (Main Application)
 
