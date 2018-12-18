@@ -1,4 +1,4 @@
-## VTK Installation Guide
+## Linux (Ubuntu) VTK Installation Guide
 
 Before you install VTK, you need to install CMake first. Our guide is based on [VTK wiki](https://www.vtk.org/Wiki/VTK/Configure_and_Build).
 
