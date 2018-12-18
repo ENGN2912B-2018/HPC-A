@@ -1,6 +1,6 @@
-## Linux (Ubuntu) Qt Installation Guide
+## Part 1: Linux (Ubuntu 18.04 LTS) Qt Installation Guide
 
-This is a Qt installation guide for Linux machines. The following steps are the installation of Qt 5.10.1. It is a detailed installation guide based on [Qt official tutorial website](https://wiki.qt.io/Install_Qt_5_on_Ubuntu). You can choose any version available on [Qt official release website](http://download.qt.io/official_releases/qt/). The installation steps for different versions of Qt are the same. **However, if you want to install a different version to ours, you should CHECK and CHANGE the number of version in the command in every step.**
+Part 1 is a Qt installation guide for Linux machines. The following steps are the installation of Qt 5.10.1. It is a detailed installation guide based on [Qt official tutorial website](https://wiki.qt.io/Install_Qt_5_on_Ubuntu). You can choose any version available on [Qt official release website](http://download.qt.io/official_releases/qt/). The installation steps for different versions of Qt are the same. **However, if you want to install a different version to ours, you should CHECK and CHANGE the number of version in the command in every step.**
 
 - **Download:**
 
@@ -53,7 +53,25 @@ Now you have completed the installation steps.
 Check whether g++ has been successfully intalled and can be detected by Qt. Launch Qt Creator, go to Tools > Options and select Kits. You will see a computer icon in front of gcc, showing that gcc now works in your machine and in Qt.
 
 
-- **Associate the third party libraries with Qt:**
+## Part 2: Windows 10 Qt Installation Guide
+
+Go to the [Qt official release website](http://download.qt.io/official_releases/qt/), choose a version you want to install and download it. The Qt installation in Win 10 is pretty easy. It just like install any other softwares.
+
+After finishing the installation, you should go to check whether your compiler will work. Go to Tools >Options >and select Kits. 
+
+![Qt kit](https://github.com/ENGN2912B-2018/HPC-A/blob/master/images/Qt.png)
+
+At first, in my computer, all these compilers have warning icons in front of them, except the MinGW.nHowever, MinGW cannot compile in my operating system. If you have the same problem, go to [Microsoft website](https://developer.microsoft.com/en-us/windows/downloads/windows-10-sdk) to download and install Windows 10 SDK. Run **winsdksetup.exe** and install it in the default directory.
+
+![sdk](https://github.com/ENGN2912B-2018/HPC-A/blob/master/images/SDK.png)
+
+After the installation is done, go to the **Installers** folder in the previous install directory, and run all these exe files:
+
+![exe](https://github.com/ENGN2912B-2018/HPC-A/blob/master/images/SDK_exe.png)
+
+Then go back to kits, you will see some of the compilers can work now. You can start to build and compile your own projects now.
+
+## Part 3: Associate the third party libraries with Qt:
 
 If you want to use the third party libraries in Qt, you need to add the include path and the lib path of the thrid party in Qt pro file. For example, in our project we want to use VTK in Qt, so in the pro file, we add these following lines:
 ```
@@ -62,7 +80,7 @@ INCLUDEPATH += \
     /usr/local
     
 LIBS+= -L/usr/local/lib \
--lvtkalglib-8.1 \
+-lvtkalglib-8.1 \ru
 -lvtkChartsCore-8.1 \
 -lvtkCommonColor-8.1 \
 -lvtkCommonComputationalGeometry-8.1 \
