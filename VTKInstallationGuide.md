@@ -82,7 +82,7 @@ Some important variables values to build VTK for this project are listed as foll
 - `VTK_Group_Qt`: This value should be set as true since we need to provide Qt-support for the program.
 
 ![Error Window](https://upload-images.jianshu.io/upload_images/315072-8ea28bb9dc23bad4.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
-After setting up those value, you can click on the "Configure" button. Then a error window may pop up saying that the project files may be invalid. This is expected if you set some Qt-relate configurations without indicating the directory of Qt.  
+After setting up those value, you can click on the "Configure" button. Then an error window may pop up saying that the project files may be invalid. This is expected if you set some Qt-relate configurations without indicating the directory of Qt.  
 Now a new variable called `Qt5_DIR` may appear in the values and be marked as red. You should set the value of this variable to the `cmake` path under your Qt directory, for example: `C:\Qt\5.11.2\msvc2017_64\lib\cmake`. Note that the `msvc2017_64` path, this directory should be compatible to your current generator of CMake.   
 Once you configured all the variables, you can click on the "Configure" button until no variables are marked as red. Then you should click "Generate" button to generate the project files for Visual Studio.
 ### Building VTK
