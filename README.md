@@ -97,11 +97,11 @@ VTK 8.1.0
 
 ### Qt tools:
 #### Windows 10
-MSVC2017 64bit
-Qt 5.10.1
+MSVC2017 64bit  
+Qt 5.10.1  
 #### Ubuntu 18.04
-CMake 3.10.2
-Qt 5.10.1
+CMake 3.10.2  
+Qt 5.10.1  
 ## Description of functional testing to date
 
 ## Build instructions
