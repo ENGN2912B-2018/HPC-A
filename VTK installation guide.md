@@ -2,7 +2,7 @@
 VTK provides two types of installation: binary installation which allow users to build simple applications directly using Tcl scripts and pre-compiled VTK executables, and source codes installation which enables users to build classes and applications using C++, Java, Python and Tcl. In this page we will introduce the source codes installation of VTK using CMake in multiple platforms.  
 ## Contents
 [Installing VTK on CCV](#installing-vtk-on-ccv)  
-[Installing VTK on Ubuntu 18.04 LTS](#installing-vtk-on-ubuntu-18.04-lts)
+[Installing VTK on Ubuntu 18.04 LTS](#installing-vtk-on-ubuntu-1804-lts)
 ## Installing VTK on CCV
 VTK and CMake is already installed on CCV. All we need to do is simply runing the following commands:
 
