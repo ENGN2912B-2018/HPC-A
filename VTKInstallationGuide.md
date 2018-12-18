@@ -6,7 +6,7 @@ VTK provides two types of installation: binary installation which allow users to
 [Installing VTK on CCV](#installing-vtk-on-ccv)  
 [Installing VTK on Ubuntu 18.04 LTS](#installing-vtk-on-ubuntu-1804-lts)  
 [Installing VTK on Windows 10](#installing-vtk-on-windows-10)
-## Installing VTK on Brown CCV(RedHat 7)
+## Installing VTK on Brown CCV (RedHat 7)
 
 VTK and CMake is already installed on CCV. All we need to do is to activate the modules by running the following commands:
 
@@ -89,6 +89,6 @@ Once you configured all the variables, you can click on the "Configure" button u
 You can open the solution file in Visual Studio by clicking on the "Open Project" button in CMake.   
 Choose `Build->Configuration Manager`, and you can set up the configurations for building VTK. It is recommended to change the "Acitve solution configuration" selection to `Release` mode.
 ![Configuration Manager of Visual Studio](https://upload-images.jianshu.io/upload_images/315072-b84d78a1a25ce53b.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)  
-Then you can choose `Build->Build Solution` or press `Ctrl+Shift+B` shortcut. The VTK should compile. It may take a long time(nearly an hour on a Core i7-8550U laptop with 16 GiB memory) to compile.  
+Then you can choose `Build->Build Solution` or press `Ctrl+Shift+B` shortcut. The VTK should compile. It may take a long time (nearly an hour on a Core i7-8550U laptop with 16 GiB memory) to compile.  
 ## References
 VTK provides a comprehensive [User Guide](https://www.kitware.com/products/books/VTKUsersGuide.pdf), which includes a step-by-step instruction on installing VTK. We actually followed this user guide to set up the environment for our project development.  
