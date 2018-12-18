@@ -5,6 +5,7 @@ We need to install Qt and VTK. The detailed installation guides are here:
 **For Linux users**
 
 [Linux (Ubuntu) Qt Installation Guide](https://github.com/ENGN2912B-2018/HPC-A/blob/gui/Qt%20installation%20guide.md)
+
 [Linux (Ubuntu) VTK Installation Guide](https://github.com/ENGN2912B-2018/HPC-A/blob/gui/VTK%20installation%20guide.md)
 
 **For Windows users**
