@@ -1,6 +1,14 @@
-## Part 1: Linux (Ubuntu 18.04 LTS) Qt Installation Guide
+# Qt Installation Guide
+## contents:
+[Linux Qt Installation Guide](#linux-qt-installation-guide)
 
-Part 1 is a Qt installation guide for Linux machines. The following steps are the installation of Qt 5.10.1. It is a detailed installation guide based on [Qt official tutorial website](https://wiki.qt.io/Install_Qt_5_on_Ubuntu). You can choose any version available on [Qt official release website](http://download.qt.io/official_releases/qt/). The installation steps for different versions of Qt are the same. **However, if you want to install a different version to ours, you should CHECK and CHANGE the number of version in the command in every step.**
+[Windows 10 Qt Installation Guide](#windows-10-qt-installation-guide)
+
+[Associate VTK libraries with Qt](#associate-vtk-libraries-with-qt)
+
+## Linux Qt Installation Guide
+
+Part 1 is a Qt installation guide for Linux machines (Ubuntu 18.04 LTS). The following steps are the installation of Qt 5.10.1. It is a detailed installation guide based on [Qt official tutorial website](https://wiki.qt.io/Install_Qt_5_on_Ubuntu). You can choose any version available on [Qt official release website](http://download.qt.io/official_releases/qt/). The installation steps for different versions of Qt are the same. **However, if you want to install a different version to ours, you should CHECK and CHANGE the number of version in the command in every step.**
 
 - **Download:**
 
@@ -53,7 +61,7 @@ Now you have completed the installation steps.
 Check whether g++ has been successfully intalled and can be detected by Qt. Launch Qt Creator, go to Tools > Options and select Kits. You will see a computer icon in front of gcc, showing that gcc now works in your machine and in Qt.
 
 
-## Part 2: Windows 10 Qt Installation Guide
+## Windows 10 Qt Installation Guide
 
 Part 2 is a Qt installation guide for Windows 10.
 
@@ -73,7 +81,7 @@ After the installation is done, go to the **Installers** folder in the previous 
 
 Then go back to kits, you will see some of the compilers can work now. You can start to build and compile your own projects now.
 
-## Part 3: Associate the third party libraries with Qt:
+## Associate VTK libraries with Qt
 
 If you want to use the third party libraries in Qt, you need to add the include path and the lib path of the thrid party in Qt pro file. For example, in our project we want to use VTK in Qt, so in the pro file, we add these following lines:
 ```
