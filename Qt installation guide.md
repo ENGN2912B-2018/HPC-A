@@ -1,5 +1,5 @@
 # Qt Installation Guide
-## contents:
+##  Contents:
 [Linux Qt Installation Guide](#linux-qt-installation-guide)
 
 [Windows 10 Qt Installation Guide](#windows-10-qt-installation-guide)
