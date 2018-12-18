@@ -94,6 +94,14 @@ gcc 7.2
 VTK 8.1.0  
 
 **Note:** The multithreading utilities are not supported on the CCV environment, and the video saving utilities are not supported on any Linux systems.  
+
+### Qt tools:
+#### Windows 10
+MSVC2017 64bit
+Qt 5.10.1
+#### Ubuntu 18.04
+CMake 3.10.2
+Qt 5.10.1
 ## Description of functional testing to date
 
 ## Build instructions
