@@ -3,7 +3,7 @@
 ## Build a Qt project with Qt Creator
 We need to install Qt and VTK. The detailed installation guides are here: 
 
-[Qt Installation Guide](https://github.com/ENGN2912B-2018/HPC-A/blob/gui/Qt%20installation%20guide.md)
+[Qt Installation Guide](https://github.com/ENGN2912B-2018/HPC-A/blob/master/Qt%20installation%20guide.md)
 
 [VTK Installation Guide](https://github.com/ENGN2912B-2018/HPC-A/blob/master/VTKInstallationGuide.md)
 
