@@ -55,9 +55,11 @@ Check whether g++ has been successfully intalled and can be detected by Qt. Laun
 
 ## Part 2: Windows 10 Qt Installation Guide
 
+Part 2 is a Qt installation guide for Windows 10.
+
 Go to the [Qt official release website](http://download.qt.io/official_releases/qt/), choose a version you want to install and download it. The Qt installation in Win 10 is pretty easy. It just like install any other softwares.
 
-After finishing the installation, you should go to check whether your compiler will work. Go to Tools >Options >and select Kits. 
+After finishing the installation, you should go to **check whether your compiler will work.** Go to Tools >Options >and select Kits. 
 
 ![Qt kit](https://github.com/ENGN2912B-2018/HPC-A/blob/master/images/Qt.png)
 
