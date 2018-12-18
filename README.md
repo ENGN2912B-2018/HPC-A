@@ -112,7 +112,7 @@ We directly double clicked the `mainVisualizer` executable and enter the paramet
 ![Windows Command-line tool](https://upload-images.jianshu.io/upload_images/315072-a6dd5569c8ec2a20.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 Then the results were generated in an OpenGL render window.  
 ![Execution results](https://upload-images.jianshu.io/upload_images/315072-f191266d7938752d.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
-A video was also generated in the same path as the `.vtk` files, and the results are the same as shown in the OpenGL render window.
+A video was also generated in the same path as the `.vtk` files, and the results are the same as shown in the OpenGL render window.  
 ![Saved video file](https://upload-images.jianshu.io/upload_images/315072-31016b8b59ccc209.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 
 We can say that the visualization module passed the functional tests according to the results.
