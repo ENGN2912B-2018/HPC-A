@@ -5,8 +5,7 @@ We need to install Qt and VTK. The detailed installation guides are here:
 
 [Qt Installation Guide](https://github.com/ENGN2912B-2018/HPC-A/blob/gui/Qt%20installation%20guide.md)
 
-[VTK Installation Guide](https://github.com/ENGN2912B-2018/HPC-A/blob/gui/VTK%20installation%20guide.md)
-
+[VTK Installation Guide](https://github.com/ENGN2912B-2018/HPC-A/blob/master/VTKInstallationGuide.md)
 
 ## Build a Qt project in Linux
 I use a simple "hello world" example to show the basic build instruction.
