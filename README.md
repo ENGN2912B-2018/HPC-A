@@ -58,7 +58,7 @@ When users have made changes to parameters of interest, they can press "apply ch
 
 ![msgbox](https://github.com/ENGN2912B-2018/HPC-A/blob/master/images/msg%20box.png)
 
-Our project cannot be real time, so after users press "visualization", they have to wait for a while because the project has to read vtk data first. When the time step is 2, it takes the longest time to read data and visualize them. Therefore, if users want to see the whole progress in much shorter time, they need to choose 20 to be the time step.
+Our project cannot run fast enough under all conditions to be considered real time. After the user presses "visualization", they have to wait for a while because the project has to read vtk data first. When the time step is 2 seconds, the program takes the longest time to produce a visualization because the finer time resolution means that there is more data to read and process. Therefore, if users want to see progress in much shorter time, they need to choose 20 seconds to be the time step, which will decrease to volume of data which needs to be processed to create the time lapse video of the convection.
 ![result](https://github.com/ENGN2912B-2018/HPC-A/blob/master/images/result.png)
 
 ## Data Visualization
@@ -186,7 +186,7 @@ Yang Jiao focused on converting the simulation files into VTK format, visualizin
 
 Yiming Li focused on creating the GUI to control simulation setting, visualization setting and the start of visualization. She is responsible for all the source code under `gui` directory. 
 
-Kit Sum Wu focused on the numerical simulation.
+Katie Wu focused on the numerical simulation. She is responsible for setting up the case directory to simulate Rayleigh-Bénard Convection, post-processing the results to obtain the velocity magnitude, and automating the use of OpenFOAM to generate data sets.
 
 # References
 [Installing and Running OpenFOAM](https://openfoamwiki.net/index.php/FAQ/Installation_and_Running)
