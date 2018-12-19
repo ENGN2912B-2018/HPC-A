@@ -126,7 +126,6 @@ A video was also generated in the same path as the `.vtk` files, and the results
 
 We can say that the visualization module passed the functional tests according to the results.
 
-### Graphical User Interface (Main Application)
 
 ## Build instructions
 
@@ -139,11 +138,10 @@ Please refer to the following files for installation instructions.
 [GUI Set Up Guide](https://github.com/ENGN2912B-2018/HPC-A/blob/master/GUIGuide.md)
 
 # Conclusions
+For now our GUI hasn't implemented the selecting of the data reading path, so before the program is built, users have to change the vtk data path in code. Also, after pressing the visualization button, the GUI window does not response. That may be the reason of QVTKOpenGLWidget can only display the last figure of the visualization. Therefore, wehave to give up using QVTKOpenGLWidget to display visualization in Qt main window. Muilt-threads in GUI may solve such problem but it is a little bit complicated, which will take more time.
 
 # Future Work
-### Support for change of input path
-For now GUI hasn't implement the select of the working path, so before the program is built, users have to change the vtk data path in code. Also, after pressing the visualization button, the GUI window does not response. That may lead to  the QVTKOpenGLWidget can only display the last figure of the visualization. Therefore, muilt-threads in GUI may be necessary.
-### Supports for Multi-Platform
+### Supports for Multi-Platforms
 Our main application can only work on Windows 10 operating system. Linux-based operating systems(including the Brown CCV environment) are not supported due to an incompatible OpenGL version. For the users who want to simulate the -Bénard Convection on Linux systems, we offer a [command-lind based solution](https://github.com/ENGN2912B-2018/HPC-A/blob/master/VisualizationGuide.md) that can work on both Windows and Linux. One possible future work for our project is to provide supports for multi-platform development.
 
 # Author Contributions
