@@ -105,11 +105,12 @@ MSVC2017 64bit , Qt 5.10.1, VTK 8.1.2
 **Note:** The multithreading utilities are not supported on the CCV environment, and the video saving utilities are not supported on any Linux systems.
 
 ### Simulation Automation Tool:
-**RedHat 7:** CMake 3.8.0, gcc 7.2, OpenFOAM 4.1
+**RedHat 7:** CMake 3.8.0, gcc 7.2, OpenFOAM 4.1, openMPI 2.0.3
 
 
 ## Description of functional testing to date
 ### Simulation
+#### Automation via C++
 To provide a versatile method for running several OpenFOAM simulations in sequence, we wrote a wrapper for the OpenFOAM convection simulation which can read and modify an OpenFOAM test case. Upon verifying that the simulation parameters could be successfully changed from within a C++ file, we then implemented a program to automate the generation of data sets for cases Rayleigh-Bénard Convection with varying Rayleigh and Prandtl numbers for use by the visualization and graphical interface parts of the project. The person creating these data sets has the ability to determine the number of Ra and Pr values to draw combinations from, and to set them via command line. This way, a collection of data sets can be generated incrementally if they do not have access to the CCV for an extended time, and new data sets can be added easily if needed.
 ### Visualization
 #### Identification of functions, expected inputs and outputs
@@ -157,19 +158,27 @@ Compared to our objectives, we did not implement:
 - a seamless program from simulation to visualization
 - a integrated widget in graphical user interface that shows the visualization results  
 
-We attribute these drawbacks to different reasons. We failed to create a program that can handle both simulation and visualization because of the incompatibilities between dependencies. The OpenFOAM library that we use to simulate the 2D Rayleigh-Bénard Convection only supports Linux, but Qt and VTK can not be built jointly due to a OpenGL version issue. Dealing with the compatibility issues on Linux took a long period for the whole team.   
+We attribute these drawbacks to various different reasons. During the time of this project, we encountered several compatibility issues which prevented us from unifying the three parts of our program on one system and which required a significant amount of time to resolve. When we try to have the visualization window embedded in the GUI, the GUI window does not respond after the user presses the visualization button. As a result, we believe that the QVTKOpenGLWidget only displays the last frame of the visualization instead of the whole video. Therefore, abandoned the idea of using QVTKOpenGLWidget to display visualization in Qt main window. We now show the visualizations in an OpenGL window rather than inside the user interface because of the complexity of `QVTKOpenGLWidget` and Qt multithreading libraries.
 
-We now show the visualizations in an OpenGL window rather than inside the user interface because of the complexity of `QVTKOpenGLWidget` and Qt multithreading libraries.
+In addition, we also discovered that Qt and VTK can not be built jointly in the CCV environment due to a OpenGL version issue. Thus, if we wanted to integrate the GUI and visualization, we were left with the option of using a Windows system, which cannot support OpenFOAM. Since we were able to mimic the automated simulation of data with user-selected parameters by saving some data sets beforehand, we chose to design our project for a Windows system to maximize the number of functions we could demonstrate at the end of the project period.
+
+In our current version, there remain some areas where small improvements could be made. For example, our GUI hasn't implemented the selecting of the data reading path, so users have to change the vtk data path in the code before the program is built. Additionally, the person running the simulation automation tool must also manually change the location to save the generated data sets in the code before the program is built. There may also be possibilities for errors which we have not already considered and accounted for.  
 
 # Future Work
-### Supports for Multi-Platforms
-Our main application can only work on Windows 10 operating system. Linux-based operating systems(including the Brown CCV environment) are not supported due to an incompatible OpenGL version. For the users who want to simulate the Rayleigh-Bénard Convection on Linux systems, we offer a [command-lind based solution](https://github.com/ENGN2912B-2018/HPC-A/blob/master/VisualizationGuide.md) that can work on both Windows and Linux. One possible future work for our project is to provide supports for multi-platform development.
+### Multi-Platform Support
+Our main application can only work on Windows 10 operating system. Linux-based operating systems(including the Brown CCV environment) are not supported due to an incompatible OpenGL version. For the users who want to simulate the Rayleigh-Bénard Convection on Linux systems, we offer a [command-line based solution](https://github.com/ENGN2912B-2018/HPC-A/blob/master/VisualizationGuide.md) that can work on both Windows and Linux. One possible future work for our project is to provide support for multi-platform development.
 
 ### Real-time Simulation and Visualization
 There is a gap between our simulation and visualization components: our visualization module can only be run after the simulation is completed since we are directly using the pre-compiled OpenFOAM application to generate the simulation results. In the future, we can delve into the OpenFOAM C++ source code, develop OpenFOAM based libraries, and implement a seamlessly connected application that could provide real-time visualization during simulation.
 
 ### Modification of More Simulation Parameters
 Once we are able to integrate the simulation with the visualization and the GUI on the same system, then the next step would be to enable the user to change more simulation parameters from the GUI. For example, the simulation time step, the domain width and height, and the mesh resolution are parameters which were kept constant in this version due to limited time and resources. Additionally, future versions of this project could allow the user to change physical properties of the fluid to change the non-dimensional parameters. This would illustrate the idea that the same fluid behavior can be observed even in different physical conditions.
+
+### More Visualization Options
+For this iteration of the project, we focused on visualizing two scalar fields, temperature and velocity magnitude. In the future, we could add the ability to visualize the velocity vector field using scaled arrows indicating flow direction and magnitude originating at each node. In addition, the ability to view isotherms in the temperature field may also be a useful function of the program to be added in future iterations. 
+
+### 3D Simulation and Visualization
+Another possible future direction for this project is to give the user the option visualizing a 3D simulation. In this case, we would give the user the option of taking cross sections of the domain from the three directions and then allow them to play a movie of the phenomenon. We could also give the user the option of viewing the outside surface of the region from different angles. 
 
 # Author Contributions
 
