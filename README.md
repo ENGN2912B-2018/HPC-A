@@ -9,12 +9,24 @@ High Performance Computing, Group A
 
 Submitted December 2018
 
+
+
 ## Group Members
 Yang Jiao   (yang_jiao@brown.edu)
 
 Yiming Li   (yiming_li1@brown.edu)
 
 Kit Sum Wu  (kitsum_wu@brown.edu)
+
+## Contents
+[Introduction](#introduction)  
+[Software Architecture Design](#software-architecture-design)  
+[Interface Descriptions](#interface-description)  
+[Testing and Evaluation](#testing-and-evaluation)  
+[Conclusions](#conclusions)  
+[Future Work](#future-work)    
+[Author Contributions](#author-contributions)   
+[References](#references)  
 
 # Introduction
 
