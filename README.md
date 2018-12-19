@@ -37,7 +37,7 @@ The graphical user interface (GUI) is like the conductor of the project. The GUI
 
 A block diagram representation of our program is below:
 
-![alt text](https://github.com/ENGN2912B-2018/HPC-A/blob/master/images/softwarearchitecture.png)
+![software architecture](https://github.com/ENGN2912B-2018/HPC-A/blob/master/images/softwarearchitecture.png)
 
 # Interface Descriptions
 ## Graphical Interface
@@ -76,7 +76,7 @@ Since for different values of simulation parameter Pr and Ra, the data generated
 In order to call the visualization in Qt, we wrap the main function of the VTK program in the callback function of "visualization" button. Also, other source code and header file of VTK program should be added into Qt program.
 
 ## Threading and Concurrency
-The OpenMP API is applied by our data visualization library to parallelize and accelerate the data processing and visualization pipeline. With parrallelizaton, the files are processed by multiple threads in the same time, and the total run time is decreased to 13% (from 60 seconds to 8 seconds when 8 threads are used) of the original system under certain multithreading schedule and operating system.
+The OpenMP API is applied by our data visualization library to parallelize and accelerate the data processing and visualization pipeline. With parallelizaton, the files are processed by multiple threads in the same time, and the total run time is decreased to 13% (from 60 seconds to 8 seconds when 8 threads are used) of that of the original system under certain multithreading schedule and operating system conditions.
 
 ## Exception Handling
 Exception handling techniques are implemented in our system. Three types of exceptions are defined in the program:
@@ -87,6 +87,9 @@ Exception handling techniques are implemented in our system. Three types of exce
 3. All other unexpected exceptions, such as the computational resources are exhausted by the program.  
 
 In all of those situations, the program will terminate, and pop up different messages. For the file I/O issues, we will prompt the user to check the file path and parameter settings; and for the unexpected exceptions, we will prompt the user to contact us in the [Github Issues Page](https://github.com/ENGN2912B-2018/HPC-A/issues).
+
+In addition, in the helper program we used behind the scenes to automatically generate data sets, if the user provides an invalid input, they are prompted to try again until an acceptable value is received.
+
 # Testing and Evaluation
 
 ## Operating system(s) and software compiler/library version(s) tested
@@ -99,14 +102,19 @@ MSVC2017 64bit , Qt 5.10.1, VTK 8.1.2
 **Ubuntu 18.04:** CMake 3.10.2, gcc 7.3.0, VTK 8.1.2    
 **RedHat 7 (CCV, Should be run under a GPU node):**  CMake 3.8.0, gcc 7.2, VTK 8.1.0  
 
-**Note:** The multithreading utilities are not supported on the CCV environment, and the video saving utilities are not supported on any Linux systems.  
+**Note:** The multithreading utilities are not supported on the CCV environment, and the video saving utilities are not supported on any Linux systems.
+
+### Simulation Automation Tool:
+**RedHat 7:** CMake 3.8.0, gcc 7.2, OpenFOAM 4.1
+
 
 ## Description of functional testing to date
 ### Simulation
+To provide a versatile method for running several OpenFOAM simulations in sequence, we wrote a wrapper for the OpenFOAM convection simulation which can read and modify an OpenFOAM test case. Upon verifying that the simulation parameters could be successfully changed from within a C++ file, we then implemented a program to automate the generation of data sets for cases Rayleigh-Bénard Convection with varying Rayleigh and Prandtl numbers for use by the visualization and graphical interface parts of the project. The person creating these data sets has the ability to determine the number of Ra and Pr values to draw combinations from, and to set them via command line. This way, a collection of data sets can be generated incrementally if they do not have access to the CCV for an extended time, and new data sets can be added easily if needed.
 ### Visualization
 #### Identification of functions, expected inputs and outputs
 For conducting functional tests for visualization components, we implemented a driver program named `mainVisualizer`.
-The inputs of `mainVisualizer` are commands from user input which specify visualization parameters, and `.vtk` files that generated from the simulation components. The `.vtk` files can also be downloaded from [this Google Drive Page](https://drive.google.com/open?id=1uOd3skYjSeGgKKKBibIzqVxK3MpL1rfd).
+The inputs of `mainVisualizer` are commands from user input which specify visualization parameters, and `.vtk` files that generated from the simulation components. The `.vtk` files can also be downloaded from [this Google Drive page](https://drive.google.com/open?id=1uOd3skYjSeGgKKKBibIzqVxK3MpL1rfd).
 The expected output of `mainVisualizer` should be a OpenGL render window showing the visualization results in an animation. In Windows 10, an optional Windows AVI video can also be saved in the same directory as the `.vtk` files.
 #### Execution, actual outputs and evaluation
 **Linux:**   
@@ -125,7 +133,6 @@ A video was also generated in the same path as the `.vtk` files, and the results
 ![Saved video file](https://upload-images.jianshu.io/upload_images/315072-31016b8b59ccc209.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 
 We can say that the visualization module passed the functional tests according to the results.
-
 
 ## Build instructions
 
@@ -153,7 +160,6 @@ Compared to our objectives, we did not implement:
 We attribute these drawbacks to different reasons. We failed to create a program that can handle both simulation and visualization because of the incompatibilities between dependencies. The OpenFOAM library that we use to simulate the 2D Rayleigh-Bénard Convection only supports Linux, but Qt and VTK can not be built jointly due to a OpenGL version issue. Dealing with the compatibility issues on Linux took a long period for the whole team.   
 
 We now show the visualizations in an OpenGL window rather than inside the user interface because of the complexity of `QVTKOpenGLWidget` and Qt multithreading libraries.
-
 
 # Future Work
 ### Supports for Multi-Platforms
