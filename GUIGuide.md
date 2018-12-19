@@ -2,19 +2,21 @@
 
 ## Build Our GUI with Qt Creator in Windows 10
 ### Download soirce code
-Download our project zip package and unzip it. Enter ```HPC-A-master-> gui-> RBCGUI```folder and create a new folder ```RBConvection```. Then go to [our Google drive](https://drive.google.com/drive/folders/1uOd3skYjSeGgKKKBibIzqVxK3MpL1rfd) to download the VTK data. Extract these 9 zip package in the ```RBConvection```.
+Download our project zip package and unzip it. Enter ```HPC-A-master-> gui-> RBCGUI```folder and create a new folder ```RBConvection```. Then go to [our Google drive](https://drive.google.com/drive/folders/1uOd3skYjSeGgKKKBibIzqVxK3MpL1rfd) to download the VTK data. Extract these 9 zip packages in the ```RBConvection```.
 
 ### Modify VTK inlude path and library path
-Because our Qt project uses the third party libraries, you need to change our include path and library path so that Qt can detect the libraries in your own machine. To do so, you need to open ```RBCGUI.pro``` and modify the following items:
-**The include path:**
+Because our Qt project uses the third party libraries, you need to change our include path and library path so that Qt can detect the VTK libraries in your own machine. To do so, you need to open ```RBCGUI.pro``` and modify the following items:
+
+**1. The include path:**
 
 ```
 INCLUDEPATH += $$quote(D:\VTK\VTK-8.1.2\VTK-install\include\vtk-8.1) \
                $$quote(D:\VTK\VTK-8.1.2\VTK-install\include\vtk-8.1\vtkObjectFactory.h) 
 ```
 
-Actually only the first line is necessary. You need to change the first line path into your own VTK include path and with no ```\``` at the end.
-**The library path:**
+Actually, only the first line is necessary. You need to change the first line path into your own VTK include path without ```\``` at the end.
+
+**2. The library path:**
 
 You need to change all these path into your own VTK lib path.
 ```
@@ -142,13 +144,18 @@ LIBS += $$quote(D:\VTK\VTK-8.1.2\VTK-install\lib\vtkViewsQt-8.1.lib)
 LIBS += $$quote(D:\VTK\VTK-8.1.2\VTK-install\lib\vtkzlib-8.1.lib)
 ```
 
-You can use several command to extract all the names of the lib files.
-First, open your command line: press ```wim+r```, enter ```cmd```;
-Second, excute ```cd / your vtk lib path```, enter;
+**You can use several commands to extract all the names of the lib files:**
+
+Firstly, open your command line: press ```wim+r```, enter ```cmd```;
+
+Secondly, excute ```cd / your vtk lib path```, enter;
+
 Then, excute ```dir /b .lib>names.txt```, enter. This command will write all the lib file names into a ```names.txt```file. You don't need to create such txt file. The command will create it automatically.
+
 Finally, open your ```names.txt```, paste your lib path with the formate as ours. Then you can paste the result into your ```RBCGUI.pro``` file.
 
 **One more thing you need to modify:**
+
 Because our GUI hasn't implemented the function of changing  and selecting a new directory, you need to go to ```rbcgui.cpp``` line 137 to change the value of ```filePath```. Make sure your path contains ```RBConvection``` folder, since it's the path for our program to read VTK data.
 
 ## Run the program
