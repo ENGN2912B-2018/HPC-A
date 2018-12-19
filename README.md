@@ -37,7 +37,7 @@ The graphical user interface (GUI) is like the conductor of the project. The GUI
 
 A block diagram representation of our program is below:
 
-![alt text](https://github.com/ENGN2912B-2018/HPC-A/blob/master/images/softwarearchitecture.png)
+![software architecture](https://github.com/ENGN2912B-2018/HPC-A/blob/master/images/softwarearchitecture.png)
 
 # Interface Descriptions
 ## Graphical Interface
@@ -76,7 +76,7 @@ Since for different values of simulation parameter Pr and Ra, the data generated
 In order to call the visualization in Qt, we wrap the main function of the VTK program in the callback function of "visualization" button. Also, other source code and header file of VTK program should be added into Qt program. 
 
 ## Threading and Concurrency
-The OpenMP API is applied by our data visualization library to parallelize and accelerate the data processing and visualization pipeline. With parrallelizaton, the files are processed by multiple threads in the same time, and the total run time is decreased to 13% (from 60 seconds to 8 seconds when 8 threads are used) of the original system under certain multithreading schedule and operating system.
+The OpenMP API is applied by our data visualization library to parallelize and accelerate the data processing and visualization pipeline. With parallelizaton, the files are processed by multiple threads in the same time, and the total run time is decreased to 13% (from 60 seconds to 8 seconds when 8 threads are used) of that of the original system under certain multithreading schedule and operating system conditions.
 
 ## Exception Handling
 Exception handling techniques are implemented in our system. Three types of exceptions are defined in the program:
@@ -87,6 +87,9 @@ Exception handling techniques are implemented in our system. Three types of exce
 3. All other unexpected exceptions, such as the computational resources are exhausted by the program.  
 
 In all of those situations, the program will terminate, and pop up different messages. For the file I/O issues, we will prompt the user to check the file path and parameter settings; and for the unexpected exceptions, we will prompt the user to contact us in the [Github Issues Page](https://github.com/ENGN2912B-2018/HPC-A/issues).
+
+In addition, in the helper program we used behind the scenes to automatically generate data sets, if the user provides an invalid input, they are prompted to try again until an acceptable value is received.
+
 # Testing and Evaluation
 
 ## Operating system(s) and software compiler/library version(s) tested
@@ -99,14 +102,19 @@ MSVC2017 64bit , Qt 5.10.1, VTK 8.1.2
 **Ubuntu 18.04:** CMake 3.10.2, gcc 7.3.0, VTK 8.1.2    
 **RedHat 7 (CCV, Should be run under a GPU node):**  CMake 3.8.0, gcc 7.2, VTK 8.1.0  
 
-**Note:** The multithreading utilities are not supported on the CCV environment, and the video saving utilities are not supported on any Linux systems.  
+**Note:** The multithreading utilities are not supported on the CCV environment, and the video saving utilities are not supported on any Linux systems.
+
+### Simulation Automation Tool:
+**RedHat 7:** CMake 3.8.0, gcc 7.2, OpenFOAM 4.1
+
 
 ## Description of functional testing to date
 ### Simulation
+To provide a versatile method for running several OpenFOAM simulations in sequence, we wrote a wrapper for the OpenFOAM convection simulation which can read and modify an OpenFOAM test case. Upon verifying that the simulation parameters could be successfully changed from within a C++ file, we then implemented a program to automate the generation of data sets for cases Rayleigh-Bénard Convection with varying Rayleigh and Prandtl numbers for use by the visualization and graphical interface parts of the project. The person creating these data sets has the ability to determine the number of Ra and Pr values to draw combinations from, and to set them via command line. This way, a collection of data sets can be generated incrementally if they do not have access to the CCV for an extended time, and new data sets can be added easily if needed.
 ### Visualization
 #### Identification of functions, expected inputs and outputs
 For conducting functional tests for visualization components, we implemented a driver program named `mainVisualizer`.
-The inputs of `mainVisualizer` are commands from user input which specify visualization parameters, and `.vtk` files that generated from the simulation components. The `.vtk` files can also be downloaded from [this Google Drive Page](https://drive.google.com/open?id=1uOd3skYjSeGgKKKBibIzqVxK3MpL1rfd).
+The inputs of `mainVisualizer` are commands from user input which specify visualization parameters, and `.vtk` files that generated from the simulation components. The `.vtk` files can also be downloaded from [this Google Drive page](https://drive.google.com/open?id=1uOd3skYjSeGgKKKBibIzqVxK3MpL1rfd).
 The expected output of `mainVisualizer` should be a OpenGL render window showing the visualization results in an animation. In Windows 10, an optional Windows AVI video can also be saved in the same directory as the `.vtk` files.
 #### Execution, actual outputs and evaluation
 **Linux:**   
@@ -126,7 +134,6 @@ A video was also generated in the same path as the `.vtk` files, and the results
 
 We can say that the visualization module passed the functional tests according to the results.
 
-
 ## Build instructions
 
 Please refer to the following files for installation instructions.
@@ -138,11 +145,14 @@ Please refer to the following files for installation instructions.
 [GUI Set Up Guide](https://github.com/ENGN2912B-2018/HPC-A/blob/master/GUIGuide.md)
 
 # Conclusions
-For now our GUI hasn't implemented the selecting of the data reading path, so before the program is built, users have to change the vtk data path in code. Also, after pressing the visualization button, the GUI window does not response. That may be the reason of QVTKOpenGLWidget can only display the last figure of the visualization. Therefore, wehave to give up using QVTKOpenGLWidget to display visualization in Qt main window. Muilt-threads in GUI may solve such problem but it is a little bit complicated, which will take more time.
+As of today, our GUI hasn't implemented the selecting of the data reading path, so users have to change the vtk data path in code before the program is built. Also, after pressing the visualization button, the GUI window does not respond. That may be the reason of QVTKOpenGLWidget can only display the last figure of the visualization. Therefore, we have to give up using QVTKOpenGLWidget to display visualization in Qt main window. Muilt-threads in GUI may solve such problem but it is a little bit complicated, which will take more time.
 
 # Future Work
-### Supports for Multi-Platforms
-Our main application can only work on Windows 10 operating system. Linux-based operating systems(including the Brown CCV environment) are not supported due to an incompatible OpenGL version. For the users who want to simulate the -Bénard Convection on Linux systems, we offer a [command-lind based solution](https://github.com/ENGN2912B-2018/HPC-A/blob/master/VisualizationGuide.md) that can work on both Windows and Linux. One possible future work for our project is to provide supports for multi-platform development.
+### Multi-Platform Support
+Our main application can only work on Windows 10 operating system. Linux-based operating systems(including the Brown CCV environment) are not supported due to an incompatible OpenGL version. For the users who want to simulate the Rayleigh-Bénard Convection on Linux systems, we offer a [command-line based solution](https://github.com/ENGN2912B-2018/HPC-A/blob/master/VisualizationGuide.md) that can work on both Windows and Linux. One possible future work for our project is to provide support for multi-platform development.
+
+### Modification of More Simulation Parameters
+Once we are able to integrate the simulation with the visualization and the GUI on the same system, then the next step would be to enable the user to change more simulation parameters from the GUI. For example, the simulation time step, the domain width and height, and the mesh resolution are parameters which were kept constant in this version due to limited time and resources. Additionally, future versions of this project could allow the user to change physical properties of the fluid to change the non-dimensional parameters. This would illustrate the idea that the same fluid behavior can be observed even in different physical conditions.
 
 # Author Contributions
 
