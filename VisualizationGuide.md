@@ -1,7 +1,7 @@
 # Visualization Set Up Guide
 This guide is going to help you build a self-contained command-line tool of visualization. Before you start building, make sure you have already installed the required libraries following the [instructions](https://github.com/ENGN2912B-2018/HPC-A/blob/master/VTKInstallationGuide.md) or sufficed the [system requirements](https://github.com/ENGN2912B-2018/HPC-A#operating-systems-and-software-compilerlibrary-versions-tested).  
 ## Build instructions
-### Linux Systems(Ubuntu 18.04 or RedHat 7/Brown CCV)
+### Linux Systems (Ubuntu 18.04 or RedHat 7/Brown CCV)
 
 #### Fetching the source code
 You can clone this repository into your directory in the terminal using ``git clone https://github.com/ENGN2912B-2018/HPC-A.git``.
@@ -33,12 +33,12 @@ Choose `Build->Configuration Manager`, and you can set up the configurations for
 ![Configuration Manager of Visual Studio](https://upload-images.jianshu.io/upload_images/315072-d8ab4efa18b4ada7.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 Then you can choose `Build->Build Solution` or press `Ctrl+Shift+B` shortcut. Then the project should compile.
 
-## Run the program
-### Linux Systems(Ubuntu 18.04 or RedHat 7/Brown CCV)
+## Run the Program
+### Linux Systems (Ubuntu 18.04 or RedHat 7/Brown CCV)
 In the `build/` directory, simply run `./mainVisualizer`.
 ### Windows 10
-### Direct run
+#### Executable
 You can run the program directly by double-clicking the `mainVisualizer.exe` file under the `build/Release` path.
-### Visual Studio Debugging Tool
+#### Visual Studio Debugging Tool
 It is reported that the `mainVisualizer.exe` program is having some freezing issues if it is being directly run. If this also happens to your system, you can try to avoid it by running the program using the Visual Studio Debug Tool.  
 In order to run the program in debug mode, you should first launch Visual Studio and set the  `mainVisualizer` as a startup project. In the Solution Explorer, you need to right click the `mainVisualizer` project, then click "Set as StartUp Project". Then you can run the program in debug mode by choosing `Debug->Start Debugging` or pressing the `F5` shortcut.

@@ -86,7 +86,7 @@ Exception handling techniques are implemented in our system. Three types of exce
 
 3. All other unexpected exceptions, such as the computational resources are exhausted by the program.  
 
-In all of those situations, the program will terminate, and pop up different messages. For the file I/O issues, we will prompt the user to check the file path and parameter settings; and for the unexpected exceptions, we will prompt the user to contact us in the [Github Issues Page](https://github.com/ENGN2912B-2018/HPC-A/issues).
+In all of those situations, the program will terminate, and pop up different messages. For the file I/O issues, we will prompt the user to check the file path and parameter settings; and for the unexpected exceptions, we will prompt the user to contact us in the [Github Issues page](https://github.com/ENGN2912B-2018/HPC-A/issues).
 
 In addition, in the helper program we used behind the scenes to automatically generate data sets, if the user provides an invalid input, they are prompted to try again until an acceptable value is received.
 
@@ -175,16 +175,16 @@ There is a gap between our simulation and visualization components: our visualiz
 Once we are able to integrate the simulation with the visualization and the GUI on the same system, then the next step would be to enable the user to change more simulation parameters from the GUI. For example, the simulation time step, the domain width and height, and the mesh resolution are parameters which were kept constant in this version due to limited time and resources. Additionally, future versions of this project could allow the user to change physical properties of the fluid to change the non-dimensional parameters. This would illustrate the idea that the same fluid behavior can be observed even in different physical conditions.
 
 ### More Visualization Options
-For this iteration of the project, we focused on visualizing two scalar fields, temperature and velocity magnitude. In the future, we could add the ability to visualize the velocity vector field using scaled arrows indicating flow direction and magnitude originating at each node. In addition, the ability to view isotherms in the temperature field may also be a useful function of the program to be added in future iterations. 
+For this iteration of the project, we focused on visualizing two scalar fields, temperature and velocity magnitude. In the future, we could add the ability to visualize the velocity vector field using scaled arrows indicating flow direction and magnitude originating at each node. In addition, the ability to view isotherms in the temperature field may also be a useful function of the program to be added in future iterations.
 
 ### 3D Simulation and Visualization
-Another possible future direction for this project is to give the user the option visualizing a 3D simulation. In this case, we would give the user the option of taking cross sections of the domain from the three directions and then allow them to play a movie of the phenomenon. We could also give the user the option of viewing the outside surface of the region from different angles. 
+Another possible future direction for this project is to give the user the option visualizing a 3D simulation. In this case, we would give the user the option of taking cross sections of the domain from the three directions and then allow them to play a movie of the phenomenon. We could also give the user the option of viewing the outside surface of the region from different angles.
 
 # Author Contributions
 
 Yang Jiao focused on converting the simulation files into VTK format, visualizing the data and developing the command-line tool. He is responsible for all the source code under the `visualization` directory and the `writeVTK` function object in the `RBConvection\system\controlDict` file.
 
-Yiming Li focused on creating the GUI to control simulation setting, visualization setting and the start of visualization. She is responsible for all the source code under `gui` directory. 
+Yiming Li focused on creating the GUI to control simulation setting, visualization setting and the start of visualization. She is responsible for all the source code under `gui` directory.
 
 Katie Wu focused on the numerical simulation. She is responsible for setting up the OpenFOAM case directory to simulate Rayleigh-Bénard Convection and automating the use of OpenFOAM to generate data sets.
 
