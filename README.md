@@ -175,7 +175,7 @@ Once we are able to integrate the simulation with the visualization and the GUI 
 
 Yang Jiao focused on converting the simulation files into VTK format, visualizing the data and developing the command-line tool. He is responsible for all the source code under the `visualization` directory and the `writeVTK` function object in the `RBConvection\system\controlDict` file.
 
-Yiming Li focused on creating the GUI.
+Yiming Li focused on creating the GUI to control simulation setting, visualization setting and the start of visualization. She is responsible for all the source code under `gui` directory. 
 
 Kit Sum Wu focused on the numerical simulation.
 
