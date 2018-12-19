@@ -145,7 +145,21 @@ Please refer to the following files for installation instructions.
 [GUI Set Up Guide](https://github.com/ENGN2912B-2018/HPC-A/blob/master/GUIGuide.md)
 
 # Conclusions
-As of today, our GUI hasn't implemented the selecting of the data reading path, so users have to change the vtk data path in code before the program is built. Also, after pressing the visualization button, the GUI window does not respond. That may be the reason of QVTKOpenGLWidget can only display the last figure of the visualization. Therefore, we have to give up using QVTKOpenGLWidget to display visualization in Qt main window. Muilt-threads in GUI may solve such problem but it is a little bit complicated, which will take more time.
+## Major Accomplishments
+In our project, we implemented and developed:
+- an appropriate wrapper class to simulate the 2D Rayleigh-Bénard Convection numerically using OpenFOAM application
+- a visualization library to read the simulation results and generate an animation for the results
+- a graphical user interface that allow user to choose from some different fixed parameter sets and provide visualizations from pre-generated simulations
+- a command-line tool that provides multi-platform supports and error handling  
+
+## Completeness and Challenges
+Compared to our objectives, we did not implement:
+- a seamless program from simulation to visualization
+- a integrated widget in graphical user interface that shows the visualization results  
+
+We attribute these drawbacks to different reasons. We failed to create a program that can handle both simulation and visualization because of the incompatibilities between dependencies. The OpenFOAM library that we use to simulate the 2D Rayleigh-Bénard Convection only supports Linux, but Qt and VTK can not be built jointly due to a OpenGL version issue. Dealing with the compatibility issues on Linux took a long period for the whole team.   
+
+We now show the visualizations in an OpenGL window rather than inside the user interface because of the complexity of `QVTKOpenGLWidget` and Qt multithreading libraries.
 
 # Future Work
 ### Multi-Platform Support
@@ -154,9 +168,12 @@ Our main application can only work on Windows 10 operating system. Linux-based o
 ### Modification of More Simulation Parameters
 Once we are able to integrate the simulation with the visualization and the GUI on the same system, then the next step would be to enable the user to change more simulation parameters from the GUI. For example, the simulation time step, the domain width and height, and the mesh resolution are parameters which were kept constant in this version due to limited time and resources. Additionally, future versions of this project could allow the user to change physical properties of the fluid to change the non-dimensional parameters. This would illustrate the idea that the same fluid behavior can be observed even in different physical conditions.
 
+### Real-time Simulation and Visualization
+There is a gap between our simulation and visualization components: our visualization module can only be run after the simulation is completed since we are directly using the pre-compiled OpenFOAM application to generate the simulation results. In the future, we can delve into the OpenFOAM C++ source code, develop OpenFOAM based libraries, and implement a seamlessly connected application that could provide real-time visualization during simulation.
+
 # Author Contributions
 
-Yang Jiao focused on visualizing the data and developing the command-line tool.
+Yang Jiao focused on converting the simulation files into VTK format, visualizing the data and developing the command-line tool. He is responsible for all the source code under the `visualization` directory and the `writeVTK` function object in the `RBConvection\system\controlDict` file.  
 
 Yiming Li focused on creating the GUI.
 
