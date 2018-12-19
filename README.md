@@ -168,6 +168,9 @@ Our main application can only work on Windows 10 operating system. Linux-based o
 ### Real-time Simulation and Visualization
 There is a gap between our simulation and visualization components: our visualization module can only be run after the simulation is completed since we are directly using the pre-compiled OpenFOAM application to generate the simulation results. In the future, we can delve into the OpenFOAM C++ source code, develop OpenFOAM based libraries, and implement a seamlessly connected application that could provide real-time visualization during simulation.
 
+### Modification of More Simulation Parameters
+Once we are able to integrate the simulation with the visualization and the GUI on the same system, then the next step would be to enable the user to change more simulation parameters from the GUI. For example, the simulation time step, the domain width and height, and the mesh resolution are parameters which were kept constant in this version due to limited time and resources. Additionally, future versions of this project could allow the user to change physical properties of the fluid to change the non-dimensional parameters. This would illustrate the idea that the same fluid behavior can be observed even in different physical conditions.
+
 # Author Contributions
 
 Yang Jiao focused on converting the simulation files into VTK format, visualizing the data and developing the command-line tool. He is responsible for all the source code under the `visualization` directory and the `writeVTK` function object in the `RBConvection\system\controlDict` file.
