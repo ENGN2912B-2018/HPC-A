@@ -20,8 +20,8 @@ Kit Sum Wu  (kitsum_wu@brown.edu)
 
 ## Contents
 [Introduction](#introduction)  
-[Software Architecture Design](#software-architecture-design)  
-[Interface Descriptions](#interface-description)  
+[Software Architectural Design](#software-architectural-design)  
+[Interface Descriptions](#interface-descriptions)  
 [Testing and Evaluation](#testing-and-evaluation)  
 [Conclusions](#conclusions)  
 [Future Work](#future-work)    
