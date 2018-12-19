@@ -31,7 +31,7 @@ Our objectives are as follows:
 # Software Architectural Design
 Our project is divided as three parts: numerical simulation of 2D Rayleigh-Bénard Convection, data visualization of simulation and GUI design. The simulation will produce data for fluid velocity and temperature for each mesh node for data visualization.
 
-The input of data visualization is the result of Rayleigh-Bénard Convection simulation and the resulting graphics should be exported to GUI section. It gives users a direct view of their calculation and help them to better understand Rayleigh--B\'enard Convection or the errors occurred in their calculation. The configurations should include output map layer, dimensions of output, color schemes and result export format.
+The input of data visualization is the result of Rayleigh-Bénard Convection simulation and the resulting graphics should be exported to GUI section. It gives users a direct view of their calculation and help them to better understand Rayleigh--B\'enard Convection or the errors occurred in their calculation. The visualization options include output map layer and color scheme.
 
 The graphical user interface (GUI) is like the conductor of the project. The GUI will receive simulation and visualization parameters from the user and show the the visualization of the corresponding simulation case.
 
@@ -186,7 +186,7 @@ Yang Jiao focused on converting the simulation files into VTK format, visualizin
 
 Yiming Li focused on creating the GUI to control simulation setting, visualization setting and the start of visualization. She is responsible for all the source code under `gui` directory. 
 
-Katie Wu focused on the numerical simulation. She is responsible for setting up the case directory to simulate Rayleigh-Bénard Convection, post-processing the results to obtain the velocity magnitude, and automating the use of OpenFOAM to generate data sets.
+Katie Wu focused on the numerical simulation. She is responsible for setting up the OpenFOAM case directory to simulate Rayleigh-Bénard Convection and automating the use of OpenFOAM to generate data sets.
 
 # References
 [Installing and Running OpenFOAM](https://openfoamwiki.net/index.php/FAQ/Installation_and_Running)
